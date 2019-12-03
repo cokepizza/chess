@@ -1,8 +1,13 @@
 import React from 'react';
+import Header from '../components/common/Header';
+import Canvas from '../components/canvas/Canvas';
 
 const MainPage = () => {
     return (
-        <div>main</div>
+        <>
+            <Header />
+            <Canvas />
+        </>
     )
 };
 
