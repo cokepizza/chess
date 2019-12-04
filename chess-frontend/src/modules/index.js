@@ -1,7 +1,9 @@
+import { combineReducers } from 'redux';
+import canvas from './canvas';
 
-const rootReducer = () => {
-
-}
+const rootReducer = combineReducers({
+    canvas,
+})
 
 export function* rootSaga () {
 

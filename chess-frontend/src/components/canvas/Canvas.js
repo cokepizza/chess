@@ -1,117 +1,5 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-
-const chessState = 
-[
-    [
-        {
-            piece: 'rook',
-        },
-        {
-            piece: 'knight',
-        },
-        {
-            piece: 'bishop',
-        },
-        {
-            piece: 'king',
-        },
-        {
-            piece: 'queen',
-        },
-        {
-            piece: 'bishop'
-        },
-        {
-            piece: 'knight',
-        },
-        {
-            piece: 'rook',    
-        }
-    ],
-    [
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn'
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',    
-        }
-    ],
-    [ {}, {}, {}, {}, {}, {}, {}, {} ],
-    [ {}, {}, {}, {}, {}, {}, {}, {} ],
-    [ {}, {}, {}, {}, {}, {}, {}, {} ],
-    [ {}, {}, {}, {}, {}, {}, {}, {} ],
-    [
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn'
-        },
-        {
-            piece: 'pawn',
-        },
-        {
-            piece: 'pawn',    
-        }
-    ],
-    [
-        {
-            piece: 'rook',
-        },
-        {
-            piece: 'knight',
-        },
-        {
-            piece: 'bishop',
-        },
-        {
-            piece: 'queen',
-        },
-        {
-            piece: 'king',
-        },
-        {
-            piece: 'bishop'
-        },
-        {
-            piece: 'knight',
-        },
-        {
-            piece: 'rook',    
-        }
-    ]
-];
 
 const CanvasFrameBlock = styled.div`
     height: 800px;
@@ -149,15 +37,17 @@ const CanvasCellBlock = styled.div`
     }
 `
 
-const CanvasContent = () => {
+const CanvasContent = ({ board, onClick }) => {
     
     return  (
         <>
             {
-                chessState.map(rowState => (
+                board.map((rowState, y) => (
                     <CanvasRowBlock>
-                        {rowState.map(cell => (
-                            <CanvasCellBlock>
+                        {rowState.map((cell, x) => (
+                            <CanvasCellBlock
+                                onClick = {e => onClick(e, cell, y, x)}
+                            >
                                 {cell.piece ? cell.piece : null}
                             </CanvasCellBlock>
                         ))
@@ -173,7 +63,7 @@ const Canvas = props => {
     return (
         <CanvasFrameBlock>
             <CanvasBlock>
-                <CanvasContent />
+                <CanvasContent {...props} />
             </CanvasBlock>
         </CanvasFrameBlock>
     )
