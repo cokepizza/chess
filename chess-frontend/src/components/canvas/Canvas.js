@@ -3,14 +3,114 @@ import styled from 'styled-components';
 
 const chessState = 
 [
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0]
+    [
+        {
+            piece: 'rook',
+        },
+        {
+            piece: 'knight',
+        },
+        {
+            piece: 'bishop',
+        },
+        {
+            piece: 'king',
+        },
+        {
+            piece: 'queen',
+        },
+        {
+            piece: 'bishop'
+        },
+        {
+            piece: 'knight',
+        },
+        {
+            piece: 'rook',    
+        }
+    ],
+    [
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn'
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',    
+        }
+    ],
+    [ {}, {}, {}, {}, {}, {}, {}, {} ],
+    [ {}, {}, {}, {}, {}, {}, {}, {} ],
+    [ {}, {}, {}, {}, {}, {}, {}, {} ],
+    [ {}, {}, {}, {}, {}, {}, {}, {} ],
+    [
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn'
+        },
+        {
+            piece: 'pawn',
+        },
+        {
+            piece: 'pawn',    
+        }
+    ],
+    [
+        {
+            piece: 'rook',
+        },
+        {
+            piece: 'knight',
+        },
+        {
+            piece: 'bishop',
+        },
+        {
+            piece: 'queen',
+        },
+        {
+            piece: 'king',
+        },
+        {
+            piece: 'bishop'
+        },
+        {
+            piece: 'knight',
+        },
+        {
+            piece: 'rook',    
+        }
+    ]
 ];
 
 const CanvasFrameBlock = styled.div`
@@ -50,6 +150,7 @@ const CanvasCellBlock = styled.div`
 `
 
 const CanvasContent = () => {
+    
     return  (
         <>
             {
@@ -57,7 +158,7 @@ const CanvasContent = () => {
                     <CanvasRowBlock>
                         {rowState.map(cell => (
                             <CanvasCellBlock>
-                                {cell}
+                                {cell.piece ? cell.piece : null}
                             </CanvasCellBlock>
                         ))
                         }
@@ -78,4 +179,4 @@ const Canvas = props => {
     )
 };
 
-export default Canvas;
+export default React.memo(Canvas);
