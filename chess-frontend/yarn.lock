@@ -6114,6 +6114,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+"line@git+https://github.com/etabits/node-line.git":
+  version "0.6.0"
+  resolved "git+https://github.com/etabits/node-line.git#d3b29093eace9adb3e3649d99b0a27e466fb3748"
+
 load-json-file@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/load-json-file/-/load-json-file-2.0.0.tgz#7947e42149af80d696cbf797bcaabcfe1fe29ca8"
@@ -8076,6 +8080,13 @@ process@^0.11.10:
   version "0.11.10"
   resolved "https://registry.npmjs.org/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
   integrity sha1-czIwDoQBYb2j5podHZGn1LwW8YI=
+
+produce@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.npmjs.org/produce/-/produce-0.4.1.tgz#2db2f0a033924a334f5e52a5055ac7efb965c618"
+  integrity sha1-LbLwoDOSSjNPXlKlBVrH77llxhg=
+  dependencies:
+    line "git+https://github.com/etabits/node-line.git"
 
 progress@^2.0.0:
   version "2.0.3"

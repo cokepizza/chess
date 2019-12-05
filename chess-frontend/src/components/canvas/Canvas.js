@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const CanvasFrameBlock = styled.div`
     height: 800px;
@@ -35,10 +35,14 @@ const CanvasCellBlock = styled.div`
     &:active {
         background-color: skyblue;
     }
+
+    ${props => props.covered && css`
+        background-color: black;
+    `}
 `
 
 const CanvasContent = ({ board, onClick }) => {
-    
+    console.dir(board);
     return  (
         <>
             {
@@ -47,6 +51,7 @@ const CanvasContent = ({ board, onClick }) => {
                         {rowState.map((cell, x) => (
                             <CanvasCellBlock
                                 onClick = {e => onClick(e, cell, y, x)}
+                                covered ={cell.covered}
                             >
                                 {cell.piece ? cell.piece : null}
                             </CanvasCellBlock>
