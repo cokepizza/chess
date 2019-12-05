@@ -39,22 +39,22 @@ const rules = {
 const SET_BOARD = 'canvas/SET_BOARD';
 export const setBoard = createAction(SET_BOARD, payload => payload);
 
-const genClearBoard = board => {
-    return board.map(rowArr => {
-        return rowArr.map(cell => {
-            return {
+const genClearBoard = board => 
+    board.map(rowArr =>
+        rowArr.map(cell =>
+            ({
                 ...cell,
                 covered: false,
-            }
-        });
-    });
-}
+            })
+        )
+    );
 
-export const clickPiece = ({ board, clicked, cell, y, x, turn }) => dispatch => {
+export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
     if(clicked && board[y][x].covered) {
+        const cell = board[clicked.y][clicked.x];
         const clearBoard = genClearBoard(board);
         clearBoard[y][x] = {
-            ...clicked.cell,
+            ...cell,
         }
         clearBoard[clicked.y][clicked.x] = { covered: false };
         
@@ -62,9 +62,9 @@ export const clickPiece = ({ board, clicked, cell, y, x, turn }) => dispatch => 
         return;
     }
 
-    const { piece, owner } = cell;
+    const { piece, owner } = board[y][x];
     if(!piece) return;
-    
+
     const { type, move }= rules[piece];
     let coveredAxis = [];
     if(type === 'onetime') {
@@ -88,7 +88,7 @@ export const clickPiece = ({ board, clicked, cell, y, x, turn }) => dispatch => 
         clearBoard[axis.dy][axis.dx].covered = true;
     });
 
-    dispatch(setBoard({ board: clearBoard, clicked: { cell, y, x } }));
+    dispatch(setBoard({ board: clearBoard, clicked: { y, x } }));
 };
 
 const initialState = {

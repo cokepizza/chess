@@ -52,7 +52,7 @@ const CanvasContent = ({ board, onClick }) => {
                         {rowState.map((cell, x) => (
                             <CanvasCellBlock
                                 key={`cell+${x}`}
-                                onClick = {e => onClick(e, cell, y, x)}
+                                onClick = {e => onClick(e, y, x)}
                                 covered ={cell.covered}
                             >
                                 {cell.piece ? cell.piece : null}

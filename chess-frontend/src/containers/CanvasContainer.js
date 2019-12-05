@@ -11,11 +11,8 @@ const CanvasContainer = () => {
 
     const dispatch = useDispatch();
     
-    const onClick = useCallback((e, cell, y, x) => {
-        dispatch(clickPiece({board, clicked, cell, y, x, turn: 1}));
-        // console.dir(cell);
-        // console.dir(y);
-        // console.dir(x);
+    const onClick = useCallback((e, y, x) => {
+        dispatch(clickPiece({board, clicked, y, x, turn: 1}));
     }, [dispatch, board, clicked]);
 
     return (
