@@ -39,12 +39,34 @@ const rules = {
 const SET_BOARD = 'canvas/SET_BOARD';
 export const setBoard = createAction(SET_BOARD, payload => payload);
 
+const genClearBoard = board => {
+    return board.map(rowArr => {
+        return rowArr.map(cell => {
+            return {
+                ...cell,
+                covered: false,
+            }
+        });
+    });
+}
 
-export const clickPiece = ({ board, cell: { piece, owner }, y, x, turn }) => dispatch => {
-    const { type, move }= rules[piece];
+export const clickPiece = ({ board, clicked, cell, y, x, turn }) => dispatch => {
+    if(clicked && board[y][x].covered) {
+        const clearBoard = genClearBoard(board);
+        clearBoard[y][x] = {
+            ...clicked.cell,
+        }
+        clearBoard[clicked.y][clicked.x] = { covered: false };
+        
+        dispatch(setBoard({ board: clearBoard, clicked: null }));
+        return;
+    }
 
-    let coveredAxis = [];
+    const { piece, owner } = cell;
+    if(!piece) return;
     
+    const { type, move }= rules[piece];
+    let coveredAxis = [];
     if(type === 'onetime') {
         coveredAxis = move.reduce((acc, cur) => {
             const dy = y + cur.dy;
@@ -60,16 +82,17 @@ export const clickPiece = ({ board, cell: { piece, owner }, y, x, turn }) => dis
 
     }
 
-    const newBoard = JSON.parse(JSON.stringify(board));
+    const clearBoard = genClearBoard(board);
+
     coveredAxis.forEach(axis => {
-        newBoard[axis.dy][axis.dx].covered = true;
+        clearBoard[axis.dy][axis.dx].covered = true;
     });
 
-    dispatch(setBoard(newBoard));
+    dispatch(setBoard({ board: clearBoard, clicked: { cell, y, x } }));
 };
 
 const initialState = {
-    click: false,
+    clicked: null,
     board: [
         [
             {
@@ -249,9 +272,10 @@ const initialState = {
 
 
 export default handleActions({
-    [SET_BOARD]: (state, { payload : board }) => ({
+    [SET_BOARD]: (state, { payload : { board, clicked } }) => ({
         ...state,
         board,
+        clicked,
     }),
 }, initialState);
 

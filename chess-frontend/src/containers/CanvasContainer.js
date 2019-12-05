@@ -4,18 +4,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { clickPiece } from '../modules/canvas';
 
 const CanvasContainer = () => {
-    const { board } = useSelector(({ canvas }) => ({
-        board: canvas.board
+    const { board, clicked } = useSelector(({ canvas }) => ({
+        board: canvas.board,
+        clicked: canvas.clicked,
     }));
 
     const dispatch = useDispatch();
     
     const onClick = useCallback((e, cell, y, x) => {
-        dispatch(clickPiece({board, cell, y, x, turn: 1}));
+        dispatch(clickPiece({board, clicked, cell, y, x, turn: 1}));
         // console.dir(cell);
         // console.dir(y);
         // console.dir(x);
-    }, [dispatch, board]);
+    }, [dispatch, board, clicked]);
 
     return (
         <Canvas
