@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 const CanvasFrameBlock = styled.div`
@@ -37,19 +37,21 @@ const CanvasCellBlock = styled.div`
     }
 
     ${props => props.covered && css`
-        background-color: black;
+        border: 1px solid white;
     `}
 `
 
 const CanvasContent = ({ board, onClick }) => {
-    console.dir(board);
     return  (
         <>
             {
                 board.map((rowState, y) => (
-                    <CanvasRowBlock>
+                    <CanvasRowBlock
+                        key={`row+${y}`}
+                    >
                         {rowState.map((cell, x) => (
                             <CanvasCellBlock
+                                key={`cell+${x}`}
                                 onClick = {e => onClick(e, cell, y, x)}
                                 covered ={cell.covered}
                             >

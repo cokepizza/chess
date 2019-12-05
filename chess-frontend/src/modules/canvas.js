@@ -50,7 +50,7 @@ export const clickPiece = ({ board, cell: { piece, owner }, y, x, turn }) => dis
             const dy = y + cur.dy;
             const dx = x + cur.dx;
             if(dy >= 0 && dx >= 0 && dy < 8 && dx < 8) {
-                if(cur.eatable && board[dy][dx].piece || !cur.eatable && !board[dy][dx].piece) {
+                if((cur.eatable && board[dy][dx].piece) || (!cur.eatable && !board[dy][dx].piece)) {
                     acc.push({dy, dx});
                 }
             }
