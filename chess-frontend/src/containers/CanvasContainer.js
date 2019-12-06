@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import Canvas from '../components/canvas/Canvas';
+import Canvas from '../components/content/Canvas';
 import { useSelector, useDispatch } from 'react-redux';
 import { clickPiece } from '../modules/canvas';
 

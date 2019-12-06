@@ -1,12 +1,12 @@
 import React from 'react';
 import Header from '../components/common/Header';
-import CanvasContainer from '../containers/CanvasContainer';
+import ContentLayout from '../components/common/ContentLayout';
 
 const MainPage = () => {
     return (
         <>
             <Header />
-            <CanvasContainer />
+            <ContentLayout />
         </>
     )
 };

@@ -1,15 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-const CanvasFrameBlock = styled.div`
-    height: 800px;
-    width: 100%;
-    background-color: yellow;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
 const CanvasBlock = styled.div`
     position: relative;
     border: 1px solid black;
@@ -68,11 +59,11 @@ const CanvasContent = ({ board, onClick }) => {
 
 const Canvas = props => {
     return (
-        <CanvasFrameBlock>
+        
             <CanvasBlock>
                 <CanvasContent {...props} />
             </CanvasBlock>
-        </CanvasFrameBlock>
+        
     )
 };
 

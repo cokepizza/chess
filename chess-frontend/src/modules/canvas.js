@@ -73,7 +73,9 @@ export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
             const dx = x + cur.dx;
             if(dy >= 0 && dx >= 0 && dy < 8 && dx < 8) {
                 if((cur.eatable && board[dy][dx].piece) || (!cur.eatable && !board[dy][dx].piece)) {
-                    acc.push({dy, dx});
+                    if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
+                        acc.push({dy, dx});
+                    }
                 }
             }
             return acc;
