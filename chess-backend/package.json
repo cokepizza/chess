@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "eslint-config-prettier": "^6.7.0",
     "esm": "^3.2.25",

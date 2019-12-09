@@ -8,9 +8,11 @@ import { sendMessage } from '../lib/api';
 const INITIALIZE_WEBSOCKET = 'chat/INITIALIZE_WEBSOCKET';
 const WEBSOCKET_ONMESSAGE = 'chat/WEBSOCKET_ONMESSAGE';
 const CHANGE_TEXTFIELD = 'chat/CHANGE_TEXTFIELD';
+const INITIALIZE_TEXTFIELD = 'chat/INITIALIZE_TEXTFIELD';
 
 export const initializeWebsocket = createAction(INITIALIZE_WEBSOCKET);
 export const changeTextfield = createAction(CHANGE_TEXTFIELD, payload => payload);
+export const initializeTextfield = createAction(INITIALIZE_TEXTFIELD);
 const [ SEND_MESSAGE, SEND_MESSAGE_SUCCESS, SEND_MESSAGE_FAILURE ] = createRequestActionTypes('chat/SEND_MESSAGE');
 
 export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, sendMessage);
@@ -59,6 +61,10 @@ export default handleActions({
     }),
     [SEND_MESSAGE_FAILURE]: (state, { payload: error }) => ({
         ...state,
+    }),
+    [INITIALIZE_TEXTFIELD]: state => ({
+        ...state,
+        text: '',
     }),
 }
 , initialState);

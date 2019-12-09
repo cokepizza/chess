@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Chat from '../../components/content/Chat';
-import { initializeWebsocket, changeTextfield } from '../../modules/chat';
+import { initializeWebsocket, changeTextfield, initializeTextfield } from '../../modules/chat';
 import { sendMessageThunk } from '../../modules/chat';
 
 const ChatContainer = () => {
@@ -19,6 +19,7 @@ const ChatContainer = () => {
     const onSubmit = useCallback(e => {
         e.preventDefault();
         dispatch(sendMessageThunk({ message: text }));
+        dispatch(initializeTextfield());
     }, [dispatch, text]);
 
     const onChange = useCallback(e => {

@@ -1,12 +1,7 @@
-import Router from 'koa-router';
+import express from 'express';
 import * as chatCtrl from './chatCtrl';
 
-const chat = new Router();
-
-// chat.get('/aaa', ctx => {
-//     // console.dir('aaaaa');
-//     console.dir(ctx);
-// })
+const chat = express.Router();
 
 chat.post('/sendMessage', chatCtrl.sendMessage);
 
