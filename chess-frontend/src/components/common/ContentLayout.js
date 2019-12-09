@@ -13,12 +13,23 @@ const ContentLayoutBlock = styled.div`
     align-items: center;
 `;
 
+const ChatAndRecordBlock = styled.div`
+    height: 90%;
+    background-color: green;
+    display: flex;
+    flex-direction: column;
+    margin-left: 80px;
+    width: 25%;
+`;
+
 const ContentLayout = props => {
     return (
         <ContentLayoutBlock>
             <CanvasContainer {...props} />
-            <Chat />
-            <Record />
+            <ChatAndRecordBlock>
+                <Record />
+                <Chat />
+            </ChatAndRecordBlock>
         </ContentLayoutBlock>
     )
 };
