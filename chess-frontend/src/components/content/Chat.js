@@ -7,15 +7,18 @@ const ChatBlock = styled.div`
     border: 1px solid black;
 `;
 
-const Chat = ({ list }) => {
+const Chat = ({ list, message }) => {
     list = ['a','b','c','d'];
-    
+
     return (
+        <>
         <ChatBlock>
             {list.map((sentence, index) => (
                 <div>{index} : {sentence}</div>
             ))}
         </ChatBlock>
+        <div>{message}</div>
+        </>
     )
 };
 

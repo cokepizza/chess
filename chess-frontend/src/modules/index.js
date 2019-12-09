@@ -5,11 +5,12 @@ import chat, { chatSaga } from './chat';
 
 const rootReducer = combineReducers({
     canvas,
+    chat,
 })
 
 
-export function* rootSaga () {
-    yield all([ chatSaga(), ]);
+export function* rootSaga() {
+    yield all([ chatSaga() ]);
 };
 
 export default rootReducer;
