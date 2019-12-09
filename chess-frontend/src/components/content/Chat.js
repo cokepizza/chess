@@ -1,25 +1,62 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
-const ChatBlock = styled.div`
+const ChatFrameBlock = styled.div`
     width: 300px;
-    height: 500px;
-    border: 1px solid black;
 `;
 
-const Chat = ({ list, message }) => {
-    list = ['a','b','c','d'];
+const ChatBlock = styled.div`
+    height: 500px;
+    border: 1px solid black;
+    overflow-y: scroll;
+`;
+
+const ChatFormBlock = styled.div`
+    width: 100%;
+    display: flex;
+    padding: 1px;
+`;
+
+const ChatInputBlock = styled.input`
+    outline: none;
+    width: 80%;
+`;
+
+const ChatButtonBlock = styled.button`
+    width: 20%;
+`;
+
+const Chat = ({ messages, onSubmit, onChange, text }) => {
+    const ref = useRef();
+
+    useEffect(() => {
+        ref.current.scrollTop = ref.current.scrollHeight;
+    }, [messages]);
 
     return (
         <>
-        <ChatBlock>
-            {list.map((sentence, index) => (
-                <div>{index} : {sentence}</div>
-            ))}
-        </ChatBlock>
-        <div>{message}</div>
+            <form onSubmit={onSubmit}>
+                <ChatFrameBlock>
+                    <ChatBlock ref={ref}>
+                        {messages.map(message => (
+                            <div>{message}</div>
+                        ))}
+                    </ChatBlock>
+                    <ChatFormBlock>
+                        <ChatInputBlock
+                            onChange={onChange}
+                            value ={text}
+                        />
+                        <ChatButtonBlock
+                            onSubmit={onSubmit}
+                        >
+                            보내기
+                        </ ChatButtonBlock>
+                    </ChatFormBlock>
+                </ChatFrameBlock>
+            </form>
         </>
     )
 };
 
-export default Chat;
+export default React.memo(Chat);

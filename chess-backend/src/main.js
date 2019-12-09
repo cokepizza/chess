@@ -1,50 +1,34 @@
 require('dotenv').config();
-import Koa from 'koa';
-import Router from 'koa-router';
-import bodyParser from 'koa-bodyparser';
-import mongoose from 'mongoose';
-import ws from 'ws';
-import Io from 'koa-socket-2';
+require('dotenv').config();
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import morgan from 'morgan';
+import path from 'path';
+import api from './api';
 
-const app = new Koa();
-const io = new Io();
-const router = new Router();
-const { PORT } = process.env;
+const app = express();
 
-// let count = 0;
-// const wws = new ws.Server({ port: 4000 });
-// wws.on('connection', ws => {
-//     console.dir('connection complete');
-//     ws.on('message', message => {
-//         console.log(`message: ${message}`);
-//     })
-//     setInterval(() => {
-//         console.dir('we send');
-//         ws.send(`count: ${count++}`);
-//     }, 1000)
-// })
+app.set('views', path.join(__dirname, 'views'));
+app.use(morgan('dev'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+        httpOnly: true,
+        secure: false,
+    },
+}));
 
+app.use('/api', api);
+app.set('port', process.env.PORT || 4000);
 
-app.use(bodyParser());
+app.listen(app.get('port'), () => {
+    console.dir(`Port ${app.get('port')} => listening~`);
+})
 
-app.use(router.routes()).use(router.allowedMethods());
-
-io.attach(app);
-
-let count = 0;
-io.on('connection', socket => {
-    console.dir('connect~~');
-    setInterval(() => {
-        socket.emit('message', count++);
-    }, 1000);
-    // socket.on('message', msg => {
-    //     console.dir(msg);
-    // })
-});
-
-
-
-const port = PORT || 4000;
-app.listen(4000, () => {
-    console.log('Listening to port 4000');
-});

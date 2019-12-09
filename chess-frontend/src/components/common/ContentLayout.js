@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import CanvasContainer from '../../containers/CanvasContainer';
-import Chat from '../../components/content/Chat';
+import ChatContainer from '../../containers/content/ChatContainer';
 import Record from '../../components/content/Record';
+
 
 const ContentLayoutBlock = styled.div`
     height: 800px;
@@ -28,10 +29,10 @@ const ContentLayout = props => {
             <CanvasContainer {...props} />
             <ChatAndRecordBlock>
                 <Record />
-                <Chat />
+                <ChatContainer />
             </ChatAndRecordBlock>
         </ContentLayoutBlock>
     )
 };
 
-export default ContentLayout;
+export default React.memo(ContentLayout);
