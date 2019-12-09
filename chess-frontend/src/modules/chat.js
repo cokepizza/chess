@@ -1,12 +1,29 @@
-import { createAction, handleActions } from 'redux-actions';
+// import { createAction, handleActions } from 'redux-actions';
+// import { eventChannel } from 'redux-saga';
+// import { takeEvery, put, call, take } from 'redux-saga/effects';
 
-export function* chatSaga () {
-    
-}
+// function* createEventChannel(socket) {
 
-const initialState = {};
+// }
 
-export default handleActions({
+// function* initializeWebsocket () {
+//     const socket = new WebSocket('ws://localhost:4000', 'protocol');
+//     const channel = yield call(createEventChannel, socket);
+//     while(true) {
+//         const { message } = yield take(channel);
+//         yield put({ type: WEBSOCKET_ONMESSAGE }, message);
+//     }
+// }
 
-}
-, initialState);
+// export function* chatSaga () {
+//     yield [
+//         takeEvery('INITIALIZE_WEBSOCKET', initializeWebsocket),
+//     ]
+// }
+
+// const initialState = {};
+
+// export default handleActions({
+
+// }
+// , initialState);

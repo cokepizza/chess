@@ -8,6 +8,8 @@ const ChatBlock = styled.div`
 `;
 
 const Chat = ({ list }) => {
+    list = ['a','b','c','d'];
+    
     return (
         <ChatBlock>
             {list.map((sentence, index) => (
