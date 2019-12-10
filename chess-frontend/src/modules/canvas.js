@@ -11,26 +11,45 @@ const rules = {
             {
                 dy: -1,
                 dx: 0,
-                eatable: false,
+                except: function(props) {
+                    const { board, dy, dx } = props;
+                    if(board[dy][dx].piece) {
+                        return false;
+                    }
+                    return true;
+                }
             },
             {
                 dy: -2,
                 dx: 0,
-                eatable: false,
                 except: function(props) {
-                    const { board, y } = props;
-                    
+                    const { board, y, x, owner } = props;
+                    if((owner === 'black' && y !== 1) || (owner === 'white' && y !== 6)) return false;
+                    if((owner === 'black' && board[2][x].piece) || (owner === 'white' && board[5][x].piece)) return false;
+                    return true;
                 }
             },
             {
                 dy: -1,
                 dx: -1,
-                eatable: true,
+                except: function(props) {
+                    const { board, dy, dx } = props;
+                    if(board[dy][dx].piece) {
+                        return true;
+                    }
+                    return false;
+                }
             },
             {
                 dy: -1,
                 dx: 1,
-                eatable: true,
+                except: function(props) {
+                    const { board, dy, dx } = props;
+                    if(board[dy][dx].piece) {
+                        return true;
+                    }
+                    return false;
+                }
             }
         ],
     },
@@ -39,72 +58,154 @@ const rules = {
         move: [
             {
                 dy: -2,
-                dx: -1
+                dx: -1,
             },
             {
                 dy: -2,
-                dx: 1
+                dx: 1,
             },
             {
                 dy: 2,
-                dx: -1
+                dx: -1,
             },
             {
                 dy: 2,
-                dx: 1
+                dx: 1,
             },
             {
                 dy: -1,
-                dx: -2
+                dx: -2,
             },
             {
                 dy: -1,
-                dx: 2
+                dx: 2,
             },
             {
                 dy: 1,
-                dx: -2
+                dx: -2,
             },
             {
                 dy: 1,
-                dx: 2
+                dx: 2,
             },
         ]
     },
-    king: [
-        {
-            dy: 1,
-            dx: 0
-        },
-        {
-            dy: -1,
-            dx: 0
-        },
-        {
-            dy: 0,
-            dx: 1
-        },
-        {
-            dy: 0,
-            dx: -1
-        },
-        {
-            dy: -1,
-            dx: 1
-        },
-        {
-            dy: -1,
-            dx: -1
-        },
-        {
-            dy: 1,
-            dx: -1
-        },
-        {
-            dy: 1,
-            dx: 1
-        },
-    ]
+    king: {
+        type: 'onetime',
+        move: [
+            {
+                dy: 1,
+                dx: 0
+            },
+            {
+                dy: -1,
+                dx: 0
+            },
+            {
+                dy: 0,
+                dx: 1
+            },
+            {
+                dy: 0,
+                dx: -1
+            },
+            {
+                dy: -1,
+                dx: 1
+            },
+            {
+                dy: -1,
+                dx: -1
+            },
+            {
+                dy: 1,
+                dx: -1
+            },
+            {
+                dy: 1,
+                dx: 1
+            },
+        ]
+    },
+    bishop: {
+        type: 'multitime',
+        move: [
+            {
+                dy: 1,
+                dx: -1
+            },
+            {
+                dy: 1,
+                dx: 1
+            },
+            {
+                dy: -1,
+                dx: -1
+            },
+            {
+                dy: -1,
+                dx: 1
+            },
+        ]
+    },
+    rook: {
+        type: 'multitime',
+        move: [
+            {
+                dy: 1,
+                dx: 0
+            },
+            {
+                dy: -1,
+                dx: 0
+            },
+            {
+                dy: 0,
+                dx: -1,
+            },
+            {
+                dy: 0,
+                dx: 1
+            },
+        ]
+    },
+    queen: {
+        type: 'multitime',
+        move: [
+            {
+                dy: 1,
+                dx: -1
+            },
+            {
+                dy: 1,
+                dx: 1
+            },
+            {
+                dy: -1,
+                dx: -1
+            },
+            {
+                dy: -1,
+                dx: 1
+            },
+            {
+                dy: 1,
+                dx: 0
+            },
+            {
+                dy: -1,
+                dx: 0
+            },
+            {
+                dy: 0,
+                dx: -1,
+            },
+            {
+                dy: 0,
+                dx: 1
+            },
+        ]
+    }
 };
 
 const SET_BOARD = 'canvas/SET_BOARD';
@@ -134,25 +235,43 @@ export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
     }
 
     const { piece, owner } = board[y][x];
+    let inform = { board, y, x, turn, owner }
     if(!piece) return;
 
     const { type, move }= rules[piece];
     let coveredAxis = [];
+
     if(type === 'onetime') {
         coveredAxis = move.reduce((acc, cur) => {
-            const dy = y + cur.dy;
+            const dy = y + (owner === 'black' ? -cur.dy: +cur.dy);
             const dx = x + cur.dx;
-            if(dy >= 0 && dx >= 0 && dy < 8 && dx < 8) {    
-                if((cur.eatable && board[dy][dx].piece) || (!cur.eatable && !board[dy][dx].piece)) {
-                    if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
-                        acc.push({dy, dx});
-                    }
+            if(dy < 0 || dx < 0 || dy > 7 || dx > 7) return acc;
+            
+            inform = { ...inform, dy, dx };
+            if(!cur.except || (cur.except && cur.except(inform))) {
+                if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
+                    acc.push({dy, dx});
                 }
             }
+
             return acc;
         }, []);
     } else {
-
+        coveredAxis = move.flatMap(cur => {
+            let counter = 0;
+            let coveredArr = [];
+            while(true) {
+                ++counter;
+                const dy = y + counter * (owner === 'black' ? -cur.dy: +cur.dy);
+                const dx = x + counter * cur.dx;
+                
+                if(dy < 0 || dx < 0 || dy > 7 || dx > 7) break;
+                if(board[dy][dx].owner && board[dy][dx].owner === owner) break;
+                coveredArr.push({dy, dx});
+                if(board[dy][dx].owner && board[dy][dx].owner !== owner) break;
+            }
+            return coveredArr;
+        });
     }
 
     const clearBoard = genClearBoard(board);
