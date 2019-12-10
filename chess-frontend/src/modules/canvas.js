@@ -17,8 +17,9 @@ const rules = {
                 dy: -2,
                 dx: 0,
                 eatable: false,
-                except: {
-
+                except: function(props) {
+                    const { board, y } = props;
+                    
                 }
             },
             {
@@ -71,7 +72,7 @@ export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
         coveredAxis = move.reduce((acc, cur) => {
             const dy = y + cur.dy;
             const dx = x + cur.dx;
-            if(dy >= 0 && dx >= 0 && dy < 8 && dx < 8) {
+            if(dy >= 0 && dx >= 0 && dy < 8 && dx < 8) {    
                 if((cur.eatable && board[dy][dx].piece) || (!cur.eatable && !board[dy][dx].piece)) {
                     if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
                         acc.push({dy, dx});
