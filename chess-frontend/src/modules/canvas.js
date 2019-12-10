@@ -34,7 +34,77 @@ const rules = {
             }
         ],
     },
-    
+    knight: {
+        type: 'onetime',
+        move: [
+            {
+                dy: -2,
+                dx: -1
+            },
+            {
+                dy: -2,
+                dx: 1
+            },
+            {
+                dy: 2,
+                dx: -1
+            },
+            {
+                dy: 2,
+                dx: 1
+            },
+            {
+                dy: -1,
+                dx: -2
+            },
+            {
+                dy: -1,
+                dx: 2
+            },
+            {
+                dy: 1,
+                dx: -2
+            },
+            {
+                dy: 1,
+                dx: 2
+            },
+        ]
+    },
+    king: [
+        {
+            dy: 1,
+            dx: 0
+        },
+        {
+            dy: -1,
+            dx: 0
+        },
+        {
+            dy: 0,
+            dx: 1
+        },
+        {
+            dy: 0,
+            dx: -1
+        },
+        {
+            dy: -1,
+            dx: 1
+        },
+        {
+            dy: -1,
+            dx: -1
+        },
+        {
+            dy: 1,
+            dx: -1
+        },
+        {
+            dy: 1,
+            dx: 1
+        },
+    ]
 };
 
 const SET_BOARD = 'canvas/SET_BOARD';
