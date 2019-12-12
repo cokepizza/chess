@@ -1,10 +1,20 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+const CanvasBackgroundBlock = styled.div`
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border: 10px solid black;
+    box-sizing: border-box;
+    z-index: 0;
+`;
+
 const CanvasBlock = styled.div`
     position: relative;
     border: 1px solid black;
-    background-color: blue;
 `;
 
 const CanvasRowBlock = styled.div`
@@ -19,6 +29,7 @@ const CanvasCellBlock = styled.div`
     width: 90px;
     height: 90px;
     border: 1px solid black;
+    z-index: 1;
     &:hover {
         border: 1px solid pink;
     }
@@ -27,6 +38,12 @@ const CanvasCellBlock = styled.div`
         background-color: skyblue;
     }
 
+    ${props => props.cellnum === 0 && css`
+        background-color: rgb(254, 206, 158);
+    `}
+    ${props => props.cellnum === 1 && css`
+        background-color: rgb(211, 138, 69);   
+    `}
     ${props => props.covered && css`
         border: 1px solid white;
     `}
@@ -43,8 +60,9 @@ const CanvasContent = ({ board, onClick }) => {
                         {rowState.map((cell, x) => (
                             <CanvasCellBlock
                                 key={`cell+${x}`}
-                                onClick = {e => onClick(e, y, x)}
-                                covered ={cell.covered}
+                                onClick={e => onClick(e, y, x)}
+                                covered={cell.covered}
+                                cellnum={(x + y) % 2}
                             >
                                 {cell.piece ? cell.piece : null}
                             </CanvasCellBlock>
@@ -59,11 +77,10 @@ const CanvasContent = ({ board, onClick }) => {
 
 const Canvas = props => {
     return (
-        
-            <CanvasBlock>
-                <CanvasContent {...props} />
-            </CanvasBlock>
-        
+        <CanvasBlock>
+            <CanvasBackgroundBlock></CanvasBackgroundBlock>
+            <CanvasContent {...props} />
+        </CanvasBlock>
     )
 };
 
