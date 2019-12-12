@@ -18,6 +18,7 @@ const sessionMiddleware = session({
         httpOnly: true,
         secure: false,
     },
+    name: 'chess',
 });
 
 app.set('views', path.join(__dirname, 'views'));
@@ -28,7 +29,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(sessionMiddleware);
-
 app.use('/api', api);
 app.set('port', process.env.PORT || 4000);
 
