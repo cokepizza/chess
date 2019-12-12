@@ -31,7 +31,8 @@ function* createEventChannel(io) {
 function* initializeWebsocketSaga () {
     // const socket = new WebSocket('ws://localhost:4000', 'protocol');
     // const io = SocketIo('ws://localhost:4000');
-    const io = SocketIo('ws://192.168.13.101:5000');
+    // const io = SocketIo('ws://192.168.13.101:5000');
+    const io = SocketIo('ws://localhost:5000');
     const channel = yield call(createEventChannel, io);
     while(true) {
         const message = yield take(channel);
