@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import CanvasContainer from '../../containers/CanvasContainer';
 import ChatContainer from '../../containers/content/ChatContainer';
-import Record from '../../components/content/Record';
+import RecordContainer from '../../containers/content/RecordContainer';
 
 
 const ContentLayoutBlock = styled.div`
@@ -28,7 +28,7 @@ const ContentLayout = props => {
         <ContentLayoutBlock>
             <CanvasContainer {...props} />
             <ChatAndRecordBlock>
-                <Record />
+                <RecordContainer />
                 <ChatContainer />
             </ChatAndRecordBlock>
         </ContentLayoutBlock>
