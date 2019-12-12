@@ -3,7 +3,8 @@ import { eventChannel } from 'redux-saga';
 import { takeEvery, put, call, take } from 'redux-saga/effects';
 import SocketIo from 'socket.io-client';
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
-import { sendMessage } from '../lib/api';
+import * as chatAPI from '../lib/api/chat';
+import { setSession } from './auth';
 
 const INITIALIZE_WEBSOCKET = 'chat/INITIALIZE_WEBSOCKET';
 const WEBSOCKET_ONMESSAGE = 'chat/WEBSOCKET_ONMESSAGE';
@@ -15,12 +16,18 @@ export const changeTextfield = createAction(CHANGE_TEXTFIELD, payload => payload
 export const initializeTextfield = createAction(INITIALIZE_TEXTFIELD);
 const [ SEND_MESSAGE, SEND_MESSAGE_SUCCESS, SEND_MESSAGE_FAILURE ] = createRequestActionTypes('chat/SEND_MESSAGE');
 
-export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, sendMessage);
+export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, chatAPI.sendMessage);
 
 function* createEventChannel(io) {
     return eventChannel(emit => {
         // socket.onmessage = message => emit(message.data);
-        io.on('message', message => emit(message));
+        io.on('connection', () => {
+            console.dir('connect~~');
+        })
+        io.on('message', message => {
+            // io.emit('message', 'hihihi');
+            emit(message)
+        });
 
         return () => {
             io.close();
@@ -35,6 +42,7 @@ function* initializeWebsocketSaga () {
     // const io = SocketIo('ws://127.0.0.1:5000');
     const io = SocketIo('/');
     const channel = yield call(createEventChannel, io);
+
     while(true) {
         const message = yield take(channel);
         yield put({ type: WEBSOCKET_ONMESSAGE, message});

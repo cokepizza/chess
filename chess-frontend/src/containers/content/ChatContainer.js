@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Chat from '../../components/content/Chat';
 import { initializeWebsocket, changeTextfield, initializeTextfield } from '../../modules/chat';
 import { sendMessageThunk } from '../../modules/chat';
+import { setSessionThunk } from '../../modules/auth';
 
 const ChatContainer = () => {
     const dispatch = useDispatch();
@@ -14,6 +15,8 @@ const ChatContainer = () => {
     
     useEffect(() => {
         dispatch(initializeWebsocket());
+        dispatch(setSessionThunk());
+        // dispatch(setSessionThunk());
     }, [dispatch]);
 
     const onSubmit = useCallback(e => {

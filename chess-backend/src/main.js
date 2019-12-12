@@ -23,7 +23,9 @@ const sessionMiddleware = session({
 
 app.set('views', path.join(__dirname, 'views'));
 app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, '../../chess-frontend/build/static')));
+app.use(express.static(path.join(__dirname, '../../chess-frontend/build')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
@@ -31,6 +33,12 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(sessionMiddleware);
 app.use('/api', api);
 app.set('port', process.env.PORT || 4000);
+
+// const buildDirectory = path.resolve(__dirname, '../../chess-frontend/build/index.html');
+app.get("*", (req, res) => {
+    console.dir('zzzzz');
+    res.sendFile(path.join(__dirname, '../../chess-frontend/build', 'index.html'));
+});
 
 const server = app.listen(app.get('port'), () => {
     console.dir(`Port ${app.get('port')} => listening~`);
