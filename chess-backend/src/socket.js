@@ -22,6 +22,26 @@ export default (server, app, sessionMiddleware) => {
         }
         ++counter;
         
+        
+        // console.dir(socket.request.session);
+        if(socket.request.session.pop) {
+            console.dir(socket.request.session.pop);
+        } else {
+            console.dir(socket.request.session);
+        }
+        socket.request.session.pop = 'black';
+        socket.request.session.save(() => {
+            console.dir('savvvv');
+        });
+        
+        // console.dir(socket.request.res);
+
+        // socket.request.session.user = 'black';
+        // socket.request.session.save();
+
+        // console.dir(socket.request.session);
+        // console.dir(socket);
+
         console.dir(`welcome : ${socket.id}`);
     })
 };
