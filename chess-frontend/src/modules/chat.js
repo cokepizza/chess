@@ -21,11 +21,13 @@ export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, chatAPI.sendMes
 function* createEventChannel(io) {
     return eventChannel(emit => {
         // socket.onmessage = message => emit(message.data);
-        io.on('connection', () => {
+        io.on('connect', (socket) => {
             console.dir('connect~~');
+            
         })
+        io.emit('message', 'hahahaha');
         io.on('message', message => {
-            // io.emit('message', 'hihihi');
+            io.emit('message', 'hihihi');
             emit(message)
         });
 

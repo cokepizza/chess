@@ -14,9 +14,10 @@ const ChatContainer = () => {
     }));
     
     useEffect(() => {
-        dispatch(initializeWebsocket());
-        dispatch(setSessionThunk());
-        // dispatch(setSessionThunk());
+        (async () => {
+            await dispatch(setSessionThunk());
+            dispatch(initializeWebsocket());
+        })();
     }, [dispatch]);
 
     const onSubmit = useCallback(e => {

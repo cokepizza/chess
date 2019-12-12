@@ -5,5 +5,8 @@ export const getSession = (req, res, next) => {
     console.dir('----------http(getSession)---------')
     console.dir(req.sessionID);
     console.dir(req.session);
+    const io = req.app.get('io');
+    io.emit('message', 'zzz');
+
     res.status(202).end();
 }
