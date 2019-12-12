@@ -19,6 +19,8 @@ const ChatBlock = styled.div`
     margin: 10px 10px 10px 10px;
     border : none;
     overflow-y: scroll;
+    background-image: url('https://previews.123rf.com/images/vilisov/vilisov1502/vilisov150200012/36207194-chess-board-abstract-background.jpg'); 
+    background-size: cover;
     ::-webkit-scrollbar {
         width: 20px;
     }
@@ -68,14 +70,24 @@ const MessageDiv = styled.div`
     padding : 5px;
     min-height : 20px;
     font-size : 15px;
+    margin : 5px;
+    opacity : 0.7;
+    transition: all 0.1s;
     :nth-child(even) {
         color : black ;
+        border : 1px solid darkgray;
+        background-color : lightgray;
+        &:active {
+            border : 3px solid darkblue;
+        }
     }
     :nth-child(odd) {
         color : blue ;
-    }
-    & + & {
-        border-top :1px solid lightgrey;
+        border : 1px solid gray;
+        background-color : lightgray;
+        &:active {
+            border : 3px solid darkblue;
+        }
     }
 `;
 
@@ -92,7 +104,7 @@ const Chat = ({ messages, onSubmit, onChange, text }) => {
                 <ChatFrameBlock>
                     <ChatBlock ref={ref}>
                         {messages.map(message => (
-                            <MessageDiv>{message}</MessageDiv>
+                            <MessageDiv inters>{message}</MessageDiv>
                         ))}
                     </ChatBlock>
                     <ChatFormBlock>
