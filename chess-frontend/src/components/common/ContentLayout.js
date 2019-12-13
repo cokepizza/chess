@@ -15,8 +15,8 @@ const ContentLayoutBlock = styled.div`
 `;
 
 const ChatAndRecordBlock = styled.div`
+    background-color: white;
     height: 90%;
-    background-color: green;
     display: flex;
     flex-direction: column;
     margin-left: 80px;

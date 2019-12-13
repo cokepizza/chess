@@ -44,7 +44,6 @@ function* createEventChannel(io) {
 function* initializeWebsocketSaga () {
     // const io = SocketIo('ws://localhost:4000');
     // const io = SocketIo('ws://192.168.13.101:5000');
-    // const io = SocketIo('ws://127.0.0.1:5000');
     const io = SocketIo('/');
     const channel = yield call(createEventChannel, io);
 
