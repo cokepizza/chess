@@ -22,6 +22,7 @@ const RecordItem = styled.div`
 const Record = (  ) => {
     const ref = useRef();
     const records = [ '1. e4 h5', '2. g4 e5', '3. h4 f6', '4. Rh3 d5', '5. Ke2 hxg4', '6. Nf3 Qd7', '7. Ke2 Qb6', '8. Qa4 c5'];
+    
     useEffect(() => {
         ref.current.scrollTop = ref.current.scrollHeight;
     }, [records]);
