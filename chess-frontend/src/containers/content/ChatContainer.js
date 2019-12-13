@@ -12,8 +12,6 @@ const ChatContainer = () => {
         messages: chat.messages,
         text: chat.text,
     }));
-    
-    console.dir(messages);
 
     useEffect(() => {
         (async () => {

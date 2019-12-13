@@ -5,6 +5,7 @@ import SocketIo from 'socket.io-client';
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as chatAPI from '../lib/api/chat';
 import { setTemporaryAuth } from '../modules/auth';
+import { setBoardThunk } from '../modules/canvas';
 
 const INITIALIZE_WEBSOCKET = 'chat/INITIALIZE_WEBSOCKET';
 const WEBSOCKET_ONMESSAGE = 'chat/WEBSOCKET_ONMESSAGE';
@@ -53,6 +54,9 @@ function* initializeWebsocketSaga () {
             yield put(setTemporaryAuth(message));
         } else if (message.type === 'chat') {
             yield put(setReceivedMessage(message));
+        } else if (message.type === 'game') {
+            console.dir(message);
+            yield put(setBoardThunk(message));
         }
     }
 }

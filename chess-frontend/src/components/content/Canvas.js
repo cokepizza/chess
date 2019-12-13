@@ -47,6 +47,14 @@ const CanvasCellBlock = styled.div`
     ${props => props.covered && css`
         border: 1px solid white;
     `}
+
+    ${props => props.owner === 'white' && css`
+        color: white;
+    `}
+
+    ${props => props.owner === 'black' && css`
+        color: black;
+    `}
 `
 
 const CanvasContent = ({ board, onClick }) => {
@@ -62,6 +70,7 @@ const CanvasContent = ({ board, onClick }) => {
                                 key={`cell+${x}`}
                                 onClick={e => onClick(e, y, x)}
                                 covered={cell.covered}
+                                owner={cell.owner}
                                 cellnum={(x + y) % 2}
                             >
                                 {cell.piece ? cell.piece : null}

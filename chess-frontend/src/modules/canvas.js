@@ -214,7 +214,18 @@ const SET_BOARD = 'canvas/SET_BOARD';
 const SET_MOVE_PIECE = 'game/SET_MOVE_PIECE';
 
 export const setBoard = createAction(SET_BOARD, payload => payload);
-export const setMovePiece = createRequestThunk(SET_MOVE_PIECE, gameCtrl.movePiece);
+export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, gameCtrl.movePiece);
+export const setBoardThunk = ({ move }) => ( dispatch, getState ) => {
+    const { prev, next } = move;
+    const { canvas: { board } } = getState();
+    const cell = board[prev.y][prev.x];
+    const clearBoard = genClearBoard(board);
+    clearBoard[next.y][next.x] = {
+        ...cell,
+    }
+    clearBoard[prev.y][prev.x] = { covered: false };
+    dispatch(setBoard({ board: clearBoard, clicked: null }));
+}
 
 const genClearBoard = board => 
     board.map(rowArr =>
@@ -228,28 +239,14 @@ const genClearBoard = board =>
 
 export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
     if(clicked && board[y][x].covered) {
-        const cell = board[clicked.y][clicked.x];
-        const clearBoard = genClearBoard(board);
-        clearBoard[y][x] = {
-            ...cell,
-        }
-        clearBoard[clicked.y][clicked.x] = { covered: false };
         
-        console.dir(clicked);
-        console.dir(y);
-        console.dir(x);
+        dispatch(setMovePieceThunk({ 
+            move: {
+                prev: clicked,
+                next: {y, x}
+            }
+        }));
         
-        // (async () => {
-        //     dispatch(setMovePiece({ 
-        //         move: {
-        //             prev: clicked,
-        //             next: 
-        //             piece: 
-        //         }
-        //      }));
-        // })();
-        
-         dispatch(setBoard({ board: clearBoard, clicked: null }));
         return;
     }
 
