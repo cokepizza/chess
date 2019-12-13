@@ -94,16 +94,16 @@ const MessageBlock = styled.div`
     }
 `;
 
-const chatBubbles = styled.div`
-    color: ${props => props.color ? props.color : null};
-    background-color: #F2F2F2;
+const ChatBubble = styled.div`
+    color: black;  
+    background-color: #000000;
     border-radius: 5px;
     box-shadow: 0 0 6px #B2B2B2;
     display: inline-block;
     padding: 10px 18px;
     position: relative;
     vertical-align: top;
-    ::before {
+    /* &:before {
         background-color: #F2F2F2;
         content:"\00a0";
         display: block;
@@ -134,19 +134,24 @@ const chatBubbles = styled.div`
     &.you::before {
         box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
         right: -9px;
-}
+
+    &.broadcast {
+        align-items: center;
+        width : 100%;
+    }  */
 `;
 
 const Message = React.memo(({ message, nickname, ...rest }) => {
     return (
-        <chatBubbles 
+        <MessageBlock
             {...rest} 
             color={message.color}
-            nickname={auth.nickname}
-            class={}
+            className={message.nickname 
+                ? message.nickname === nickname 
+                ? 'me' : 'you' : 'broadcast' }
         >
             {message.message}
-        </chatBubbles>
+        </MessageBlock>
     )
 });
 
