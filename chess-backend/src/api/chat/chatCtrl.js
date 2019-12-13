@@ -1,9 +1,11 @@
 export const sendMessage = (req, res, next) => {
     const io = req.app.get('io');
     const { message } = req.body;
+    const { nickname, color } = req.session;
     io.emit('message', {
         type: 'chat',
-        color: req.session.color,
+        nickname,
+        color,
         message: `${req.session.nickname} : ${message}`,
     });
 

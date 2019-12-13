@@ -19,6 +19,7 @@ export const getSession = (req, res, next) => {
     }
 
     req.session.save();
+
     console.dir('----------http(getSession)---------')
     console.dir(req.sessionID);
     res.send(req.sessionID);
