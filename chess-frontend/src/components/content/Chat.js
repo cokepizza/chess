@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -66,8 +67,8 @@ const ChatButtonBlock = styled.button`
     } 
 `;
 
-const MessageDiv = styled.div`
-    padding : 5px;
+const MessageBlock = styled.div`
+  padding : 5px;
     min-height : 20px;
     font-size : 15px;
     margin : 5px;
@@ -89,9 +90,6 @@ const MessageDiv = styled.div`
             border : 3px solid darkblue;
         }
     }
-`;
-
-const MessageBlock = styled.div`
     color: ${props => props.color ? props.color : null};
 `;
 
