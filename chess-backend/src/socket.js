@@ -16,7 +16,21 @@ export default (server, app, sessionMiddleware) => {
         
         //  socket.emit()은 소켓이 직접 연결된 세션에만
         //  io.emit()은 연결된 모든 소켓에 broadcast
-        io.emit('message', `${socket.request.session.color} connected, role : ${socket.request.session.role}`);
+        const { id, nickname, role, color } = socket.request.session;
+        
+        socket.emit('message', {
+            type: 'auth',
+            id,
+            nickname,
+            role,
+            color,
+        });
+
+        io.emit('message', {
+            type: 'chat',
+            color,
+            message: `welcome ${nickname}`,
+        })
 
         socket.on('message', () => {
             console.dir('-------------serveronMessage--------------')

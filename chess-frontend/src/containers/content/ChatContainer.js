@@ -13,6 +13,8 @@ const ChatContainer = () => {
         text: chat.text,
     }));
     
+    console.dir(messages);
+
     useEffect(() => {
         (async () => {
             await dispatch(setSessionThunk());

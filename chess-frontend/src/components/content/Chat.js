@@ -26,9 +26,20 @@ const ChatButtonBlock = styled.button`
     width: 20%;
 `;
 
+const MessageBlock = styled.div`
+    color: ${props => props.color ? props.color : null};
+`;
+
+const Message = React.memo(({ message}) => {
+    return (
+        <MessageBlock color={message.color}>
+            {message.message}
+        </MessageBlock>
+    )
+});
+
 const Chat = ({ messages, onSubmit, onChange, text }) => {
     const ref = useRef();
-
     useEffect(() => {
         ref.current.scrollTop = ref.current.scrollHeight;
     }, [messages]);
@@ -39,7 +50,7 @@ const Chat = ({ messages, onSubmit, onChange, text }) => {
                 <ChatFrameBlock>
                     <ChatBlock ref={ref}>
                         {messages.map(message => (
-                            <div>{message}</div>
+                            <Message message={message} />
                         ))}
                     </ChatBlock>
                     <ChatFormBlock>

@@ -15,10 +15,12 @@ export const getSession = (req, res, next) => {
         }
         const colorHash = new ColorHash();
         req.session.color = colorHash.hex(req.sessionID);
+        req.session.nickname = `Guest#${counter}`;
     }
-    
+
     req.session.save();
     console.dir('----------http(getSession)---------')
     console.dir(req.sessionID);
+    res.send(req.sessionID);
     res.status(202).end();
 }

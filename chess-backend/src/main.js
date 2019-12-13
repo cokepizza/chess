@@ -23,8 +23,6 @@ const sessionMiddleware = session({
 
 app.set('views', path.join(__dirname, 'views'));
 app.use(morgan('dev'));
-// app.use(express.static(path.join(__dirname, 'public')));
-// app.use(express.static(path.join(__dirname, '../../chess-frontend/build/static')));
 app.use(express.static(path.join(__dirname, '../../chess-frontend/build')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -36,7 +34,6 @@ app.set('port', process.env.PORT || 4000);
 
 //  라우팅 로직을 제외한 모든 get요청
 app.get("*", (req, res) => {
-    console.dir('zzzzz');
     res.sendFile(path.join(__dirname, '../../chess-frontend/build', 'index.html'));
 });
 
