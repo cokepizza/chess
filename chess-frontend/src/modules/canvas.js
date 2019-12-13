@@ -1,4 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
+import createRequestThunk from '../lib/createRequestThunk';
+import * as gameCtrl from '../lib/api/game';
 /*
     move: [[], [], [], [] ...]
     => [y, x]
@@ -209,7 +211,10 @@ const rules = {
 };
 
 const SET_BOARD = 'canvas/SET_BOARD';
+const SET_MOVE_PIECE = 'game/SET_MOVE_PIECE';
+
 export const setBoard = createAction(SET_BOARD, payload => payload);
+export const setMovePiece = createRequestThunk(SET_MOVE_PIECE, gameCtrl.movePiece);
 
 const genClearBoard = board => 
     board.map(rowArr =>
@@ -230,7 +235,21 @@ export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
         }
         clearBoard[clicked.y][clicked.x] = { covered: false };
         
-        dispatch(setBoard({ board: clearBoard, clicked: null }));
+        console.dir(clicked);
+        console.dir(y);
+        console.dir(x);
+        
+        // (async () => {
+        //     dispatch(setMovePiece({ 
+        //         move: {
+        //             prev: clicked,
+        //             next: 
+        //             piece: 
+        //         }
+        //      }));
+        // })();
+        
+         dispatch(setBoard({ board: clearBoard, clicked: null }));
         return;
     }
 
@@ -284,6 +303,8 @@ export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
 };
 
 const initialState = {
+    moved: null,
+    error: null,
     clicked: null,
     board: [
         [

@@ -16,6 +16,10 @@ export default (server, app, sessionMiddleware) => {
         
         //  socket.emit()은 소켓이 직접 연결된 세션에만
         //  io.emit()은 연결된 모든 소켓에 broadcast
+        
+        //  서버 재시작시 socket연결만되서 sessionID가 undefined되는 현상 제거해야 함.
+        //  동일한 유저가 다른 텝으로 또 접속해서 welcome 뜨는 현상 제거해야 함.
+        
         const { id, nickname, role, color } = socket.request.session;
         
         socket.emit('message', {
