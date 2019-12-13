@@ -8,13 +8,14 @@ import { setSessionThunk } from '../../modules/auth';
 const ChatContainer = () => {
     const dispatch = useDispatch();
 
-    const { messages, text } = useSelector(({ chat }) => ({
+    const { messages, text, tempAuth } = useSelector(({ chat, auth }) => ({
         messages: chat.messages,
         text: chat.text,
+        tempAuth: auth.tempAuth,
     }));
     
     console.dir(messages);
-
+    
     useEffect(() => {
         (async () => {
             await dispatch(setSessionThunk());
@@ -38,6 +39,7 @@ const ChatContainer = () => {
             onSubmit={onSubmit}
             onChange={onChange}
             text={text}
+            tempAuth={tempAuth}
         />
     )
 };

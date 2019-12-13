@@ -1,6 +1,8 @@
 // @ts-nocheck
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import auth from '../../modules/auth';
+import chat from '../../modules/chat';
 
 const ChatSubmitBlock = styled.form`
 `;
@@ -90,18 +92,65 @@ const MessageBlock = styled.div`
             border : 3px solid darkblue;
         }
     }
-    color: ${props => props.color ? props.color : null};
 `;
 
-const Message = React.memo(({ message, ...rest }) => {
+const chatBubbles = styled.div`
+    color: ${props => props.color ? props.color : null};
+    background-color: #F2F2F2;
+    border-radius: 5px;
+    box-shadow: 0 0 6px #B2B2B2;
+    display: inline-block;
+    padding: 10px 18px;
+    position: relative;
+    vertical-align: top;
+    ::before {
+        background-color: #F2F2F2;
+        content:"\00a0";
+        display: block;
+        height: 16px;
+        position: absolute;
+        top: 11px;
+        transform: rotate(29deg) skew(-35deg);
+        -moz-transform: rotate(29deg) skew(-35deg);
+        -ms-transform: rotate(29deg) skew(-35deg);
+        -o-transform: rotate(29deg) skew(-35deg);
+        -webkit-transform: rotate(29deg) skew(-35deg);
+        width: 20px;
+    }
+    &.me {
+        float: left;
+        clear: both;
+        margin: 5px 45px 5px 20px;
+    }
+    &.me::before {
+        box-shadow: -2px 2px 2px 0 rgba(178, 178, 178, .4);
+        left: -9px;
+    }
+    &.you {
+        float: right;
+        clear: both;
+        margin: 5px 20px 5px 45px;
+    }
+    &.you::before {
+        box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
+        right: -9px;
+}
+`;
+
+const Message = React.memo(({ message, nickname, ...rest }) => {
     return (
-        <MessageBlock {...rest} color={message.color}>
+        <chatBubbles 
+            {...rest} 
+            color={message.color}
+            nickname={auth.nickname}
+            class={}
+        >
             {message.message}
-        </MessageBlock>
+        </chatBubbles>
     )
 });
 
-const Chat = ({ messages, onSubmit, onChange, text }) => {
+const Chat = ({ messages, onSubmit, onChange, text, tempAuth }) => {
     const ref = useRef();
     useEffect(() => {
         ref.current.scrollTop = ref.current.scrollHeight;
@@ -113,7 +162,10 @@ const Chat = ({ messages, onSubmit, onChange, text }) => {
                 <ChatFrameBlock>
                     <ChatBlock ref={ref}>
                         {messages.map(message => (
-                            <Message message={message} />
+                            <Message
+                                nickname={tempAuth.nickname}
+                                message={message}
+                            />
                         ))}
                     </ChatBlock>
                     <ChatFormBlock>
