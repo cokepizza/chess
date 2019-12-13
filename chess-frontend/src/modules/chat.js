@@ -21,13 +21,13 @@ export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, chatAPI.sendMes
 function* createEventChannel(io) {
     return eventChannel(emit => {
         // socket.onmessage = message => emit(message.data);
-        io.on('connect', (socket) => {
+        // io.emit('message', 'message sent');
+        
+        io.on('connect', () => {
             console.dir('connect~~');
             
         })
-        io.emit('message', 'hahahaha');
         io.on('message', message => {
-            io.emit('message', 'hihihi');
             emit(message)
         });
 
@@ -38,7 +38,6 @@ function* createEventChannel(io) {
 }
 
 function* initializeWebsocketSaga () {
-    // const socket = new WebSocket('ws://localhost:4000', 'protocol');
     // const io = SocketIo('ws://localhost:4000');
     // const io = SocketIo('ws://192.168.13.101:5000');
     // const io = SocketIo('ws://127.0.0.1:5000');

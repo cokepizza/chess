@@ -13,15 +13,16 @@ export default (server, app, sessionMiddleware) => {
 
         console.dir('-------------socket--------------')
         console.dir(socket.request.sessionID);
-        console.dir(`welcome : ${socket.id}`);
-        socket.request.session.pop = 2;
-        console.dir(socket.request.session)
-        // socket.emit('message', 'hello');
+        
+        //  socket.emit()은 소켓이 직접 연결된 세션에만
+        //  io.emit()은 연결된 모든 소켓에 broadcast
+        io.emit('message', `${socket.request.session.color} connected, role : ${socket.request.session.role}`);
+
         socket.on('message', () => {
             console.dir('-------------serveronMessage--------------')
             console.dir(socket.request.sessionID);
-            console.dir('server hihi')
         });
+
         socket.on('disconnect', () => {
             console.dir('-------------disconnect--------------')
             console.dir(socket.request.sessionID);

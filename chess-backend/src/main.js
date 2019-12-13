@@ -34,7 +34,7 @@ app.use(sessionMiddleware);
 app.use('/api', api);
 app.set('port', process.env.PORT || 4000);
 
-// const buildDirectory = path.resolve(__dirname, '../../chess-frontend/build/index.html');
+//  라우팅 로직을 제외한 모든 get요청
 app.get("*", (req, res) => {
     console.dir('zzzzz');
     res.sendFile(path.join(__dirname, '../../chess-frontend/build', 'index.html'));
