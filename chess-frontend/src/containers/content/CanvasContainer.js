@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import Canvas from '../components/content/Canvas';
+import Canvas from '../../components/content/Canvas';
 import { useSelector, useDispatch } from 'react-redux';
-import { clickPiece } from '../modules/canvas';
+import { clickPiece } from '../../modules/canvas';
 
 const CanvasContainer = () => {
     const { board, clicked } = useSelector(({ canvas }) => ({

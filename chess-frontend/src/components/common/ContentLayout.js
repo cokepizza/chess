@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import CanvasContainer from '../../containers/CanvasContainer';
+import CanvasContainer from '../../containers/content/CanvasContainer';
 import ChatContainer from '../../containers/content/ChatContainer';
 import RecordContainer from '../../containers/content/RecordContainer';
 

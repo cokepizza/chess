@@ -4,6 +4,10 @@ export default (server, app, sessionMiddleware) => {
     const io = SocketIO(server);
     
     app.set('io', io);
+    app.set('auth', {
+        sessions: new Set(),
+    });
+
     io.use((socket, next) => {
         sessionMiddleware(socket.request, socket.request.res, next);
     })
@@ -13,15 +17,16 @@ export default (server, app, sessionMiddleware) => {
 
         console.dir('-------------socket--------------')
         console.dir(socket.request.sessionID);
-        
+
         //  socket.emit()은 소켓이 직접 연결된 세션에만
         //  io.emit()은 연결된 모든 소켓에 broadcast
         
-        //  서버 재시작시 socket연결만되서 sessionID가 undefined되는 현상 제거해야 함.
-        //  동일한 유저가 다른 텝으로 또 접속해서 welcome 뜨는 현상 제거해야 함.
-        
         const { id, nickname, role, color } = socket.request.session;
         
+        if(!nickname) return;
+       
+        const { sessions } = app.get('auth');
+
         socket.emit('message', {
             type: 'auth',
             id,
@@ -30,11 +35,16 @@ export default (server, app, sessionMiddleware) => {
             color,
         });
 
-        io.emit('message', {
-            type: 'chat',
-            color,
-            message: `welcome ${nickname}`,
-        })
+        console.dir(sessions);
+        if(!sessions.has(socket.request.sessionID)) {
+            sessions.add(socket.request.sessionID);
+            
+            io.emit('message', {
+                type: 'chat',
+                color,
+                message: `welcome ${nickname}`,
+            });
+        }
 
         socket.on('message', () => {
             console.dir('-------------serveronMessage--------------')
