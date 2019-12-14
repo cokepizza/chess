@@ -9,7 +9,7 @@ const GridLayoutBlock = styled.div`
 
 `;
 
-const GridLayout = () => {
+const GridLayout = ({ list }) => {
     return (
         <GridLayoutBlock />
     )

@@ -29,8 +29,8 @@ const RoomModalBlock = styled.div`
     padding: 2%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: space-between;
     background-color: rgb(245,245,245, 0.8);
     box-shadow: 10px 10px 10px;
     z-index: 100;

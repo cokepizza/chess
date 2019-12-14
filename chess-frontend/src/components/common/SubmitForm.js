@@ -1,29 +1,42 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const SubmitFormBlock = styled.form`
     display: flex;
 
 `;
 
-const ConfirmButtonBlock = styled.button`
+const buttonStyle = css`
     outline: none;
-    width: 10%;
+    background-color: #ccc;
+    width: 200px;
     height: 30px;
+    cursor: pointer;
 
+    &:hover {
+        background-color: black;
+        color: white;
+    }
+`
+
+const ConfirmButtonBlock = styled.button`
+    ${buttonStyle}
 `;
 
 const CancelButtonBlock = styled.button`
-    outline: none;
-    width: 10%;
-    height: 30px;
+    ${buttonStyle}
+    margin-left: 20px;
 `;
 
 const SubmitForm = ({ onSubmit }) => {
     return (
         <SubmitFormBlock onSubmit={onSubmit}>
-            <ConfirmButtonBlock type='submit' />
-            <CancelButtonBlock />
+            <ConfirmButtonBlock type='submit'>
+                Create Room
+            </ConfirmButtonBlock>
+            <CancelButtonBlock>
+                Cancel
+            </CancelButtonBlock>
         </SubmitFormBlock>
     )
 };
