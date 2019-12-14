@@ -8,12 +8,20 @@ export default (server, app, sessionMiddleware) => {
         sessions: new Set(),
     });
 
+    app.set('mapper', {
+        mapSocketToSession: new Map(),
+        mapSessionToSocket: new Map(),
+    });
+    
+    app.set('room', []);
+
     io.use((socket, next) => {
         sessionMiddleware(socket.request, socket.request.res, next);
     })
     io.on('connection', socket => {        
         //  io connection시에는 sessionID가 다르지만, 첫 http request 이후 세션 고정
         //  socket과 http request가 동일한 세션을 공유할 수 있음
+        
 
         console.dir('-------------socket--------------')
         console.dir(socket.request.sessionID);
@@ -25,7 +33,11 @@ export default (server, app, sessionMiddleware) => {
         
         if(!nickname) return;
        
-        const { sessions } = app.get('auth');
+        const { mapSocketToSession, mapSessionToSocket } = app.get('mapper');
+        if(!mapSocketToSession.has(socket.id)) {
+            mapSocketToSession.set(socket.id, socket.request.sessionID);
+            mapSessionToSocket.set(socket.request.sessionID, socket.id);
+        }
 
         socket.emit('message', {
             type: 'auth',
@@ -34,17 +46,17 @@ export default (server, app, sessionMiddleware) => {
             role,
             color,
         });
+    
+        io.emit('message', {
+            type: 'chat',
+            color,
+            message: `welcome ${nickname}`,
+        });
 
-        console.dir(sessions);
-        if(!sessions.has(socket.request.sessionID)) {
-            sessions.add(socket.request.sessionID);
-            
-            io.emit('message', {
-                type: 'chat',
-                color,
-                message: `welcome ${nickname}`,
-            });
-        }
+        // const { sessions } = app.get('auth');
+        // if(!sessions.has(socket.request.sessionID)) {
+        //     sessions.add(socket.request.sessionID);
+        // }
 
         socket.on('message', () => {
             console.dir('-------------serveronMessage--------------')

@@ -11,12 +11,15 @@ const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
 
     const onContentClick = useCallback(e => {
         e.stopPropagation();
-
     }, [])
 
     useEffect(() => {
         setModal(openModal);
     }, [openModal]);
+
+    useEffect(() => {
+        
+    });
 
     return (
         <>
