@@ -17,10 +17,6 @@ const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
         setModal(openModal);
     }, [openModal]);
 
-    useEffect(() => {
-        
-    });
-
     return (
         <>
             <RoomModal

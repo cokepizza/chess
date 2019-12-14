@@ -3,19 +3,22 @@ import styled, { css } from 'styled-components';
 
 const SubmitFormBlock = styled.form`
     display: flex;
-
 `;
 
 const buttonStyle = css`
     outline: none;
-    background-color: #ccc;
+    background-color: rgb(0,0,0, 0.2);
+    padding: 0px;
+    border: none;
     width: 200px;
     height: 30px;
     cursor: pointer;
+    box-shadow: 5px 5px 5px rgb(0,0,0, 0.6);;
 
     &:hover {
-        background-color: black;
+        background-color: rgb(0,0,0, 0.8);
         color: white;
+        box-shadow: 5px 5px 5px rgb(0,0,0, 0.2);
     }
 `
 
