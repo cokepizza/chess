@@ -1,7 +1,4 @@
 import { createAction, handleActions } from 'redux-actions';
-// import { eventChannel } from 'redux-saga';
-// import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/effects';
-// import SocketIo from 'socket.io-client';
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as chatAPI from '../lib/api/chat';
 // import { setTemporaryAuth } from '../modules/auth';

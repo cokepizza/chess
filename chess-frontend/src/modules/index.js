@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 import { all } from 'redux-saga/effects';
 import canvas from './canvas';
-import chat, { chatSaga } from './chat';
+import chat from './chat';
 import auth from './auth';
-import room from './room';
+import room, { roomSaga } from './room';
+import game, { gameSaga } from './game';
+
 
 const rootReducer = combineReducers({
     canvas,

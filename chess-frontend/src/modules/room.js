@@ -1,4 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
+import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/effects';
+
+import 
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as roomCtrl from '../lib/api/room';
 
@@ -11,6 +14,17 @@ export const initializeRoom = createAction(INITIALIZE_ROOM, payload => payload);
 export const initializeWebsocket = createAction(INITIALIZE_WEBSOCKET);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 export const createRoomThunk = createRequestThunk(CREATE_ROOM, roomCtrl.createRoom);
+
+function* initializeWebsocketSaga () {
+    const socketTask = yield fork(initializeNamespace);
+    
+    yield take(DISCONNECT_WEBSOCKET);
+    yield cancel(socketTask);
+}
+
+export function* roomSaga () {
+    yield takeEvery(INITIALIZE_WEBSOCKET, initializeWebsocketSaga);
+}
 
 const initialState = {
     room: null,
