@@ -1,16 +1,19 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import RoomModal from '../../components/modal/RoomModal';
+import { roomWebsocketDisconnect } from '../../modules/chat';
 
 const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
     const [ modal, setModal ] = useState(false);
     const { room } = useSelector(({ room }) => ({
         room: room.room,
     }));
+    const dispatch = useDispatch();
 
     const onBackgroundClick = useCallback(e => {
         setModal(false);
         setOpenModal(false);
+        dispatch(roomWebsocketDisconnect());
     }, [setOpenModal])
 
     const onContentClick = useCallback(e => {

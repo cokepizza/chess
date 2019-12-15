@@ -1,11 +1,11 @@
 export const readRoom = (req, res, next) => {
     const room = req.app.get('room');
-    const io = req.app.get('io');
     
     const { mapSessionToSocket } = req.app.get('mapper');
-    const socketId = mapSessionToSocket.get(req.session.id);
+    const socket = mapSessionToSocket.get(req.session.id);
     
-    io.to(socketId).emit('message', {
+    socket.join('room');
+    socket.emit('message', {
         type: 'room',
         room,
     });
