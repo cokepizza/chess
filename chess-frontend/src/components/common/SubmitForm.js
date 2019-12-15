@@ -31,13 +31,16 @@ const CancelButtonBlock = styled.button`
     margin-left: 20px;
 `;
 
-const SubmitForm = ({ onSubmit }) => {
+const SubmitForm = ({ onConfirmClick, onCancelClick }) => {
     return (
-        <SubmitFormBlock onSubmit={onSubmit}>
+        <SubmitFormBlock onSubmit={onConfirmClick}>
             <ConfirmButtonBlock type='submit'>
                 Create Room
             </ConfirmButtonBlock>
-            <CancelButtonBlock>
+            <CancelButtonBlock
+                type='button'
+                onClick = {onCancelClick}
+            >
                 Cancel
             </CancelButtonBlock>
         </SubmitFormBlock>

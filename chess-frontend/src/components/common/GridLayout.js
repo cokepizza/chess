@@ -28,16 +28,23 @@ const GridBoxBlock = styled.div`
     height: 300px;
     background-color: rgb(0,0,0, 0.4);
     box-shadow: 5px 5px 5px rgb(0,0,0,0.6);
-
+    cursor: pointer;
+    
     & + & {
         margin-left: 13%;
     }
+
+    &:active {
+        background-color: rgb(0,0,0, 0.6);
+        box-shadow: 5px 5px 5px rgb(0,0,0,0.8);
+    }
 `
 
-const GridBox = React.memo(({ room }) => {
+const GridBox = React.memo(({ room, ...rest }) => {
+    console.dir('room~');
     return (
-        <GridBoxBlock>
-            {room}
+        <GridBoxBlock {...rest}>
+            {room.name}
         </GridBoxBlock>
     )
 });
@@ -53,19 +60,26 @@ const GridLayoutBlock = styled.div`
     box-shadow: 5px 5px 5px rgb(0,0,0,0.4);
 `;
 
-const GridLayout = ({ list }) => {
-    list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'];
+const GridLayout = ({ room, onCancelClick }) => {
 
-    if(!list) return null;
+    if(!room) return <GridLayoutBlock />;
 
+    const list = [ ...room ];
+    
     const gridArr = [];
     const rowSize = Math.floor(list.length / gridSize);
     for(let i=0; i<=rowSize; ++i) {
         gridArr.push(
-            <GridRowBlock>
+            <GridRowBlock
+                key={`GridRowBlock_${i}`}
+            >
                 {
                     list.splice(0, gridSize).map(room => (
-                        <GridBox room={room} />
+                        <GridBox
+                            key={`GridBox${room.name}`}
+                            room={room}
+                            onClick={onCancelClick}
+                        />
                     ))
                 }
             </GridRowBlock>

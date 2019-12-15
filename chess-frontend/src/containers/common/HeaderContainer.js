@@ -1,27 +1,22 @@
 import React, { useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import Header from '../../components/common/Header';
-import RoomModalContainer from '../../containers/modal/RoomModalContainer';
-
-//  namespace 분리 예정
-//  list(리스트 보는 중), game(게임 중)
+import { readRoomThunk } from '../../modules/room';
 
 const HeaderContainer = () => {
     const [ openModal, setOpenModal ] = useState(false);
-
+    const dispatch = useDispatch();
     const onToggle = useCallback(() => {
         setOpenModal(true);
+        dispatch(readRoomThunk());
     }, []);
 
     return (
-        <>
-            <Header
-                onToggle={onToggle}
-            />
-            <RoomModalContainer
-                openModal={openModal}
-                setOpenModal={setOpenModal}
-            />
-        </>
+        <Header
+            onToggle={onToggle}
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+        />
     );
 };
 

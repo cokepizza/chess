@@ -1,9 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import RoomModal from '../../components/modal/RoomModal';
 
 const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
     const [ modal, setModal ] = useState(false);
-    
+    const { room } = useSelector(({ room }) => ({
+        room: room.room,
+    }));
+
     const onBackgroundClick = useCallback(e => {
         setModal(false);
         setOpenModal(false);
@@ -21,6 +25,7 @@ const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
         <>
             <RoomModal
                 {...rest}
+                room={room}
                 open={modal}
                 onBackgroundClick={onBackgroundClick}
                 onContentClick={onContentClick}

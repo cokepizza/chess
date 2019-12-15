@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import RoomModalContainer from '../../containers/modal/RoomModalContainer';
 
 const RoomBlock = styled.div`
     display: flex;
@@ -20,15 +21,21 @@ const HeaderBlock = styled.div`
     background-color: red;
 `;
 
-const Header = ({ onToggle }) => {
+const Header = ({ onToggle, openModal, setOpenModal }) => {
     return (
-        <HeaderBlock>
-            <RoomBlock
-                onClick={onToggle}
-            >
-                Modal
-            </RoomBlock>
-        </ HeaderBlock>
+        <>
+            <HeaderBlock>
+                <RoomBlock
+                    onClick={onToggle}
+                >
+                    Modal
+                </RoomBlock>
+            </ HeaderBlock>
+            <RoomModalContainer
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+            />
+        </>
     )
 };
 

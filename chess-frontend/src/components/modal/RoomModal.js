@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import GridLayout from '../common/GridLayout';
-import SubmitForm from '../common/SubmitForm';
+import GridLayoutContainer from '../../containers/common/GridLayoutContainer';
+import SubmitFormContainer from '../../containers/common/SubmitFormContainer';
 
 const RoomModalBackgroundBlock = styled.div`
     position: fixed;
@@ -36,9 +36,7 @@ const RoomModalBlock = styled.div`
     z-index: 100;
 `;
 
-
-
-const RoomModal = ({ onBackgroundClick, onContentClick, ...rest }) => {
+const RoomModal = ({ onBackgroundClick, onContentClick, room, ...rest }) => {
     return (
         <RoomModalBackgroundBlock
             {...rest}
@@ -47,8 +45,13 @@ const RoomModal = ({ onBackgroundClick, onContentClick, ...rest }) => {
             <RoomModalBlock
                 onClick={onContentClick}
             >
-                <GridLayout />
-                <SubmitForm />
+                <GridLayoutContainer
+                    room={room}
+                    onCancelClick={onBackgroundClick}
+                />
+                <SubmitFormContainer
+                    onCancelClick={onBackgroundClick}
+                />
             </RoomModalBlock>
         </RoomModalBackgroundBlock>
     )

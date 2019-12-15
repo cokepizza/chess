@@ -6,6 +6,7 @@ import createRequestThunk, { createRequestActionTypes } from '../lib/createReque
 import * as chatAPI from '../lib/api/chat';
 import { setTemporaryAuth } from '../modules/auth';
 import { setBoardThunk } from '../modules/canvas';
+import { setRoom } from '../modules/room';
 
 const INITIALIZE_WEBSOCKET = 'chat/INITIALIZE_WEBSOCKET';
 const WEBSOCKET_ONMESSAGE = 'chat/WEBSOCKET_ONMESSAGE';
@@ -54,8 +55,9 @@ function* initializeWebsocketSaga () {
         } else if (message.type === 'chat') {
             yield put(setReceivedMessage(message));
         } else if (message.type === 'game') {
-            console.dir(message);
             yield put(setBoardThunk(message));
+        } else if (message.type === 'room') {
+            yield put(setRoom(message));
         }
     }
 }
