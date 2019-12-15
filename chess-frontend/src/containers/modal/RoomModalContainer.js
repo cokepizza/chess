@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import RoomModal from '../../components/modal/RoomModal';
-import { roomWebsocketDisconnect } from '../../modules/chat';
+import { disconnectWebsocket } from '../../modules/room';
 
 const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
     const [ modal, setModal ] = useState(false);
@@ -13,7 +13,7 @@ const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
     const onBackgroundClick = useCallback(e => {
         setModal(false);
         setOpenModal(false);
-        dispatch(roomWebsocketDisconnect());
+        dispatch(disconnectWebsocket());
     }, [setOpenModal])
 
     const onContentClick = useCallback(e => {
@@ -22,6 +22,7 @@ const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
 
     useEffect(() => {
         setModal(openModal);
+        
     }, [openModal]);
 
     return (

@@ -4,22 +4,16 @@ import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/
 
 function* createEventChannel(io) {
     return eventChannel(emit => {
-
-        io.on('connect', () => {
-            console.dir('connect~~');
-            
-        })
         io.on('message', message => {
             emit(message)
         });
-
         return () => {
             io.close();
         }
     })
 }
 
-export function* initializeNamespace(url) {
+function* initializeNamespace(url) {
     let channel;
 
     try {

@@ -2,7 +2,7 @@ export const sendMessage = (req, res, next) => {
     const io = req.app.get('io');
     const { message } = req.body;
     const { nickname, color } = req.session;
-    io.emit('message', {
+    io.of('/chat').emit('message', {
         type: 'chat',
         nickname,
         color,

@@ -1,9 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Chat from '../../components/content/Chat';
-import { initializeWebsocket, changeTextfield, initializeTextfield } from '../../modules/chat';
+import { connectWebsocket, changeTextfield, initializeTextfield } from '../../modules/chat';
 import { sendMessageThunk } from '../../modules/chat';
-import { setSessionThunk } from '../../modules/auth';
+import Chat from '../../components/content/Chat';
 
 const ChatContainer = () => {
     const dispatch = useDispatch();
@@ -15,10 +14,8 @@ const ChatContainer = () => {
     }));
     
     useEffect(() => {
-        (async () => {
-            await dispatch(setSessionThunk());
-            dispatch(initializeWebsocket());
-        })();
+        console.dir('chattt?');
+        dispatch(connectWebsocket());
     }, [dispatch]);
 
     const onSubmit = useCallback(e => {

@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import { all } from 'redux-saga/effects';
+// import canvas, { canvasSaga } from './canvas';
 import canvas from './canvas';
-import chat from './chat';
-import auth from './auth';
+import chat, { chatSaga } from './chat';
+import auth, { authSaga } from './auth';
 import room, { roomSaga } from './room';
-import game, { gameSaga } from './game';
 
 
 const rootReducer = combineReducers({
@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
 
 
 export function* rootSaga() {
-    yield all([ chatSaga() ]);
+    yield all([ authSaga(), chatSaga(), roomSaga() ]);
 };
 
 export default rootReducer;
