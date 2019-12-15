@@ -1,18 +1,6 @@
-export const readRoom = (req, res, next) => {
-    const room = req.app.get('room');
-    
-    const { mapSessionToSocket } = req.app.get('mapper');
-    const socket = mapSessionToSocket.get(req.session.id);
-    
-    socket.join('room');
-    socket.emit('message', {
-        type: 'room',
-        room,
-    });
-
-    res.send();
-    res.status(202).end();
-};
+//  세션에 해당하는 소켓 객체를 mapper를 이용해 가져다 쓸 수 있다
+// const { mapSessionToSocket } = req.app.get('mapper');
+// const socket = mapSessionToSocket.get(req.session.id);
 
 export const createRoom = (req, res, next) => {
     const io = req.app.get('io');

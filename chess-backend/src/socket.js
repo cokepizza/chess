@@ -19,17 +19,26 @@ export default (server, app, sessionMiddleware) => {
         sessionMiddleware(socket.request, socket.request.res, next);
     })
 
+    //  subscribe 'Room' Namespace
     const room = io.of('/room');
 
     room.on('connect', socket => {
         console.dir('-------------socket(room)--------------');
         console.dir(socket.request.sessionID);
+        const room = app.get('room');
+        
+        socket.emit('message', {
+            type: 'room',
+            room,
+        });
+        
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(room)--------------');
             console.dir(socket.request.sessionID);
         })
     });
 
+    // subscribe Default Namespace
     io.on('connect', socket => {        
         //  io connection시에는 sessionID가 다르지만, 첫 http request 이후 세션 고정
         //  socket과 http request가 동일한 세션을 공유할 수 있음

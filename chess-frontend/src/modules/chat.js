@@ -1,112 +1,33 @@
 import { createAction, handleActions } from 'redux-actions';
-import { eventChannel } from 'redux-saga';
-import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/effects';
-import SocketIo from 'socket.io-client';
+// import { eventChannel } from 'redux-saga';
+// import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/effects';
+// import SocketIo from 'socket.io-client';
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as chatAPI from '../lib/api/chat';
-import { setTemporaryAuth } from '../modules/auth';
-import { setBoardThunk } from '../modules/canvas';
-import { setRoom } from '../modules/room';
+// import { setTemporaryAuth } from '../modules/auth';
+// import { setBoardThunk } from '../modules/canvas';
+// import { setRoom } from '../modules/room';
 
-const INITIALIZE_WEBSOCKET = 'chat/INITIALIZE_WEBSOCKET';
-const INITIALIZE_ROOM_WEBSOCKET = 'chat/INITIALIZE_ROOM_WEBSOCKET';
+// const INITIALIZE_WEBSOCKET = 'chat/INITIALIZE_WEBSOCKET';
+// const INITIALIZE_ROOM_WEBSOCKET = 'chat/INITIALIZE_ROOM_WEBSOCKET';
+// const WEBSOCKET_ONMESSAGE = 'chat/WEBSOCKET_ONMESSAGE';
+// const ROOM_WEBSOCKET_DISCONNECT = 'chat/ROOM_WEBSOCKET_DISCONNECT';
+
+// export const initializeWebsocket = createAction(INITIALIZE_WEBSOCKET);
+// export const initializeRoomWebsocket = createAction(INITIALIZE_ROOM_WEBSOCKET);
+// export const roomWebsocketDisconnect = createAction(ROOM_WEBSOCKET_DISCONNECT);
+
 const WEBSOCKET_ONMESSAGE = 'chat/WEBSOCKET_ONMESSAGE';
-const ROOM_WEBSOCKET_DISCONNECT = 'chat/ROOM_WEBSOCKET_DISCONNECT';
-
 const CHANGE_TEXTFIELD = 'chat/CHANGE_TEXTFIELD';
 const INITIALIZE_TEXTFIELD = 'chat/INITIALIZE_TEXTFIELD';
 const SET_RECEIVED_MESSAGE = 'chat/SET_RECEIVED_MESSAGE';
 
-export const initializeWebsocket = createAction(INITIALIZE_WEBSOCKET);
-export const initializeRoomWebsocket = createAction(INITIALIZE_ROOM_WEBSOCKET);
-export const roomWebsocketDisconnect = createAction(ROOM_WEBSOCKET_DISCONNECT);
 export const changeTextfield = createAction(CHANGE_TEXTFIELD, payload => payload);
 export const initializeTextfield = createAction(INITIALIZE_TEXTFIELD);
 const [ SEND_MESSAGE, SEND_MESSAGE_SUCCESS, SEND_MESSAGE_FAILURE ] = createRequestActionTypes('chat/SEND_MESSAGE');
 export const setReceivedMessage = createAction(SET_RECEIVED_MESSAGE, payload => payload);
 
 export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, chatAPI.sendMessage);
-
-function* createEventChannel(io) {
-    return eventChannel(emit => {
-        // socket.onmessage = message => emit(message.data);
-        // io.emit('message', 'message sent');
-
-        io.on('connect', () => {
-            console.dir('connect~~');
-            
-        })
-        io.on('message', message => {
-            emit(message)
-        });
-
-        return () => {
-            io.close();
-        }
-    })
-}
-
-function* initializeWebsocketSaga () {
-    // const io = SocketIo('ws://localhost:4000');
-    // const io = SocketIo('ws://192.168.13.101:5000');
-    const io = SocketIo();
-    const channel = yield call(createEventChannel, io);
-
-    while(true) {
-        const message = yield take(channel);
-        if (message.type === 'auth') {
-            yield put(setTemporaryAuth(message));
-        } else if (message.type === 'chat') {
-            yield put(setReceivedMessage(message));
-        } else if (message.type === 'game') {
-            yield put(setBoardThunk(message));
-        } else if (message.type === 'room') {
-            yield put(setRoom(message));
-        }
-    }
-}
-
-function* initializeRoomInstace() {
-    // const io = SocketIo('ws://localhost:4000');
-    // const io = SocketIo('ws://192.168.13.101:5000');
-    let channel;
-
-    try {
-        const io = SocketIo('/room');
-        channel = yield call(createEventChannel, io);
-    
-        while(true) {
-            const message = yield take(channel);
-            if (message.type === 'auth') {
-                yield put(setTemporaryAuth(message));
-            } else if (message.type === 'chat') {
-                yield put(setReceivedMessage(message));
-            } else if (message.type === 'game') {
-                yield put(setBoardThunk(message));
-            } else if (message.type === 'room') {
-                yield put(setRoom(message));
-            }
-        }
-    } catch(e) {
-        console.dir(e);
-    } finally {
-        if (yield cancelled()) {
-            channel.close();
-        }
-    }
-}
-
-function* initializeRoomWebsocketSaga () {
-    const socketTask = yield fork(initializeRoomInstace);
-    
-    yield take(ROOM_WEBSOCKET_DISCONNECT);
-    yield cancel(socketTask);
-}
-
-export function* chatSaga () {
-    yield takeEvery(INITIALIZE_WEBSOCKET, initializeWebsocketSaga);
-    yield takeEvery(INITIALIZE_ROOM_WEBSOCKET, initializeRoomWebsocketSaga);
-}
 
 const initialState = {
     messages: [],
