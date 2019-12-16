@@ -15,8 +15,8 @@ export const createRoom = (req, res, next) => {
         user: [nickname],
     });
 
-    io.emit('message', {
-        type: 'room',
+    io.of('/room').emit('message', {
+        type: 'message',
         room,
     });
 

@@ -22,8 +22,8 @@ export const movePiece = (req, res, next) => {
             console.dir(role);
             console.dir(turn);
             console.dir(req.sessionID);
-            io.emit('message', {
-                type: 'game',
+            io.of('canvas').emit('message', {
+                type: 'message',
                 move,
             });
             turn = (turn === 'black' ? 'white' : 'black');
