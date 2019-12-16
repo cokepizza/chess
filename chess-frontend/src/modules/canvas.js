@@ -10,11 +10,13 @@ import board from '../lib/base/board'
 
 const CONNECT_WEBSOCKET = 'canvas/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'canvas/DISCONNECT_WEBSOCKET';
+const INITIALIZE_VALUE = 'canvas/INITIALIZE_VALUE';
 const CHANGE_VALUE = 'canvas/CHANGE_VALUE';
 const SET_MOVE_PIECE = 'canvas/SET_MOVE_PIECE';
 
 export const connectWebsocket = createAction(CONNECT_WEBSOCKET, payload => payload);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
+export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 
 //  setMovePieceThunk 타입 달아놔야함
@@ -48,6 +50,7 @@ function* connectWebsocketSaga (action) {
 
     const socketTask = yield fork(connectNamespace, {
         url: '/canvas',
+        initializeValue,
         changeValue: changeValueThunk,
         query,
     });
@@ -130,6 +133,10 @@ const initialState = {
 };
 
 export default handleActions({
+    [INITIALIZE_VALUE]: (state, { payload: { board } }) => ({
+        ...state,
+        board,
+    }),
     [CHANGE_VALUE]: (state, { payload : { board, clicked } }) => ({
         ...state,
         board,

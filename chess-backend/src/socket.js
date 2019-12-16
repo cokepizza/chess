@@ -1,4 +1,6 @@
 import SocketIO from 'socket.io';
+import defaultBoard from './lib/base/board';
+import _ from 'lodash';
 
 export default (server, app, sessionMiddleware) => {
     const io = SocketIO(server);
@@ -8,21 +10,25 @@ export default (server, app, sessionMiddleware) => {
         sessions: new Set(),
     });
 
-    app.set('mapper', {
-        room: {
-            mapSocketToSession: new Map(),
-            mapSessionToSocket: new Map(),
-        },
-        canvas: {
-            mapSocketToSession: new Map(),
-            mapSessionToSocket: new Map(),
-        },
-        chat: {
-            mapSocketToSession: new Map(),
-            mapSessionToSocket: new Map(),
-        }
-    });
-    
+    // app.set('mapper', {
+    //     room: {
+    //         mapSocketToSession: new Map(),
+    //         mapSessionToSocket: new Map(),
+    //     },
+    //     canvas: {
+    //         mapSocketToSession: new Map(),
+    //         mapSessionToSocket: new Map(),
+    //     },
+    //     chat: {
+    //         mapSocketToSession: new Map(),
+    //         mapSessionToSocket: new Map(),
+    //     }
+    // });
+
+    app.set('counter', 0);
+    app.set('canvas', new Map());
+    app.set('chat', new Map());
+
     app.set('room', []);
 
     io.use((socket, next) => {
@@ -72,7 +78,7 @@ export default (server, app, sessionMiddleware) => {
 
     canvas.on('connect', socket => {
         console.dir('-------------socket(canvas)--------------');
-        console.dir(socket.id);
+        console.dir(socket.request.sessionID);
         // const { mapSocketToSession, mapSessionToSocket } = app.get('mapper');
         // if(!mapSocketToSession.has(socket.id)) {
         //     mapSocketToSession.set(socket.id, socket.request.sessionID);
@@ -80,12 +86,24 @@ export default (server, app, sessionMiddleware) => {
         // }
         
         const key = socket.handshake.query['key'];
-        socket.join(key, ()=> {
-            let rooms = Object.keys(socket.rooms);
-            console.dir(rooms);
+        socket.join(key, () => {
+            // let rooms = Object.keys(socket.rooms);
+            // console.dir(rooms);
         });
-        
-        
+
+        const canvas = app.get('canvas');
+        let board;
+        if(canvas.has(key)) {
+            board = canvas.get(key);
+        } else {
+            board = _.cloneDeep(defaultBoard);
+            canvas.set(key, board);
+        }
+
+        socket.emit('message', {
+            type: 'initialize',
+            board,
+        })
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(canvas)--------------');
@@ -96,7 +114,6 @@ export default (server, app, sessionMiddleware) => {
     // subscribe Default Namespace
     const auth = io.of('/auth');
     auth.on('connect', socket => {      
-        console.dir(socket.id);  
         //  io connection시에는 sessionID가 다르지만, 첫 http request 이후 세션 고정
         //  socket과 http request가 동일한 세션을 공유할 수 있음
         
@@ -138,10 +155,5 @@ export default (server, app, sessionMiddleware) => {
             console.dir('-------------socketDis(default)--------------')
             console.dir(socket.request.sessionID);
         })
-    })
-
-    io.on('connect', socket => {
-        console.dir('default~~~~~~~~~~~~~~~~');
-        console.dir(socket.id);
     })
 };

@@ -16,12 +16,12 @@ const board = [
             covered: false,
         },
         {
-            piece: 'king',
+            piece: 'queen',
             owner: 'black',
             covered: false,
         },
         {
-            piece: 'queen',
+            piece: 'king',
             owner: 'black',
             covered: false,
         },
