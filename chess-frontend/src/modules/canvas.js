@@ -41,8 +41,9 @@ const genClearBoard = board =>
         )
     );
 
-function* connectWebsocketSaga (key) {
-    console.dir(key);
+function* connectWebsocketSaga (action) {
+    const key = action.payload;
+
     const socketTask = yield fork(connectNamespace, {
         url: '/canvas',
         changeValue: changeValueThunk,
@@ -54,9 +55,6 @@ function* connectWebsocketSaga (key) {
 
 export function* canvasSaga () {
     yield takeEvery(CONNECT_WEBSOCKET, connectWebsocketSaga);
-    // const key = yield takeEvery(CONNECT_WEBSOCKET);
-    // console.dir(key);
-    // connectWebsocketSaga(key);
 }
 
 export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
