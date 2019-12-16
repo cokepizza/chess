@@ -3,6 +3,7 @@ import { eventChannel } from 'redux-saga';
 import SocketIo from 'socket.io-client';
 import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/effects';
 
+// import { connectNamespace } from '../lib/websocket/websocket';
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as chatAPI from '../lib/api/chat';
 

@@ -1,9 +1,10 @@
 import { createAction, handleActions } from 'redux-actions';
-import { eventChannel } from 'redux-saga';
-import SocketIo from 'socket.io-client';
-import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/effects';
+import { takeEvery, fork, take, cancel } from 'redux-saga/effects';
+
+import { connectNamespace } from '../lib/websocket/websocket';
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as roomCtrl from '../lib/api/room';
+
 
 const INITIALIZE_VALUE = 'room/INITIALIZE_VALUE';
 const CONNECT_WEBSOCKET = 'room/CONNECT_WEBSOCKET';
@@ -15,39 +16,11 @@ export const connectWebsocket = createAction(CONNECT_WEBSOCKET);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 export const createRoomThunk = createRequestThunk(CREATE_ROOM, roomCtrl.createRoom);
 
-function* createEventChannel(io) {
-    return eventChannel(emit => {
-        io.on('message', message => {
-            emit(message)
-        });
-        return () => {
-            io.close();
-        }
-    })
-}
-
-function* connectNamespace() {
-    let channel;
-
-    try {
-        const io = SocketIo('/room');
-        channel = yield call(createEventChannel, io);
-    
-        while(true) {
-            const message = yield take(channel);
-            yield put(initializeValue(message));
-        }
-    } catch(e) {
-        console.dir(e);
-    } finally {
-        if (yield cancelled()) {
-            channel.close();
-        }
-    }
-}
-
 function* connectWebsocketSaga () {
-    const socketTask = yield fork(connectNamespace);
+    const socketTask = yield fork(connectNamespace, { 
+        url: '/room',
+        initializeValue,
+    });
     
     yield take(DISCONNECT_WEBSOCKET);
     yield cancel(socketTask);

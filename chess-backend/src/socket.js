@@ -44,6 +44,14 @@ export default (server, app, sessionMiddleware) => {
         console.dir('-------------socket(chat)--------------');
         console.dir(socket.request.sessionID);
         const room = app.get('room');
+        
+        const { nickname, color } = socket.request.session;
+
+        chat.emit('message', {
+            type: 'chat',
+            color,
+            message: `welcome ${nickname}`,
+        });
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(chat)--------------');
@@ -78,12 +86,6 @@ export default (server, app, sessionMiddleware) => {
             nickname,
             role,
             color,
-        });
-    
-        io.emit('message', {
-            type: 'chat',
-            color,
-            message: `welcome ${nickname}`,
         });
 
         // const { sessions } = app.get('auth');

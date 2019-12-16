@@ -1,6 +1,6 @@
 import { eventChannel } from 'redux-saga';
 import SocketIo from 'socket.io-client';
-import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/effects';
+import { put, call, take, cancelled } from 'redux-saga/effects';
 
 function* createEventChannel(io) {
     return eventChannel(emit => {
@@ -13,8 +13,13 @@ function* createEventChannel(io) {
     })
 }
 
-function* initializeNamespace(url) {
+export function* connectNamespace(params) {
     let channel;
+
+    const {
+        url,
+        initializeValue,
+    } = params;
 
     try {
         const io = SocketIo(url);
@@ -22,15 +27,7 @@ function* initializeNamespace(url) {
     
         while(true) {
             const message = yield take(channel);
-            if (message.type === 'auth') {
-                yield put(setTemporaryAuth(message));
-            } else if (message.type === 'chat') {
-                yield put(setReceivedMessage(message));
-            } else if (message.type === 'game') {
-                yield put(setBoardThunk(message));
-            } else if (message.type === 'room') {
-                yield put(setRoom(message));
-            }
+            yield put(initializeValue(message));
         }
     } catch(e) {
         console.dir(e);
