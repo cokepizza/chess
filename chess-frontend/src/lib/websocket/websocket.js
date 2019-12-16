@@ -24,6 +24,8 @@ export function* connectNamespace(params) {
     } = params;
 
     try {
+        console.dir(url);
+        console.dir(query);
         const io = SocketIo(url, { query });
         channel = yield call(createEventChannel, io);
     

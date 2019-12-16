@@ -13,7 +13,7 @@ const CHANGE_VALUE = 'chat/CHANGE_VALUE';
 const CHANGE_TEXTFIELD = 'chat/CHANGE_TEXTFIELD';
 const INITIALIZE_TEXTFIELD = 'chat/INITIALIZE_TEXTFIELD';
 
-export const connectWebsocket = createAction(CONNECT_WEBSOCKET);
+export const connectWebsocket = createAction(CONNECT_WEBSOCKET, payload => payload);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
@@ -24,11 +24,16 @@ export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, chatAPI.sendMes
 export const changeTextfield = createAction(CHANGE_TEXTFIELD, payload => payload);
 export const initializeTextfield = createAction(INITIALIZE_TEXTFIELD);
 
-function* connectWebsocketSaga () {
+function* connectWebsocketSaga (action) {
+    const key = action.payload;
+
+    const query = `key=${key}`;
+    
     const socketTask = yield fork(connectNamespace, {
         url: '/chat',
         initializeValue,
         changeValue,
+        query,
     });
     
     yield take(DISCONNECT_WEBSOCKET);

@@ -4,12 +4,14 @@ import { useDispatch } from 'react-redux';
 import useAsync from '../../lib/hook/useAsync';
 import { setSessionThunk } from '../../modules/auth';
 import MainLayout from '../../components/main/MainLayout';
+import { connectWebsocket } from '../../modules/auth';
 
 const MainLayoutContainer = () => {
     const dispatch = useDispatch();
 
     const connection = async () => {
         await dispatch(setSessionThunk());
+        dispatch(connectWebsocket());
         return true;
     };
 

@@ -5,6 +5,7 @@ export const movePiece = (req, res, next) => {
     const move = req.body;
     const { role } = req.session;
     
+    console.dir(req.session);
     //  정확히 role이 맞는지 검증하는 작업 필요
     //  app.set()을 통해 player 정보랑 sessionID 저장해둬야 함
 

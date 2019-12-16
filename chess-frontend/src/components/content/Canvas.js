@@ -58,6 +58,8 @@ const CanvasCellBlock = styled.div`
 `
 
 const CanvasContent = ({ board, onClick }) => {
+    if(!board) return null;
+    
     return  (
         <>
             {

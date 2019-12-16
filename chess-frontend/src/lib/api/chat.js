@@ -5,4 +5,3 @@ export const sendMessage = message =>
     
 // export const sendMessage = message =>
 //     axios.post('http://localhost:5000/api/chat/sendMessage', message);
-    

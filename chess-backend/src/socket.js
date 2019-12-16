@@ -60,6 +60,20 @@ export default (server, app, sessionMiddleware) => {
         console.dir('-------------socket(chat)--------------');
         console.dir(socket.request.sessionID);
         
+        const key = socket.handshake.query['key'];
+        socket.join(key, () => {
+            let rooms = Object.keys(socket.rooms);
+            console.dir('-------------socket(chatjoin)--------------');
+            console.dir(rooms);
+        });
+
+        // chat.in(key).clients((err, clients) => {
+        //     console.dir(clients);
+        // });
+
+        socket.request.session.room = key;
+        socket.request.session.save();
+
         const { nickname, color } = socket.request.session;
 
         chat.emit('message', {
@@ -87,8 +101,9 @@ export default (server, app, sessionMiddleware) => {
         
         const key = socket.handshake.query['key'];
         socket.join(key, () => {
-            // let rooms = Object.keys(socket.rooms);
-            // console.dir(rooms);
+            let rooms = Object.keys(socket.rooms);
+            console.dir('-------------socket(canvasjoin)--------------');
+            console.dir(rooms);
         });
 
         const canvas = app.get('canvas');
