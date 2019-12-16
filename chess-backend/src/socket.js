@@ -63,6 +63,8 @@ export default (server, app, sessionMiddleware) => {
     canvas.on('connect', socket => {
         console.dir('-------------socket(canvas)--------------');
         console.dir(socket.request.sessionID);
+        console.dir(socket.handshake);
+        console.dir(socket.handshake.query['key']);
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(canvas)--------------');

@@ -19,11 +19,12 @@ export function* connectNamespace(params) {
     const {
         url,
         initializeValue,
-        changeValue
+        changeValue,
+        query,
     } = params;
 
     try {
-        const io = SocketIo(url);
+        const io = SocketIo(url, { query });
         channel = yield call(createEventChannel, io);
     
         while(true) {

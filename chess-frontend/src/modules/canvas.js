@@ -43,10 +43,13 @@ const genClearBoard = board =>
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;
+    
+    const query = `key=${key}`;
 
     const socketTask = yield fork(connectNamespace, {
         url: '/canvas',
         changeValue: changeValueThunk,
+        query,
     });
     
     yield take(DISCONNECT_WEBSOCKET);
