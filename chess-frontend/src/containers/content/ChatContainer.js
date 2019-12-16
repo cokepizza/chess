@@ -14,7 +14,6 @@ const ChatContainer = () => {
     }));
     
     useEffect(() => {
-        console.dir('chattt?');
         dispatch(connectWebsocket());
     }, [dispatch]);
 

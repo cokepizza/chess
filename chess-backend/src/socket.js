@@ -28,7 +28,7 @@ export default (server, app, sessionMiddleware) => {
         const room = app.get('room');
         
         socket.emit('message', {
-            type: 'room',
+            type: 'initialize',
             room,
         });
         

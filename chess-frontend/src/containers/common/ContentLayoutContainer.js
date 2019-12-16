@@ -16,11 +16,7 @@ const ContentLayoutContainer = () => {
     const [state, refetch] = useAsync(connection, [ dispatch ]);
 
     const { loading, data, error } = state;
-
-    console.dir(data);
-    // useEffect(() => {
-        
-    // }, [dispatch]);
+    
     if(loading) return null;
     if(error) return null;
     if(data) {
