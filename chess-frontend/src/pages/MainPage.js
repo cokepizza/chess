@@ -1,12 +1,13 @@
 import React from 'react';
 import HeaderContainer from '../containers/common/HeaderContainer';
-import ContentLayoutContainer from '../containers/common/ContentLayoutContainer';
+import MainLayoutContainer from '../containers/main/MainLayoutContainer';
 
 const MainPage = () => {
+
     return (
         <>
             <HeaderContainer />
-            <ContentLayoutContainer />
+            <MainLayoutContainer />
         </>
     )
 };

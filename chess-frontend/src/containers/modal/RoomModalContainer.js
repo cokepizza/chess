@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import RoomModal from '../../components/modal/RoomModal';
 import { disconnectWebsocket } from '../../modules/room';
 
-const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
+const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
     const [ modal, setModal ] = useState(false);
     const { room } = useSelector(({ room }) => ({
         room: room.room,
@@ -20,9 +21,15 @@ const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
         e.stopPropagation();
     }, [])
 
+    const onRoomClick = useCallback((e, key) => {
+        setModal(false);
+        setOpenModal(false);
+        dispatch(disconnectWebsocket());
+        history.push('/game', { key });
+    }, []);
+
     useEffect(() => {
         setModal(openModal);
-        
     }, [openModal]);
 
     return (
@@ -33,10 +40,11 @@ const RoomModalContainer = ({ openModal, setOpenModal, ...rest }) => {
                 open={modal}
                 onBackgroundClick={onBackgroundClick}
                 onContentClick={onContentClick}
+                onRoomClick={onRoomClick}
             >
             </RoomModal>
         </>
     )
 };
 
-export default RoomModalContainer;
+export default withRouter(RoomModalContainer);

@@ -22,7 +22,8 @@ const GridRowBlock = styled.div`
 
 const GridBoxBlock = styled.div`
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
     width: 24%;
     height: 300px;
@@ -40,11 +41,25 @@ const GridBoxBlock = styled.div`
     }
 `
 
+const BoxTitleBlock = styled.div`
+    
+`;
+
+const BoxContentBlock = styled.div`
+    
+`;
+
 const GridBox = React.memo(({ room, ...rest }) => {
     console.dir('room~');
+    
     return (
         <GridBoxBlock {...rest}>
-            {room.name}
+            <BoxTitleBlock>
+                {room.name}
+            </BoxTitleBlock>
+            <BoxContentBlock>
+                {room.participant}
+            </BoxContentBlock>
         </GridBoxBlock>
     )
 });
@@ -60,7 +75,7 @@ const GridLayoutBlock = styled.div`
     box-shadow: 5px 5px 5px rgb(0,0,0,0.4);
 `;
 
-const GridLayout = ({ room, onCancelClick }) => {
+const GridLayout = ({ room, onRoomClick }) => {
 
     if(!room) return <GridLayoutBlock />;
 
@@ -78,7 +93,7 @@ const GridLayout = ({ room, onCancelClick }) => {
                         <GridBox
                             key={`GridBox${room.name}`}
                             room={room}
-                            onClick={onCancelClick}
+                            onClick={e => onRoomClick(e, room.key)}
                         />
                     ))
                 }

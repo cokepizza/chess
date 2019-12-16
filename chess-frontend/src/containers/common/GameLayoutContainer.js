@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import ContentLayout from '../../components/common/ContentLayout';
+import GameLayout from '../../components/common/GameLayout';
 import { connectWebsocket as connectAuthWebsocket, setSessionThunk } from '../../modules/auth';
 import { connectWebsocket as connectCanvasWebsocket} from '../../modules/canvas';
 import useAsync from '../../lib/hook/useAsync';
 
-const ContentLayoutContainer = () => {
+const GameLayoutContainer = ({ gameKey }) => {
     const dispatch = useDispatch();
 
     const connection = async () => {
         await dispatch(setSessionThunk());
-        console.dir('connection~');
         dispatch(connectAuthWebsocket());
-        dispatch(connectCanvasWebsocket());
+        dispatch(connectCanvasWebsocket(gameKey));
         return true;
     };
 
@@ -23,12 +22,11 @@ const ContentLayoutContainer = () => {
     if(loading) return null;
     if(error) return null;
     if(data) {
-        console.dir('dataaa');
         return (
-            <ContentLayout />
+            <GameLayout />
         )
     }
     return null;
 };
 
-export default ContentLayoutContainer;
+export default GameLayoutContainer;

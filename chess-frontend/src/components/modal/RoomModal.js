@@ -36,7 +36,7 @@ const RoomModalBlock = styled.div`
     z-index: 100;
 `;
 
-const RoomModal = ({ onBackgroundClick, onContentClick, room, ...rest }) => {
+const RoomModal = ({ onBackgroundClick, onContentClick, onRoomClick, room, ...rest }) => {
     return (
         <RoomModalBackgroundBlock
             {...rest}
@@ -47,7 +47,7 @@ const RoomModal = ({ onBackgroundClick, onContentClick, room, ...rest }) => {
             >
                 <GridLayoutContainer
                     room={room}
-                    onCancelClick={onBackgroundClick}
+                    onRoomClick={onRoomClick}
                 />
                 <SubmitFormContainer
                     onCancelClick={onBackgroundClick}

@@ -13,7 +13,7 @@ const DISCONNECT_WEBSOCKET = 'canvas/DISCONNECT_WEBSOCKET';
 const CHANGE_VALUE = 'canvas/CHANGE_VALUE';
 const SET_MOVE_PIECE = 'canvas/SET_MOVE_PIECE';
 
-export const connectWebsocket = createAction(CONNECT_WEBSOCKET);
+export const connectWebsocket = createAction(CONNECT_WEBSOCKET, payload => payload);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 
@@ -41,7 +41,8 @@ const genClearBoard = board =>
         )
     );
 
-function* connectWebsocketSaga () {
+function* connectWebsocketSaga (key) {
+    console.dir(key);
     const socketTask = yield fork(connectNamespace, {
         url: '/canvas',
         changeValue: changeValueThunk,
@@ -53,6 +54,9 @@ function* connectWebsocketSaga () {
 
 export function* canvasSaga () {
     yield takeEvery(CONNECT_WEBSOCKET, connectWebsocketSaga);
+    // const key = yield takeEvery(CONNECT_WEBSOCKET);
+    // console.dir(key);
+    // connectWebsocketSaga(key);
 }
 
 export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {

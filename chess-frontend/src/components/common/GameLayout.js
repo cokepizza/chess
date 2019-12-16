@@ -4,8 +4,7 @@ import CanvasContainer from '../../containers/content/CanvasContainer';
 import ChatContainer from '../../containers/content/ChatContainer';
 import RecordContainer from '../../containers/content/RecordContainer';
 
-
-const ContentLayoutBlock = styled.div`
+const GameLayoutBlock = styled.div`
     height: 800px;
     width: 100%;
     background-color: yellow;
@@ -23,16 +22,16 @@ const ChatAndRecordBlock = styled.div`
     width: 25%;
 `;
 
-const ContentLayout = props => {
+const GameLayout = props => {
     return (
-        <ContentLayoutBlock>
+        <GameLayoutBlock>
             <CanvasContainer {...props} />
             <ChatAndRecordBlock>
                 <RecordContainer />
                 <ChatContainer />
             </ChatAndRecordBlock>
-        </ContentLayoutBlock>
+        </GameLayoutBlock>
     )
 };
 
-export default React.memo(ContentLayout);
+export default React.memo(GameLayout);
