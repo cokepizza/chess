@@ -5,6 +5,7 @@ import uuid from 'uuid/v1';
 
 export const createRoom = (req, res, next) => {
     const io = req.app.get('io');
+    const mapper = req.app.get('mapper');
 
     const room = req.app.get('room');
     const length = room.length;
@@ -16,6 +17,8 @@ export const createRoom = (req, res, next) => {
         name: `room${length}`,
         participant: [nickname],
     });
+
+    
 
     io.of('/room').emit('message', {
         type: 'initialize',

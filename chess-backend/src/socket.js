@@ -9,8 +9,18 @@ export default (server, app, sessionMiddleware) => {
     });
 
     app.set('mapper', {
-        mapSocketToSession: new Map(),
-        mapSessionToSocket: new Map(),
+        room: {
+            mapSocketToSession: new Map(),
+            mapSessionToSocket: new Map(),
+        },
+        canvas: {
+            mapSocketToSession: new Map(),
+            mapSessionToSocket: new Map(),
+        },
+        chat: {
+            mapSocketToSession: new Map(),
+            mapSessionToSocket: new Map(),
+        }
     });
     
     app.set('room', []);
@@ -62,9 +72,20 @@ export default (server, app, sessionMiddleware) => {
 
     canvas.on('connect', socket => {
         console.dir('-------------socket(canvas)--------------');
-        console.dir(socket.request.sessionID);
-        console.dir(socket.handshake);
-        console.dir(socket.handshake.query['key']);
+        console.dir(socket.id);
+        // const { mapSocketToSession, mapSessionToSocket } = app.get('mapper');
+        // if(!mapSocketToSession.has(socket.id)) {
+        //     mapSocketToSession.set(socket.id, socket.request.sessionID);
+        //     mapSessionToSocket.set(socket.request.sessionID, socket);
+        // }
+        
+        const key = socket.handshake.query['key'];
+        socket.join(key, ()=> {
+            let rooms = Object.keys(socket.rooms);
+            console.dir(rooms);
+        });
+        
+        
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(canvas)--------------');
@@ -74,7 +95,8 @@ export default (server, app, sessionMiddleware) => {
 
     // subscribe Default Namespace
     const auth = io.of('/auth');
-    auth.on('connect', socket => {        
+    auth.on('connect', socket => {      
+        console.dir(socket.id);  
         //  io connection시에는 sessionID가 다르지만, 첫 http request 이후 세션 고정
         //  socket과 http request가 동일한 세션을 공유할 수 있음
         
@@ -88,11 +110,11 @@ export default (server, app, sessionMiddleware) => {
         
         if(!nickname) return;
        
-        const { mapSocketToSession, mapSessionToSocket } = app.get('mapper');
-        if(!mapSocketToSession.has(socket.id)) {
-            mapSocketToSession.set(socket.id, socket.request.sessionID);
-            mapSessionToSocket.set(socket.request.sessionID, socket);
-        }
+        // const { mapSocketToSession, mapSessionToSocket } = app.get('mapper');
+        // if(!mapSocketToSession.has(socket.id)) {
+        //     mapSocketToSession.set(socket.id, socket.request.sessionID);
+        //     mapSessionToSocket.set(socket.request.sessionID, socket);
+        // }
 
         socket.emit('message', {
             type: 'initialize',
@@ -116,5 +138,10 @@ export default (server, app, sessionMiddleware) => {
             console.dir('-------------socketDis(default)--------------')
             console.dir(socket.request.sessionID);
         })
+    })
+
+    io.on('connect', socket => {
+        console.dir('default~~~~~~~~~~~~~~~~');
+        console.dir(socket.id);
     })
 };
