@@ -1,7 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
-import { eventChannel } from 'redux-saga';
-import SocketIo from 'socket.io-client';
-import { takeEvery, fork, put, call, take, cancel, cancelled } from 'redux-saga/effects';
+import { takeEvery, fork, take, cancel } from 'redux-saga/effects';
 
 import { connectNamespace } from '../lib/websocket/websocket';
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';

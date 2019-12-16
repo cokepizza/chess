@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import GridLayout from '../../components/common/GridLayout';
 
 const GridLayoutContainer = props => {

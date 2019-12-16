@@ -22,7 +22,7 @@ export const movePiece = (req, res, next) => {
             console.dir(role);
             console.dir(turn);
             console.dir(req.sessionID);
-            io.of('canvas').emit('message', {
+            io.of('/canvas').emit('message', {
                 type: 'change',
                 move,
             });

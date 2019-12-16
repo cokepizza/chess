@@ -1,20 +1,24 @@
 import { createAction, handleActions } from 'redux-actions';
+import { takeEvery, fork, take, cancel } from 'redux-saga/effects';
+
 import createRequestThunk from '../lib/createRequestThunk';
+import { connectNamespace } from '../lib/websocket/websocket';
 import * as canvasCtrl from '../lib/api/canvas';
+
 import rules from '../lib/base/rules';
 import board from '../lib/base/board'
 
-/*
-    move: [[], [], [], [] ...]
-    => [y, x]
-*/
-
-const SET_BOARD = 'canvas/SET_BOARD';
+const CONNECT_WEBSOCKET = 'canvas/CONNECT_WEBSOCKET';
+const DISCONNECT_WEBSOCKET = 'canvas/DISCONNECT_WEBSOCKET';
+const CHANGE_VALUE = 'canvas/CHANGE_VALUE';
 const SET_MOVE_PIECE = 'canvas/SET_MOVE_PIECE';
 
-export const setBoard = createAction(SET_BOARD, payload => payload);
+export const connectWebsocket = createAction(CONNECT_WEBSOCKET);
+export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
+export const changeValue = createAction(CHANGE_VALUE, payload => payload);
+
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
-export const setBoardThunk = ({ move }) => ( dispatch, getState ) => {
+export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board } } = getState();
     const cell = board[prev.y][prev.x];
@@ -23,7 +27,7 @@ export const setBoardThunk = ({ move }) => ( dispatch, getState ) => {
         ...cell,
     }
     clearBoard[prev.y][prev.x] = { covered: false };
-    dispatch(setBoard({ board: clearBoard, clicked: null }));
+    dispatch(changeValue({ board: clearBoard, clicked: null }));
 }
 
 const genClearBoard = board => 
@@ -35,6 +39,20 @@ const genClearBoard = board =>
             })
         )
     );
+
+function* connectWebsocketSaga () {
+    const socketTask = yield fork(connectNamespace, {
+        url: '/canvas',
+        changeValue: changeValueThunk,
+    });
+    
+    yield take(DISCONNECT_WEBSOCKET);
+    yield cancel(socketTask);
+}
+
+export function* canvasSaga () {
+    yield takeEvery(CONNECT_WEBSOCKET, connectWebsocketSaga);
+}
 
 export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
     if(clicked && board[y][x].covered) {
@@ -95,7 +113,7 @@ export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
         clearBoard[axis.dy][axis.dx].covered = true;
     });
 
-    dispatch(setBoard({ board: clearBoard, clicked: { y, x } }));
+    dispatch(changeValue({ board: clearBoard, clicked: { y, x } }));
 };
 
 const initialState = {
@@ -105,10 +123,8 @@ const initialState = {
     board,
 };
 
-
-
 export default handleActions({
-    [SET_BOARD]: (state, { payload : { board, clicked } }) => ({
+    [CHANGE_VALUE]: (state, { payload : { board, clicked } }) => ({
         ...state,
         board,
         clicked,

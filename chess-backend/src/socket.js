@@ -58,6 +58,18 @@ export default (server, app, sessionMiddleware) => {
         })
     })
 
+    const canvas = io.of('/canvas');
+
+    canvas.on('connect', socket => {
+        console.dir('-------------socket(canvas)--------------');
+        console.dir(socket.request.sessionID);
+
+        socket.on('disconnect', () => {
+            console.dir('-------------socketDis(canvas)--------------');
+            console.dir(socket.request.sessionID);
+        });
+    });
+
     // subscribe Default Namespace
     io.on('connect', socket => {        
         //  io connection시에는 sessionID가 다르지만, 첫 http request 이후 세션 고정
