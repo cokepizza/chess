@@ -3,7 +3,7 @@ export const sendMessage = (req, res, next) => {
     const { message } = req.body;
     const { nickname, color } = req.session;
     io.of('/chat').emit('message', {
-        type: 'chat',
+        type: 'change',
         nickname,
         color,
         message: `${req.session.nickname} : ${message}`,

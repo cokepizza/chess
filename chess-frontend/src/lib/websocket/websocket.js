@@ -19,6 +19,7 @@ export function* connectNamespace(params) {
     const {
         url,
         initializeValue,
+        changeValue
     } = params;
 
     try {
@@ -27,7 +28,12 @@ export function* connectNamespace(params) {
     
         while(true) {
             const message = yield take(channel);
-            yield put(initializeValue(message));
+            if(message.type === 'initialize') {
+                yield put(initializeValue(message));
+            } else if(message.type === 'change') {
+                yield put(changeValue(message));
+            }
+            
         }
     } catch(e) {
         console.dir(e);

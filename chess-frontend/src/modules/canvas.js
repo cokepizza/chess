@@ -1,6 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
 import createRequestThunk from '../lib/createRequestThunk';
-import * as gameCtrl from '../lib/api/game';
+import * as canvasCtrl from '../lib/api/canvas';
 import rules from '../lib/base/rules';
 import board from '../lib/base/board'
 
@@ -10,10 +10,10 @@ import board from '../lib/base/board'
 */
 
 const SET_BOARD = 'canvas/SET_BOARD';
-const SET_MOVE_PIECE = 'game/SET_MOVE_PIECE';
+const SET_MOVE_PIECE = 'canvas/SET_MOVE_PIECE';
 
 export const setBoard = createAction(SET_BOARD, payload => payload);
-export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, gameCtrl.movePiece);
+export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
 export const setBoardThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board } } = getState();

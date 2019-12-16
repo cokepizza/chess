@@ -16,7 +16,7 @@ export const createRoom = (req, res, next) => {
     });
 
     io.of('/room').emit('message', {
-        type: 'message',
+        type: 'initialize',
         room,
     });
 

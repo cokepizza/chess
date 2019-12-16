@@ -23,7 +23,7 @@ export const movePiece = (req, res, next) => {
             console.dir(turn);
             console.dir(req.sessionID);
             io.of('canvas').emit('message', {
-                type: 'message',
+                type: 'change',
                 move,
             });
             turn = (turn === 'black' ? 'white' : 'black');

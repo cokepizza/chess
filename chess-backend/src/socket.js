@@ -43,12 +43,11 @@ export default (server, app, sessionMiddleware) => {
     chat.on('connect', socket => {
         console.dir('-------------socket(chat)--------------');
         console.dir(socket.request.sessionID);
-        const room = app.get('room');
         
         const { nickname, color } = socket.request.session;
 
         chat.emit('message', {
-            type: 'chat',
+            type: 'change',
             color,
             message: `welcome ${nickname}`,
         });
@@ -81,7 +80,7 @@ export default (server, app, sessionMiddleware) => {
         }
 
         socket.emit('message', {
-            type: 'auth',
+            type: 'initialize',
             id,
             nickname,
             role,
