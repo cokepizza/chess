@@ -5,26 +5,25 @@ import uuid from 'uuid/v1';
 
 export const createRoom = (req, res, next) => {
     const io = req.app.get('io');
-    const mapper = req.app.get('mapper');
 
     const room = req.app.get('room');
     const length = room.length;
 
     const { nickname } = req.session;
 
-    room.push({
+    const genRoom = {
         key: uuid(),
         name: `room${length}`,
         participant: [nickname],
-    });
+    }
 
-    
+    room.push(genRoom);
 
     io.of('/room').emit('message', {
         type: 'initialize',
         room,
     });
 
-    res.send();
+    res.send(genRoom.key);
     res.status(202).end();
 }

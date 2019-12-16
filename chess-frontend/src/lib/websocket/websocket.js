@@ -32,7 +32,6 @@ export function* connectNamespace(params) {
             if(message.type === 'initialize') {
                 yield put(initializeValue(message));
             } else if(message.type === 'change') {
-                console.dir(url, 'change');
                 yield put(changeValue(message));
             }
             

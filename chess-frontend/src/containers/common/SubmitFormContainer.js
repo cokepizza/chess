@@ -1,14 +1,19 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import SubmitForm from '../../components/common/SubmitForm';
-import { createRoomThunk } from '../../modules/room';
+import { disconnectWebsocket, createRoomThunk } from '../../modules/room';
 
-const SubmitFormContainer = ({ onCancelClick, ...rest }) => {
+const SubmitFormContainer = ({ history, onCancelClick, ...rest }) => {
     const dispatch = useDispatch();
 
     const onConfirmClick = useCallback(e => {
         e.preventDefault();
-        dispatch(createRoomThunk());
+        (async() => {
+            dispatch(disconnectWebsocket());
+            const key = await dispatch(createRoomThunk());
+            history.push('/game', { key });
+        })();
     }, []);
 
     return (
@@ -20,4 +25,4 @@ const SubmitFormContainer = ({ onCancelClick, ...rest }) => {
     )
 };
 
-export default SubmitFormContainer;
+export default withRouter(SubmitFormContainer);
