@@ -17,6 +17,7 @@ export const connectWebsocket = createAction(CONNECT_WEBSOCKET);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 
+//  setMovePieceThunk 타입 달아놔야함
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;

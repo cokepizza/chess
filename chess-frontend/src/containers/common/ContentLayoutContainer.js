@@ -10,6 +10,7 @@ const ContentLayoutContainer = () => {
 
     const connection = async () => {
         await dispatch(setSessionThunk());
+        console.dir('connection~');
         dispatch(connectAuthWebsocket());
         dispatch(connectCanvasWebsocket());
         return true;
