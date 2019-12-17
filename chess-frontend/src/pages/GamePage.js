@@ -8,7 +8,7 @@ const GamePage = ({ history }) => {
         if(!history.location.state || !history.location.state.key) {
             history.push('/');
         }
-    });
+    }, [history]);
 
     if(!history.location.state) return null;
     const { key } = history.location.state;

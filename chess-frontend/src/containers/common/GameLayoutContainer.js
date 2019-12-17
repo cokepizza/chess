@@ -2,8 +2,10 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import GameLayout from '../../components/common/GameLayout';
 import { setSessionThunk } from '../../modules/auth';
+import { connectWebsocket as connectAuthWebsocket } from '../../modules/auth';
 import { connectWebsocket as connectChatWebsocket } from '../../modules/chat';
 import { connectWebsocket as connectCanvasWebsocket} from '../../modules/canvas';
+
 import useAsync from '../../lib/hook/useAsync';
 
 const GameLayoutContainer = ({ gameKey }) => {
@@ -11,6 +13,7 @@ const GameLayoutContainer = ({ gameKey }) => {
 
     const connection = async () => {
         await dispatch(setSessionThunk());
+        dispatch(connectAuthWebsocket());
         dispatch(connectChatWebsocket(gameKey));
         dispatch(connectCanvasWebsocket(gameKey));
         return true;
