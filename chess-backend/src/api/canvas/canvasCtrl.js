@@ -7,17 +7,17 @@ export const movePiece = (req, res) => {
     const canvasMap = req.app.get('canvas');
     
     const move = req.body;
-    const roomKey = req.session.key;
+    const key = req.session.key;
     const { prev, next } = move;
 
     console.dir(req.session);
     
-    if(!roomMap.has(roomKey)) {
-        res.send({ error: `There's no available Room #${roomKey}` });
+    if(!roomMap.has(key)) {
+        res.send({ error: `There's no available Room #${key}` });
         return res.status(403).end();
     }
 
-    const room = roomMap.get(roomKey);
+    const room = roomMap.get(key);
     const participantSet = new Set(room._participant);
     if(!participantSet.has(req.sessionID)) {
         res.send({ error: `Not Authorized` });
@@ -30,13 +30,19 @@ export const movePiece = (req, res) => {
         return res.status(403).end();
     }
 
-    const board = canvasMap.get(roomKey);
+    const board = canvasMap.get(key);
     if(board[prev.y][prev.x].owner !== player) {
         res.send({ error: `It's not your turn` });
         return res.status(403).end();
     }
 
-    io.of('/canvas').emit('message', {
+    const copied = { ...board[prev.y][prev.x]};
+    board[prev.y][prev.x] = {
+        covered: false
+    };
+    board[next.y][next.x] = copied;
+
+    io.of('/canvas').to(key).emit('message', {
         type: 'change',
         move,
     });
