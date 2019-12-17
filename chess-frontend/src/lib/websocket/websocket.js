@@ -2,6 +2,7 @@ import { eventChannel } from 'redux-saga';
 import SocketIo from 'socket.io-client';
 import { put, call, take, cancelled } from 'redux-saga/effects';
 
+// eslint-disable-next-line
 function* createEventChannel(io) {
     return eventChannel(emit => {
         io.on('message', message => {

@@ -96,12 +96,17 @@ export default (server, app, sessionMiddleware) => {
         //  room join
         socket.join(key);
 
+        canvas.in(key).clients((err, clients) => {
+            console.log(clients);
+        })
+
         //  room객체 추가 정보는 canvas쪽에서 일괄처리
         const roomMap = app.get('room');
         const room = roomMap.get(key);
+        console.dir(room);
         room.participant.push(nickname);
         room._participant.push(socket.request.sessionID);
-        console.dir(room);
+        
         
         //  canvas initialize
         const canvasMap = app.get('canvas');

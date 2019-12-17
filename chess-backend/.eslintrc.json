@@ -16,6 +16,7 @@
     "rules": {
         "no-unused-vars": "warn",
         "no-console": "off",
-        "require-atomic-updates": "off"
+        "require-atomic-updates": "off",
+        "require-yield": "off"
     }
 }

@@ -15,7 +15,7 @@ const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
         setModal(false);
         setOpenModal(false);
         dispatch(disconnectWebsocket());
-    }, [setOpenModal])
+    }, [dispatch, setOpenModal])
 
     const onContentClick = useCallback(e => {
         e.stopPropagation();
@@ -26,7 +26,7 @@ const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
         setOpenModal(false);
         dispatch(disconnectWebsocket());
         history.push('/game', { key });
-    }, []);
+    }, [dispatch, history, setOpenModal]);
 
     useEffect(() => {
         setModal(openModal);

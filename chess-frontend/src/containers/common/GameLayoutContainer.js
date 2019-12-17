@@ -16,7 +16,7 @@ const GameLayoutContainer = ({ gameKey }) => {
         return true;
     };
 
-    const [state, refetch] = useAsync(connection, [ dispatch ]);
+    const [state] = useAsync(connection, [ dispatch ]);
 
     const { loading, data, error } = state;
 

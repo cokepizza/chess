@@ -14,7 +14,7 @@ const SubmitFormContainer = ({ history, onCancelClick, ...rest }) => {
             const key = await dispatch(createRoomThunk());
             history.push('/game', { key });
         })();
-    }, []);
+    }, [dispatch, history]);
 
     return (
         <SubmitForm
