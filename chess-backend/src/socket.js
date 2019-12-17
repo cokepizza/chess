@@ -50,6 +50,8 @@ export default (server, app, sessionMiddleware) => {
 
         //  room join & broadcast
         const key = socket.handshake.query['key'];
+        if(!key) return;
+
         socket.join(key);
         socket.broadcast.to(key).emit('message', {
             type: 'change',
@@ -84,9 +86,13 @@ export default (server, app, sessionMiddleware) => {
         console.dir('-------------socket(canvas)--------------');
         console.dir(socket.request.sessionID);
         
+        // 필요하다면 동일 sessionID간의 socket 객체들간에 room을 만들어 관리하는 방법도 생각해볼 수 있음
+        // canvas.in(key).clients((err, clients) => {
+        //     console.log(clients);
+        // })
+        
         const { nickname } = socket.request.session;
 
-        
         const key = socket.handshake.query['key'];
         
         //  filter
@@ -96,17 +102,15 @@ export default (server, app, sessionMiddleware) => {
         //  room join
         socket.join(key);
 
-        canvas.in(key).clients((err, clients) => {
-            console.log(clients);
-        })
-
         //  room객체 추가 정보는 canvas쪽에서 일괄처리
         const roomMap = app.get('room');
         const room = roomMap.get(key);
-        console.dir(room);
+
+        //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
+        if(!room) return;
         room.participant.push(nickname);
         room._participant.push(socket.request.sessionID);
-        
+        console.dir(room);
         
         //  canvas initialize
         const canvasMap = app.get('canvas');

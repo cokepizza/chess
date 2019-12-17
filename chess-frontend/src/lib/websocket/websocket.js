@@ -27,7 +27,10 @@ export function* connectNamespace(params) {
     try {
         console.dir(url);
         console.dir(query);
-        const io = SocketIo(url, { query });
+        const io = SocketIo(url, {
+            query,
+            reconnection: false,
+        });
         channel = yield call(createEventChannel, io);
     
         while(true) {
