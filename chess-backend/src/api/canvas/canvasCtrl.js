@@ -1,5 +1,3 @@
-let turn = 'black';
-
 export const movePiece = (req, res, next) => {
     const io = req.app.get('io');
     const move = req.body;

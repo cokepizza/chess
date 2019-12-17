@@ -10,26 +10,11 @@ export default (server, app, sessionMiddleware) => {
         sessions: new Set(),
     });
 
-    // app.set('mapper', {
-    //     room: {
-    //         mapSocketToSession: new Map(),
-    //         mapSessionToSocket: new Map(),
-    //     },
-    //     canvas: {
-    //         mapSocketToSession: new Map(),
-    //         mapSessionToSocket: new Map(),
-    //     },
-    //     chat: {
-    //         mapSocketToSession: new Map(),
-    //         mapSessionToSocket: new Map(),
-    //     }
-    // });
-
     app.set('counter', 0);
     app.set('canvas', new Map());
     app.set('chat', new Map());
 
-    app.set('room', []);
+    app.set('room', new Map());
 
     io.use((socket, next) => {
         sessionMiddleware(socket.request, socket.request.res, next);
@@ -45,7 +30,7 @@ export default (server, app, sessionMiddleware) => {
         
         socket.emit('message', {
             type: 'initialize',
-            room,
+            room: [...room.values()],
         });
         
         socket.on('disconnect', () => {
@@ -54,23 +39,30 @@ export default (server, app, sessionMiddleware) => {
         })
     });
 
+    //  subscribe 'Chat' Namespace
     const chat = io.of('/chat');
 
     chat.on('connect', socket => {
         console.dir('-------------socket(chat)--------------');
         console.dir(socket.request.sessionID);
-          
-        //  room join
+        
+        const { nickname, color } = socket.request.session;
+
+        //  room join & broadcast
         const key = socket.handshake.query['key'];
-        socket.join(key, () => {
-            let rooms = Object.keys(socket.rooms);
-            console.dir('-------------socket(chatjoin)--------------');
-            console.dir(rooms);
+        socket.join(key);
+        socket.broadcast.to(key).emit('message', {
+            type: 'change',
+            color,
+            message: `${nickname} join the game`,
         });
 
-        // chat.in(key).clients((err, clients) => {
-        //     console.dir(clients);
-        // });
+        //  socket only
+        socket.emit('message', {
+            type: 'change',
+            color,
+            message: `welcome ${nickname}`,
+        });
 
         //  session key update
         const roomKey = socket.request.session.key;
@@ -78,25 +70,6 @@ export default (server, app, sessionMiddleware) => {
             socket.request.session.key = key;
             socket.request.session.save();
         }
-        
-        const { nickname, color } = socket.request.session;
-
-        //  send message respectively
-        socket.emit('message', {
-            type: 'change',
-            color,
-            message: `welcome ${nickname}`,
-        });
-        // chat.emit('message', {
-        //     type: 'change',
-        //     color,
-        //     message: `welcome ${nickname}`,
-        // });
-        // chat.in(key).broadcast.emit('message', {
-        //     type: 'change',
-        //     color,
-        //     message: `welcome ${nickname}`,
-        // });
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(chat)--------------');
@@ -104,25 +77,32 @@ export default (server, app, sessionMiddleware) => {
         })
     })
 
+    //  subscribe 'Canvas' Namespace
     const canvas = io.of('/canvas');
 
     canvas.on('connect', socket => {
         console.dir('-------------socket(canvas)--------------');
         console.dir(socket.request.sessionID);
-        // const { mapSocketToSession, mapSessionToSocket } = app.get('mapper');
-        // if(!mapSocketToSession.has(socket.id)) {
-        //     mapSocketToSession.set(socket.id, socket.request.sessionID);
-        //     mapSessionToSocket.set(socket.request.sessionID, socket);
-        // }
-        
+
         //  room join
         const key = socket.handshake.query['key'];
-        socket.join(key, () => {
-            let rooms = Object.keys(socket.rooms);
-            console.dir('-------------socket(canvasjoin)--------------');
-            console.dir(rooms);
-        });
+        socket.join(key);
+        
+        //  canvas initialize
+        const canvasMap = app.get('canvas');
+        let board;
+        if(canvasMap.has(key)) {
+            board = canvasMap.get(key);
+        } else {
+            board = _.cloneDeep(defaultBoard);
+            canvasMap.set(key, board);
+        }
 
+        socket.emit('message', {
+            type: 'initialize',
+            board,
+        })
+        
         //  session key update
         const roomKey = socket.request.session.key;
         if(!roomKey || roomKey !== key) {
@@ -130,22 +110,8 @@ export default (server, app, sessionMiddleware) => {
             socket.request.session.save();
         }
 
-        //  canvas initialize to socket
-        const canvas = app.get('canvas');
-        let board;
-        if(canvas.has(key)) {
-            board = canvas.get(key);
-        } else {
-            board = _.cloneDeep(defaultBoard);
-            canvas.set(key, board);
-        }
-
-        socket.emit('message', {
-            type: 'initialize',
-            board,
-        })
-
         socket.on('disconnect', () => {
+            // socket.leave(key);
             console.dir('-------------socketDis(canvas)--------------');
             console.dir(socket.request.sessionID);
         });
