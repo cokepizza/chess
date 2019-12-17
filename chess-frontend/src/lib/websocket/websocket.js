@@ -8,6 +8,7 @@ function* createEventChannel(io) {
         io.on('message', message => {
             emit(message)
         });
+
         return () => {
             io.close();
         }

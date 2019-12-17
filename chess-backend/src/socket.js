@@ -108,8 +108,21 @@ export default (server, app, sessionMiddleware) => {
 
         //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
         if(!room) return;
-        room.participant.push(nickname);
-        room._participant.push(socket.request.sessionID);
+
+        const participantSet = new Set(room._participant);
+        if(!participantSet.has(socket.request.sessionID)) {
+            room.participant.push(nickname);
+            room._participant.push(socket.request.sessionID);
+            
+            //  향후 변경예정
+            if(room._participant.length == 1) {
+                room.black = nickname;
+                room._black = socket.request.sessionID;
+            } else if(room._participant.length == 2) {
+                room.white = nickname;
+                room._white = socket.request.sessionID;
+            }
+        }
         console.dir(room);
         
         //  canvas initialize
