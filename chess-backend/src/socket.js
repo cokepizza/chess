@@ -83,10 +83,25 @@ export default (server, app, sessionMiddleware) => {
     canvas.on('connect', socket => {
         console.dir('-------------socket(canvas)--------------');
         console.dir(socket.request.sessionID);
+        
+        const { nickname } = socket.request.session;
+
+        
+        const key = socket.handshake.query['key'];
+        
+        //  filter
+        //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것
+        if(!key) return;
 
         //  room join
-        const key = socket.handshake.query['key'];
         socket.join(key);
+
+        //  room객체 추가 정보는 canvas쪽에서 일괄처리
+        const roomMap = app.get('room');
+        const room = roomMap.get(key);
+        room.participant.push(nickname);
+        room._participant.push(socket.request.sessionID);
+        console.dir(room);
         
         //  canvas initialize
         const canvasMap = app.get('canvas');

@@ -6,8 +6,8 @@ import uuid from 'uuid/v1';
 
 export const createRoom = (req, res, next) => {
     const io = req.app.get('io');
-    const room = req.app.get('room');
-    const size = room.size;
+    const roomMap = req.app.get('room');
+    const size = roomMap.size;
 
     const genRoom = {
         key: uuid(),
@@ -15,9 +15,12 @@ export const createRoom = (req, res, next) => {
         participant: [],
         black: null,
         white: null,
+        _participant: [],
+        _black: null,
+        _white: null,
     }
 
-    room.set(genRoom.key, genRoom);
+    roomMap.set(genRoom.key, genRoom);
 
     // //  처음 들어오면 black
     // if(!req.session.role) {
@@ -35,7 +38,7 @@ export const createRoom = (req, res, next) => {
     //  change에서는 room 객체 정보만 전달하자
     io.of('/room').emit('message', {
         type: 'initialize',
-        room: [...room.values()],
+        room: [...roomMap.values()],
     });
 
     res.send(genRoom.key);
