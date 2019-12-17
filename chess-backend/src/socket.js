@@ -59,7 +59,8 @@ export default (server, app, sessionMiddleware) => {
     chat.on('connect', socket => {
         console.dir('-------------socket(chat)--------------');
         console.dir(socket.request.sessionID);
-        
+          
+        //  room join
         const key = socket.handshake.query['key'];
         socket.join(key, () => {
             let rooms = Object.keys(socket.rooms);
@@ -71,16 +72,31 @@ export default (server, app, sessionMiddleware) => {
         //     console.dir(clients);
         // });
 
-        socket.request.session.room = key;
-        socket.request.session.save();
-
+        //  session key update
+        const roomKey = socket.request.session.key;
+        if(!roomKey || roomKey !== key) {
+            socket.request.session.key = key;
+            socket.request.session.save();
+        }
+        
         const { nickname, color } = socket.request.session;
 
-        chat.emit('message', {
+        //  send message respectively
+        socket.emit('message', {
             type: 'change',
             color,
             message: `welcome ${nickname}`,
         });
+        // chat.emit('message', {
+        //     type: 'change',
+        //     color,
+        //     message: `welcome ${nickname}`,
+        // });
+        // chat.in(key).broadcast.emit('message', {
+        //     type: 'change',
+        //     color,
+        //     message: `welcome ${nickname}`,
+        // });
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(chat)--------------');
@@ -99,6 +115,7 @@ export default (server, app, sessionMiddleware) => {
         //     mapSessionToSocket.set(socket.request.sessionID, socket);
         // }
         
+        //  room join
         const key = socket.handshake.query['key'];
         socket.join(key, () => {
             let rooms = Object.keys(socket.rooms);
@@ -106,6 +123,14 @@ export default (server, app, sessionMiddleware) => {
             console.dir(rooms);
         });
 
+        //  session key update
+        const roomKey = socket.request.session.key;
+        if(!roomKey || roomKey !== key) {
+            socket.request.session.key = key;
+            socket.request.session.save();
+        }
+
+        //  canvas initialize to socket
         const canvas = app.get('canvas');
         let board;
         if(canvas.has(key)) {
