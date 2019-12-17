@@ -76,6 +76,7 @@ const MessageBlock = styled.div`
     margin : 5px;
     opacity : 0.7;
     transition: all 0.1s;
+    background-color : lightgray;
     :nth-child(even) {
         color : black ;
         border : 1px solid darkgray;
