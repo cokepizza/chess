@@ -8,7 +8,7 @@ const App = () => {
   return (
     <>
       <Route component={MainPage} path='/' exact />
-      <Route component={GamePage} path='/game' exact />
+      <Route component={GamePage} path='/game/:id' exact />
       <Route component={RecordPage} path='/record' exact />
     </>
   )

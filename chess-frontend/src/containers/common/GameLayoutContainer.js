@@ -8,25 +8,18 @@ import { connectWebsocket as connectCanvasWebsocket} from '../../modules/canvas'
 
 import useAsync from '../../lib/hook/useAsync';
 
-const GameLayoutContainer = ({ gameKey }) => {
+const GameLayoutContainer = ({ gameId }) => {
     const dispatch = useDispatch();
 
     const connection = async () => {
         await dispatch(setSessionThunk());
-        await new Promise(resolve => setTimeout(() => {
-            dispatch(connectAuthWebsocket());
-            dispatch(connectChatWebsocket(gameKey));
-            dispatch(connectCanvasWebsocket(gameKey));
-            resolve();
-        }), 1000);
-        // dispatch(connectAuthWebsocket());
-        // dispatch(connectChatWebsocket(gameKey));
-        // dispatch(connectCanvasWebsocket(gameKey));
-        // resolve();
+        dispatch(connectAuthWebsocket());
+        dispatch(connectChatWebsocket(gameId));
+        dispatch(connectCanvasWebsocket(gameId));
         return true;
     };
 
-    const [state] = useAsync(connection, [ dispatch ]);
+    const [state] = useAsync(connection, [ dispatch, gameId ]);
 
     const { loading, data, error } = state;
 

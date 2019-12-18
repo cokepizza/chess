@@ -13,6 +13,7 @@ export default (server, app, sessionMiddleware) => {
     app.set('counter', 0);
     app.set('canvas', new Map());
     app.set('chat', new Map());
+    app.set('session', new Map());
 
     app.set('room', new Map());
 
@@ -93,15 +94,25 @@ export default (server, app, sessionMiddleware) => {
         
         const { nickname } = socket.request.session;
 
+        // const sessionMap = app.get('session');
+        // if(sessionMap.has(socket.request.sessionID)) {
+        //     sessionMap.get(socket.request.sessionID).add(socket.id);
+        // } else {
+        //     sessionMap.set(socket.requset.sessionID, new Set([ socket.id ]));
+        // }
+
         const key = socket.handshake.query['key'];
         
         //  filter
         //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것
         if(!key) return;
-
+       
         //  room join
         socket.join(key);
-
+        canvas.in(key).clients((err, clients) => {
+            console.dir(`canvas ${key} clients`);
+            console.log(clients);
+        })
         //  room객체 추가 정보는 canvas쪽에서 일괄처리
         const roomMap = app.get('room');
         const room = roomMap.get(key);
@@ -147,10 +158,10 @@ export default (server, app, sessionMiddleware) => {
         //  session key update
         const roomKey = socket.request.session.key;
         if(!roomKey || roomKey !== key) {
-            socket.request.session.key = key;
-            socket.request.session.save();
+            socket.request.session.key = key;    
         }
 
+        socket.request.session.save();
         socket.on('disconnect', () => {
             // socket.leave(key);
             console.dir('-------------socketDis(canvas)--------------');

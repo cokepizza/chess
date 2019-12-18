@@ -3,21 +3,22 @@ import { withRouter } from 'react-router-dom';
 import HeaderContainer from '../containers/common/HeaderContainer';
 import GameLayoutContainer from '../containers/common/GameLayoutContainer';
 
-const GamePage = ({ history }) => {
+const GamePage = ({ history, match }) => {
+    console.dir(match);
     useEffect(() => {
-        if(!history.location.state || !history.location.state.key) {
+        if(!match.params.id) {
             history.push('/');
         }
     }, [history]);
 
-    if(!history.location.state) return null;
-    const { key } = history.location.state;
-    if(!key) return null;
+    if(!match.params.id) return null;
+    const { id } = match.params;
+    if(!id) return null;
     
     return (
         <>
             <HeaderContainer />
-            <GameLayoutContainer gameKey={key}/>
+            <GameLayoutContainer gameId={id}/>
         </>
     )
 };
