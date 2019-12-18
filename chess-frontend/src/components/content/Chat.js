@@ -18,6 +18,8 @@ const ChatBlock = styled.div`
     height: 300px;
     margin: 10px 10px 10px 10px;
     border : none;
+    display : flex;
+    flex-direction : column;
     overflow-y: scroll;
     background-image: url('https://previews.123rf.com/images/vilisov/vilisov1502/vilisov150200012/36207194-chess-board-abstract-background.jpg'); 
     background-size: cover;
@@ -66,90 +68,105 @@ const ChatButtonBlock = styled.button`
     } 
 `;
 
-const MessageBlock = styled.div`
-  padding : 5px;
+const MyMessageBlock = styled.div`
+& {
+    position: relative;
+    align-self: flex-end;
+    border-radius: 5px;
+    padding : 5px;
+    min-height : 20px;
+    font-size : 15px;
+    margin : 5px 20px 5px 5px;
+    opacity : 0.7;
+    transition: all 0.1s;
+    border : 1px solid darkgray;
+    background-color : ${({ color }) => color ? color : 'gray'};
+    color : black;
+    &:active {
+            border : 3px solid darkblue;
+        }
+}
+&::after{
+    content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 1.094em solid transparent;
+	border-left-color: ${({ color }) => color ? color : 'gray'};
+	border-right: 0;
+	border-bottom: 0;
+	margin-top: -0.547em;
+	margin-right: -1.094em;
+}  
+`;
+
+const YourMessageBlock = styled.div`
+&{
+    align-self: flex-start;
+    padding : 5px;
+    border-radius: 5px;
+    min-height : 20px;
+    font-size : 15px;
+    margin : 5px 5px 5px 20px;
+    opacity : 0.7;
+    transition: all 0.1s;
+    background-color : lightgray;
+    border : 1px solid darkgray;
+    border : 1px solid darkgray;
+    background-color : ${({ color }) => color ? color : 'gray'};
+    &:active {
+            border : 3px solid darkblue;
+        }
+}
+&::after {
+    content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 1.094em solid transparent;
+	border-right-color: ${({ color }) => color ? color : 'gray'};
+	border-left: 0;
+	border-bottom: 0;
+	margin-top: -0.547em;
+	margin-left: -1.094em;
+}
+
+`;
+
+const BroadcastBlock = styled.div`
+    align-self: stretch;
+    text-align: center;
+    padding : 5px;
+    border-radius: 5px;
     min-height : 20px;
     font-size : 15px;
     margin : 5px;
     opacity : 0.7;
     transition: all 0.1s;
     background-color : lightgray;
-    :nth-child(even) {
-        color : black ;
-        border : 1px solid darkgray;
-        background-color : lightgray;
-        &:active {
+    border : 1px solid darkgray;
+    border : 1px solid darkgray;
+    background-color : ${({ color }) => color ? color : 'gray'};
+    &:active {
             border : 3px solid darkblue;
         }
-    }
-    :nth-child(odd) {
-        color : blue ;
-        border : 1px solid gray;
-        background-color : lightgray;
-        &:active {
-            border : 3px solid darkblue;
-        }
-    }
 `;
 
-// const ChatBubble = styled.div`
-//     color: black;  
-//     background-color: #000000;
-//     border-radius: 5px;
-//     box-shadow: 0 0 6px #B2B2B2;
-//     display: inline-block;
-//     padding: 10px 18px;
-//     position: relative;
-//     vertical-align: top;
-    /* &:before {
-        background-color: #F2F2F2;
-        content:"\00a0";
-        display: block;
-        height: 16px;
-        position: absolute;
-        top: 11px;
-        transform: rotate(29deg) skew(-35deg);
-        -moz-transform: rotate(29deg) skew(-35deg);
-        -ms-transform: rotate(29deg) skew(-35deg);
-        -o-transform: rotate(29deg) skew(-35deg);
-        -webkit-transform: rotate(29deg) skew(-35deg);
-        width: 20px;
-    }
-    &.me {
-        float: left;
-        clear: both;
-        margin: 5px 45px 5px 20px;
-    }
-    &.me::before {
-        box-shadow: -2px 2px 2px 0 rgba(178, 178, 178, .4);
-        left: -9px;
-    }
-    &.you {
-        float: right;
-        clear: both;
-        margin: 5px 20px 5px 45px;
-    }
-    &.you::before {
-        box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
-        right: -9px;
-
-    &.broadcast {
-        align-items: center;
-        width : 100%;
-    }  */
-// `;
-
 const Message = React.memo(({ message, nickname, ...rest }) => {
+    const MessageType = message.nickname
+        ? message.nickname === nickname
+            ? MyMessageBlock : YourMessageBlock : BroadcastBlock
     return (
-        <MessageBlock
-            {...rest} 
+        <MessageType
+            {...rest}
             color={message.color}
-            className={message.nickname 
-                ? message.nickname === nickname 
-                ? 'me' : 'you' : 'broadcast' }
         >
             {message.message}
-        </MessageBlock>
+        </MessageType>
     )
 });
 
