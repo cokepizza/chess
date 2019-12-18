@@ -6,19 +6,24 @@ import createRequestThunk, { createRequestActionTypes } from '../lib/createReque
 import * as roomCtrl from '../lib/api/room';
 
 
-const INITIALIZE_VALUE = 'room/INITIALIZE_VALUE';
 const CONNECT_WEBSOCKET = 'room/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'room/DISCONNECT_WEBSOCKET';
-const [ CREATE_ROOM, CREATE_ROOM_SUCCESS, CREATE_ROOM_FAILURE ] = createRequestActionTypes('/room/CREATE_ROOM');
+const INITIALIZE_VALUE = 'room/INITIALIZE_VALUE';
+const INITIALIZE_SOCKET = 'room/INITIALIZE_SOCKET';
 
-export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
+const [ CREATE_ROOM, CREATE_ROOM_SUCCESS, CREATE_ROOM_FAILURE ] = createRequestActionTypes('room/CREATE_ROOM');
+
 export const connectWebsocket = createAction(CONNECT_WEBSOCKET);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
+export const initializeSocket = createAction(INITIALIZE_SOCKET);
+export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
+
 export const createRoomThunk = createRequestThunk(CREATE_ROOM, roomCtrl.createRoom);
 
 function* connectWebsocketSaga () {
     const socketTask = yield fork(connectNamespace, { 
         url: '/room',
+        initializeSocket,
         initializeValue,
     });
     
@@ -31,11 +36,16 @@ export function* roomSaga () {
 }
 
 const initialState = {
+    socket: null,
     room: null,
     error: null,
 }
 
 export default handleActions({
+    [INITIALIZE_SOCKET]: (state, { payload: { socket } }) => ({
+        ...state,
+        socket,
+    }),
     [INITIALIZE_VALUE]: (state, { payload: { room }}) => ({
         ...state,
         room,

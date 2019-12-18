@@ -1,7 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import { takeEvery, fork, take, cancel } from 'redux-saga/effects';
 
-import createRequestThunk from '../lib/createRequestThunk';
+import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import { connectNamespace } from '../lib/websocket/websocket';
 import * as canvasCtrl from '../lib/api/canvas';
 
@@ -10,17 +10,19 @@ import board from '../lib/base/board'
 
 const CONNECT_WEBSOCKET = 'canvas/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'canvas/DISCONNECT_WEBSOCKET';
+const INITIALIZE_SOCKET = 'canvas/INITIALIZE_SOCKET';
 const INITIALIZE_VALUE = 'canvas/INITIALIZE_VALUE';
 const CHANGE_VALUE = 'canvas/CHANGE_VALUE';
-const SET_MOVE_PIECE = 'canvas/SET_MOVE_PIECE';
 
 export const connectWebsocket = createAction(CONNECT_WEBSOCKET, payload => payload);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
+export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 
-//  setMovePieceThunk 타입 달아놔야함
+const [ SET_MOVE_PIECE, SET_MOVE_PIECE_SUCCESS, SET_MOVE_PIECE_FAILURE ] = createRequestActionTypes('chat/SET_MOVE_PIECE');
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
+
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board } } = getState();
@@ -50,6 +52,7 @@ function* connectWebsocketSaga (action) {
 
     const socketTask = yield fork(connectNamespace, {
         url: '/canvas',
+        initializeSocket,
         initializeValue,
         changeValue: changeValueThunk,
         query,
@@ -63,10 +66,12 @@ export function* canvasSaga () {
     yield takeEvery(CONNECT_WEBSOCKET, connectWebsocketSaga);
 }
 
-export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
+export const clickPieceThunk = ({ board, clicked, y, x, turn }) => (dispatch, getState) => {
     if(clicked && board[y][x].covered) {
-        
-        dispatch(setMovePieceThunk({ 
+        const { canvas: { socket } } = getState();
+
+        dispatch(setMovePieceThunk({
+            socket,
             move: {
                 prev: clicked,
                 next: {y, x}
@@ -126,6 +131,7 @@ export const clickPiece = ({ board, clicked, y, x, turn }) => dispatch => {
 };
 
 const initialState = {
+    socket: null,
     moved: null,
     error: null,
     clicked: null,
@@ -133,6 +139,10 @@ const initialState = {
 };
 
 export default handleActions({
+    [INITIALIZE_SOCKET]: (state, { payload: { socket } }) => ({
+        ...state,
+        socket,
+    }),
     [INITIALIZE_VALUE]: (state, { payload: { board } }) => ({
         ...state,
         board,
@@ -142,4 +152,6 @@ export default handleActions({
         board,
         clicked,
     }),
+    [SET_MOVE_PIECE_SUCCESS]: state => state,
+    [SET_MOVE_PIECE_FAILURE]: state => state,
 }, initialState);

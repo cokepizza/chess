@@ -14,6 +14,7 @@ export default (server, app, sessionMiddleware) => {
     app.set('canvas', new Map());
     app.set('chat', new Map());
     app.set('session', new Map());
+    app.set('socket', new Map());
 
     app.set('room', new Map());
 
@@ -67,13 +68,6 @@ export default (server, app, sessionMiddleware) => {
             message: `welcome ${nickname}`,
         });
 
-        //  session key update
-        const roomKey = socket.request.session.key;
-        if(!roomKey || roomKey !== key) {
-            socket.request.session.key = key;
-            socket.request.session.save();
-        }
-
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(chat)--------------');
             console.dir(socket.request.sessionID);
@@ -94,50 +88,47 @@ export default (server, app, sessionMiddleware) => {
         
         const { nickname } = socket.request.session;
 
-        // const sessionMap = app.get('session');
-        // if(sessionMap.has(socket.request.sessionID)) {
-        //     sessionMap.get(socket.request.sessionID).add(socket.id);
-        // } else {
-        //     sessionMap.set(socket.requset.sessionID, new Set([ socket.id ]));
-        // }
+        //  session = socket bundle (add socket to session)
+        const sessionMap = app.get('session');
+        if(sessionMap.has(socket.request.sessionID)) {
+            sessionMap.get(socket.request.sessionID).add(socket.id);
+        } else {
+            sessionMap.set(socket.request.sessionID, new Set([ socket.id ]));
+        }
 
-        const key = socket.handshake.query['key'];
-        
         //  filter
-        //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것
+        //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것 (서버쪽에서 message를 보내면 좋을 듯)
+        const key = socket.handshake.query['key'];
         if(!key) return;
        
         //  room join
         socket.join(key);
-        canvas.in(key).clients((err, clients) => {
-            console.dir(`canvas ${key} clients`);
-            console.log(clients);
-        })
+        
+        //  mapping socket => roomId;
+        const socketMap = app.get('socket');
+        socketMap.set(socket.id, key);
+
         //  room객체 추가 정보는 canvas쪽에서 일괄처리
         const roomMap = app.get('room');
         const room = roomMap.get(key);
 
         //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
         if(!room) return;
-
+        
         const participantSet = new Set(room._participant);
         if(!participantSet.has(socket.request.sessionID)) {
             room.participant.push(nickname);
             room._participant.push(socket.request.sessionID);
             
-            //  향후 변경예정
             if(room._participant.length == 1) {
                 room.black = nickname;
                 room._black = socket.request.sessionID;
-                socket.request.session.role = 'black';
             } else if(room._participant.length == 2) {
                 room.white = nickname;
                 room._white = socket.request.sessionID;
-                socket.request.session.role = 'white';
-            } else {
-                socket.request.session.role = 'spectator';
             }
         }
+        
         console.dir(room);
         
         //  canvas initialize
@@ -156,14 +147,15 @@ export default (server, app, sessionMiddleware) => {
         })
         
         //  session key update
-        const roomKey = socket.request.session.key;
-        if(!roomKey || roomKey !== key) {
-            socket.request.session.key = key;    
-        }
+        // const roomKey = socket.request.session.key;
+        // if(!roomKey || roomKey !== key) {
+        //     socket.request.session.key = key;    
+        // }
 
-        socket.request.session.save();
+        // socket.request.session.save();
         socket.on('disconnect', () => {
-            // socket.leave(key);
+            //  session = socket bundle (delete socket from session)
+            sessionMap.get(socket.request.sessionID).delete(socket.id);
             console.dir('-------------socketDis(canvas)--------------');
             console.dir(socket.request.sessionID);
         });
@@ -177,11 +169,11 @@ export default (server, app, sessionMiddleware) => {
         
         console.dir('-------------socket(default)--------------');
         console.dir(socket.request.sessionID);
-
+        console.dir(socket.id);
         //  socket.emit()은 소켓이 직접 연결된 세션에만
         //  io.emit()은 연결된 모든 소켓에 broadcast
         
-        const { id, nickname, role, color } = socket.request.session;
+        const { nickname, role, color } = socket.request.session;
         
         if(!nickname) return;
        
@@ -193,7 +185,6 @@ export default (server, app, sessionMiddleware) => {
 
         socket.emit('message', {
             type: 'initialize',
-            id,
             nickname,
             role,
             color,

@@ -5,22 +5,25 @@ import { takeEvery, fork, take, cancel } from 'redux-saga/effects';
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as authAPI from '../lib/api/auth';
 
-const INITIALIZE_VALUE = 'auth/INITIALIZE_VALUE';
 const CONNECT_WEBSOCKET = 'auth/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'auth/DISCONNECT_WEBSOCKET';
+const INITIALIZE_SOCKET = 'auth/INITIALIZE_SOCKET';
+const INITIALIZE_VALUE = 'auth/INITIALIZE_VALUE';
+
 
 const [ SET_SESSION, SET_SESSION_SUCCESS, SET_SESSION_FAILURE ] = createRequestActionTypes('auth/SET_SESSION');
 
-export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const connectWebsocket = createAction(CONNECT_WEBSOCKET);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
+export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
+export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 
 export const setSessionThunk = createRequestThunk(SET_SESSION, authAPI.getSession);
-
 
 function* connectWebsocketSaga () {
     const socketTask = yield fork(connectNamespace, {
         url: '/auth',
+        initializeSocket,
         initializeValue,
     });
     
@@ -33,15 +36,20 @@ export function* authSaga () {
 }
 
 const initialState = {
+    socket: null,
     tempAuth: null,
     session: null,
     error: null,
 };
 
 export default handleActions({
-    [INITIALIZE_VALUE]: (state, { payload: tempAuth }) => ({
+    [INITIALIZE_SOCKET]: (state, { payload: { socket } }) => ({
         ...state,
-        tempAuth,
+        socket,
+    }),
+    [INITIALIZE_VALUE]: (state, { payload: { type, ...rest} }) => ({
+        ...state,
+        tempAuth: { ...rest },
     }),
     [SET_SESSION_SUCCESS]: (state, { payload: session }) => ({
         ...state,

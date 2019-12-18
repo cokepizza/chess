@@ -9,7 +9,7 @@ const GamePage = ({ history, match }) => {
         if(!match.params.id) {
             history.push('/');
         }
-    }, [history]);
+    }, [history, match]);
 
     if(!match.params.id) return null;
     const { id } = match.params;

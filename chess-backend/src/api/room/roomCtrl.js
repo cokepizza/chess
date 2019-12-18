@@ -12,6 +12,7 @@ export const createRoom = (req, res, next) => {
     const genRoom = {
         key: uuid(),
         name: `room${size}`,
+        turn: 0,
         participant: [],
         black: null,
         white: null,
