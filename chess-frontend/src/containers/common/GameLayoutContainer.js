@@ -13,9 +13,16 @@ const GameLayoutContainer = ({ gameKey }) => {
 
     const connection = async () => {
         await dispatch(setSessionThunk());
-        dispatch(connectAuthWebsocket());
-        dispatch(connectChatWebsocket(gameKey));
-        dispatch(connectCanvasWebsocket(gameKey));
+        await new Promise(resolve => setTimeout(() => {
+            dispatch(connectAuthWebsocket());
+            dispatch(connectChatWebsocket(gameKey));
+            dispatch(connectCanvasWebsocket(gameKey));
+            resolve();
+        }), 1000);
+        // dispatch(connectAuthWebsocket());
+        // dispatch(connectChatWebsocket(gameKey));
+        // dispatch(connectCanvasWebsocket(gameKey));
+        // resolve();
         return true;
     };
 

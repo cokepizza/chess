@@ -118,9 +118,13 @@ export default (server, app, sessionMiddleware) => {
             if(room._participant.length == 1) {
                 room.black = nickname;
                 room._black = socket.request.sessionID;
+                socket.request.session.role = 'black';
             } else if(room._participant.length == 2) {
                 room.white = nickname;
                 room._white = socket.request.sessionID;
+                socket.request.session.role = 'white';
+            } else {
+                socket.request.session.role = 'spectator';
             }
         }
         console.dir(room);
