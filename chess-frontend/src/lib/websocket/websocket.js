@@ -2,11 +2,13 @@ import { eventChannel } from 'redux-saga';
 import SocketIo from 'socket.io-client';
 import { put, call, take, cancelled } from 'redux-saga/effects';
 
+// eslint-disable-next-line
 function* createEventChannel(io) {
     return eventChannel(emit => {
         io.on('message', message => {
             emit(message)
         });
+
         return () => {
             io.close();
         }
@@ -26,7 +28,10 @@ export function* connectNamespace(params) {
     try {
         console.dir(url);
         console.dir(query);
-        const io = SocketIo(url, { query });
+        const io = SocketIo(url, {
+            query,
+            reconnection: false,
+        });
         channel = yield call(createEventChannel, io);
     
         while(true) {

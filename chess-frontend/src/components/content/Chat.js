@@ -1,8 +1,5 @@
-// @ts-nocheck
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import auth from '../../modules/auth';
-import chat from '../../modules/chat';
 
 const ChatSubmitBlock = styled.form`
 `;
@@ -95,15 +92,15 @@ const MessageBlock = styled.div`
     }
 `;
 
-const ChatBubble = styled.div`
-    color: black;  
-    background-color: #000000;
-    border-radius: 5px;
-    box-shadow: 0 0 6px #B2B2B2;
-    display: inline-block;
-    padding: 10px 18px;
-    position: relative;
-    vertical-align: top;
+// const ChatBubble = styled.div`
+//     color: black;  
+//     background-color: #000000;
+//     border-radius: 5px;
+//     box-shadow: 0 0 6px #B2B2B2;
+//     display: inline-block;
+//     padding: 10px 18px;
+//     position: relative;
+//     vertical-align: top;
     /* &:before {
         background-color: #F2F2F2;
         content:"\00a0";
@@ -140,7 +137,7 @@ const ChatBubble = styled.div`
         align-items: center;
         width : 100%;
     }  */
-`;
+// `;
 
 const Message = React.memo(({ message, nickname, ...rest }) => {
     return (

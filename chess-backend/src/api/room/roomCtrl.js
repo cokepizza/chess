@@ -6,17 +6,21 @@ import uuid from 'uuid/v1';
 
 export const createRoom = (req, res, next) => {
     const io = req.app.get('io');
-
-    const room = req.app.get('room');
-    const length = room.length;
-
-    // const { nickname } = req.session;
+    const roomMap = req.app.get('room');
+    const size = roomMap.size;
 
     const genRoom = {
         key: uuid(),
-        name: `room${length}`,
+        name: `room${size}`,
         participant: [],
+        black: null,
+        white: null,
+        _participant: [],
+        _black: null,
+        _white: null,
     }
+
+    roomMap.set(genRoom.key, genRoom);
 
     // //  처음 들어오면 black
     // if(!req.session.role) {
@@ -30,13 +34,28 @@ export const createRoom = (req, res, next) => {
     //     }        
     // }
 
-    room.push(genRoom);
-
+    //  change 이벤트로 바꿔야 함
+    //  change에서는 room 객체 정보만 전달하자
     io.of('/room').emit('message', {
         type: 'initialize',
-        room,
+        room: [...roomMap.values()],
     });
 
     res.send(genRoom.key);
+    res.status(202).end();
+}
+
+export const deleteRoom = (req, res, next) => {
+    
+    const room = {
+        //  지우려는 방의 기존과 동일한 uuid,
+    }
+
+    io.of('/room').emit('message', {
+        type: 'change',
+        room,
+    });
+
+    res.send();
     res.status(202).end();
 }

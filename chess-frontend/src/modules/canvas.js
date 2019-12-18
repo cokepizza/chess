@@ -129,7 +129,7 @@ const initialState = {
     moved: null,
     error: null,
     clicked: null,
-    board: null,
+    board,
 };
 
 export default handleActions({

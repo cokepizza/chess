@@ -1,34 +1,51 @@
-let turn = 'black';
-
-export const movePiece = (req, res, next) => {
-    const io = req.app.get('io');
-    const move = req.body;
-    const { role } = req.session;
-    
-    console.dir(req.session);
-    //  정확히 role이 맞는지 검증하는 작업 필요
-    //  app.set()을 통해 player 정보랑 sessionID 저장해둬야 함
-
+export const movePiece = (req, res) => {
     console.dir('----------http(movePiece)---------')
     console.dir(req.sessionID);
 
-    if(!role || role === 'spectator') {
-        res.send({ error: 'Not Authorized' });
-        res.status(403).end();
-    } else {
-        if(role !== turn) {
-            res.send({ error: `It's not your turn` });
-            res.status(403).end();
-        } else {
-            console.dir(role);
-            console.dir(turn);
-            console.dir(req.sessionID);
-            io.of('/canvas').emit('message', {
-                type: 'change',
-                move,
-            });
-            turn = (turn === 'black' ? 'white' : 'black');
-            res.status(200).end();
-        }
+    const io = req.app.get('io');
+    const roomMap = req.app.get('room');
+    const canvasMap = req.app.get('canvas');
+    
+    const move = req.body;
+    const key = req.session.key;
+    const { prev, next } = move;
+
+    console.dir(req.session);
+    
+    if(!roomMap.has(key)) {
+        res.send({ error: `There's no available Room #${key}` });
+        return res.status(403).end();
     }
+
+    const room = roomMap.get(key);
+    const participantSet = new Set(room._participant);
+    if(!participantSet.has(req.sessionID)) {
+        res.send({ error: `Not Authorized` });
+        return res.status(403).end();
+    }
+
+    const player = room._black === req.sessionID ? 'black': (room._white === req.sessionID ? 'white' : 'spectator');
+    if(player === 'spectator') {
+        res.send({ error: `You're just a spectator` });
+        return res.status(403).end();
+    }
+
+    const board = canvasMap.get(key);
+    if(board[prev.y][prev.x].owner !== player) {
+        res.send({ error: `It's not your turn` });
+        return res.status(403).end();
+    }
+
+    const copied = { ...board[prev.y][prev.x]};
+    board[prev.y][prev.x] = {
+        covered: false
+    };
+    board[next.y][next.x] = copied;
+
+    io.of('/canvas').to(key).emit('message', {
+        type: 'change',
+        move,
+    });
+    
+    return res.status(200).end();
 };
