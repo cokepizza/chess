@@ -16,24 +16,16 @@ export const createRoom = (req, res, next) => {
         participant: [],
         black: null,
         white: null,
-        _participant: [],
+        _participant: new Map(),
         _black: null,
         _white: null,
+        _start: false,
+        _destroy: function() {
+
+        },
     }
 
     roomMap.set(genRoom.key, genRoom);
-
-    // //  처음 들어오면 black
-    // if(!req.session.role) {
-    //     ++counter;
-    //     if(counter === 1) {
-    //         req.session.role = 'black';
-    //     } else if(counter === 2) {
-    //         req.session.role = 'white';
-    //     } else {
-    //         req.session.role = 'spectator';
-    //     }        
-    // }
 
     //  change 이벤트로 바꿔야 함
     //  change에서는 room 객체 정보만 전달하자

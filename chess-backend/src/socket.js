@@ -88,14 +88,6 @@ export default (server, app, sessionMiddleware) => {
         
         const { nickname } = socket.request.session;
 
-        //  session = socket bundle (add socket to session)
-        const sessionMap = app.get('session');
-        if(sessionMap.has(socket.request.sessionID)) {
-            sessionMap.get(socket.request.sessionID).add(socket.id);
-        } else {
-            sessionMap.set(socket.request.sessionID, new Set([ socket.id ]));
-        }
-
         //  filter
         //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것 (서버쪽에서 message를 보내면 좋을 듯)
         const key = socket.handshake.query['key'];
@@ -110,26 +102,31 @@ export default (server, app, sessionMiddleware) => {
 
         //  room객체 추가 정보는 canvas쪽에서 일괄처리
         const roomMap = app.get('room');
-        const room = roomMap.get(key);
+        const originRoom = roomMap.get(key);
 
         //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
-        if(!room) return;
+        if(!originRoom) return;
+        const room = { ...originRoom };
         
-        const participantSet = new Set(room._participant);
-        if(!participantSet.has(socket.request.sessionID)) {
+        const sessionId = socket.request.sessionID;
+        if(room._participant.has(sessionId)) {
+            room._participant.set(sessionId, room._participant.get(sessionId) + 1);
+        } else {
             room.participant.push(nickname);
-            room._participant.push(socket.request.sessionID);
-            
-            if(room._participant.length == 1) {
-                room.black = nickname;
-                room._black = socket.request.sessionID;
-            } else if(room._participant.length == 2) {
-                room.white = nickname;
-                room._white = socket.request.sessionID;
-            }
+            room._participant.set(sessionId, 1);
         }
         
-        console.dir(room);
+        if(!room._black) {
+            room.black = nickname;
+            room._black = sessionId;
+        } else if(!room._white) {
+            room.white = nickname;
+            room._white = sessionId;
+
+            //  게임 시작 메시지 보내야 함
+        }
+
+        roomMap.set(key, room);
         
         //  canvas initialize
         const canvasMap = app.get('canvas');
@@ -146,16 +143,37 @@ export default (server, app, sessionMiddleware) => {
             board,
         })
         
-        //  session key update
-        // const roomKey = socket.request.session.key;
-        // if(!roomKey || roomKey !== key) {
-        //     socket.request.session.key = key;    
-        // }
-
-        // socket.request.session.save();
         socket.on('disconnect', () => {
-            //  session = socket bundle (delete socket from session)
-            sessionMap.get(socket.request.sessionID).delete(socket.id);
+            //  synchronize room object with real room
+            socketMap.delete(socket.id);
+            const originRoom = roomMap.get(key);
+            const room = { ...originRoom };
+
+            room._participant.set(sessionId, room._participant.get(sessionId) - 1);
+
+            if(room._participant.get(sessionId) === 0) {
+                room._participant.delete(sessionId);
+                if(room._black === sessionId) {
+                    room._black = null;
+                    room.black = null;
+                }
+                if(room._white === sessionId) {
+                    room._white = null;
+                    room.white = null;
+                }
+                
+                const index = room.participant.findIndex(ele => ele === nickname);
+                if(index >= 0) {
+                    room.participant.splice(index, 1);
+                }   
+            }
+
+            roomMap.set(key, room);
+            console.dir(room);
+            if(room._start && (room._black === null || room._white === null)) {
+                room._destory();
+            }
+            
             console.dir('-------------socketDis(canvas)--------------');
             console.dir(socket.request.sessionID);
         });

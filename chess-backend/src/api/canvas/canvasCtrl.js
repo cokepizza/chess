@@ -24,9 +24,8 @@ export const movePiece = (req, res) => {
         return res.status(403).end();
     }
 
-    let room = roomMap.get(key);
-    const participantSet = new Set(room._participant);
-    if(!participantSet.has(req.sessionID)) {
+    const room = roomMap.get(key);
+    if(!room._participant.has(req.sessionID)) {
         res.send({ error: `Not Authorized` });
         return res.status(403).end();
     }
@@ -59,6 +58,7 @@ export const movePiece = (req, res) => {
     }
 
     //  set server board object
+    //  참조값 변경에 유의해야함 roomMap.set 참고할 것
     const copied = { ...board[prev.y][prev.x]};
     board[prev.y][prev.x] = {
         covered: false
@@ -70,7 +70,7 @@ export const movePiece = (req, res) => {
         ...room,
         turn: room.turn + 1,
     });
-    
+
     //  broadcast canvas change to everyone in the room
     io.of('/canvas').to(key).emit('message', {
         type: 'change',
