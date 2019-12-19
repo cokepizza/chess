@@ -27,11 +27,13 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board } } = getState();
     const cell = board[prev.y][prev.x];
-    const clearBoard = genClearBoard(board);
+    const clearBoard = genClearBoard([...board]);
     clearBoard[next.y][next.x] = {
         ...cell,
     }
-    clearBoard[prev.y][prev.x] = { covered: false };
+    clearBoard[prev.y][prev.x] = {
+        covered: false
+    };
     dispatch(changeValue({ board: clearBoard, clicked: null }));
 }
 
@@ -44,6 +46,31 @@ const genClearBoard = board =>
             })
         )
     );
+
+
+// const genClearBoard = board => {
+//     const arr = [];
+
+//     const leng = board.length;
+//     for(let i=0; i<leng; ++i) {
+//         for(let j=0; j<leng; ++j) {
+//             if(board[i][j].covered) {
+//                 arr.push({
+//                     y: i,
+//                     x: j,
+//                 })
+//             }
+//         }
+//     }
+//     arr.forEach(cell => {
+//         board[cell.y] = [ ...board[cell.y]];
+//         board[cell.y].splice(cell.x, 1, {
+//             covered: false,
+//         })
+//     });
+
+//     return board;
+// }
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;

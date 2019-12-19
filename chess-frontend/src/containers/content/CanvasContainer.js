@@ -11,7 +11,7 @@ const CanvasContainer = () => {
 
     const dispatch = useDispatch();
     
-    const onClick = useCallback((e, y, x) => {
+    const onClick = useCallback((y, x) => {
         dispatch(clickPieceThunk({board, clicked, y, x, turn: 1}));
     }, [dispatch, board, clicked]);
 
