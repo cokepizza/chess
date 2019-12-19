@@ -50,7 +50,7 @@ export const movePiece = (req, res) => {
     }
     
     //  check if it's your turn
-    if((room.turn % 2 === 0 && player !== 'black') || (room.turn % 2 === 1 && player !== 'white')) {
+    if((room.turn % 2 === 0 && player !== 'white') || (room.turn % 2 === 1 && player !== 'black')) {
         console.dir(`It's not your turn`);
         res.send({ error: `It's not your turn` });
         return res.status(403).end();

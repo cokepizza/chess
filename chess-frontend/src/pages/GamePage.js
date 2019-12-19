@@ -4,7 +4,6 @@ import HeaderContainer from '../containers/common/HeaderContainer';
 import GameLayoutContainer from '../containers/common/GameLayoutContainer';
 
 const GamePage = ({ history, match }) => {
-    console.dir(match);
     useEffect(() => {
         if(!match.params.id) {
             history.push('/');
