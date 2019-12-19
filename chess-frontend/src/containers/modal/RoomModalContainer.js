@@ -3,9 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import RoomModal from '../../components/modal/RoomModal';
 import { disconnectWebsocket as disconnectRoomWebsocket } from '../../modules/room';
-import { disconnectWebsocket as disconnectAuthWebsocket } from '../../modules/auth';
-import { disconnectWebsocket as disconnectChatWebsocket } from '../../modules/chat';
-import { disconnectWebsocket as disconnectCanvasWebsocket } from '../../modules/canvas';
     
 const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
     const [ modal, setModal ] = useState(false);
@@ -28,15 +25,18 @@ const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
         setModal(false);
         setOpenModal(false);
         dispatch(disconnectRoomWebsocket());
-        // dispatch(disconnectAuthWebsocket());
-        // dispatch(disconnectChatWebsocket());
-        // dispatch(disconnectCanvasWebsocket());
         history.push(`/game/${key}`);
     }, [dispatch, history, setOpenModal]);
 
     useEffect(() => {
         setModal(openModal);
     }, [openModal]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(disconnectRoomWebsocket());
+        }
+    })
 
     return (
         <>

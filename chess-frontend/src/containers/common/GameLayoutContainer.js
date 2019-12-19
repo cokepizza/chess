@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import GameLayout from '../../components/common/GameLayout';
 import { setSessionThunk } from '../../modules/auth';
@@ -28,6 +28,14 @@ const GameLayoutContainer = ({ gameId }) => {
         },0);
         return true;
     };
+
+    useEffect(() => {
+        return () => {
+            dispatch(disconnectAuthWebsocket());
+            dispatch(disconnectChatWebsocket());
+            dispatch(disconnectCanvasWebsocket());
+        }
+    }, [dispatch]);
 
     const [state] = useAsync(connection, [ dispatch, gameId ]);
 

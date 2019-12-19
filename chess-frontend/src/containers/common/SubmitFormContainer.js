@@ -15,7 +15,7 @@ const SubmitFormContainer = ({ history, onCancelClick, ...rest }) => {
             onCancelClick();
             history.push(`/game/${key}`);
         })();
-    }, [dispatch, history]);
+    }, [dispatch, history, onCancelClick]);
 
     return (
         <SubmitForm

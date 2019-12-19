@@ -1,8 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import RoomModalContainer from '../../containers/modal/RoomModalContainer';
 
 const RoomBlock = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+    margin-left: 10px;
+    background-color: white;
+    cursor: pointer;
+`;
+
+const LinkBlock = styled(Link)`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,6 +42,7 @@ const Header = ({ onToggle, openModal, setOpenModal }) => {
                 >
                     Modal
                 </RoomBlock>
+                <LinkBlock to='/' />
             </ HeaderBlock>
             <RoomModalContainer
                 openModal={openModal}
