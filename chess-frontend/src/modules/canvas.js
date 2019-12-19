@@ -37,40 +37,42 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     dispatch(changeValue({ board: clearBoard, clicked: null }));
 }
 
-const genClearBoard = board => 
-    board.map(rowArr =>
-        rowArr.map(cell =>
-            ({
-                ...cell,
-                covered: false,
-            })
-        )
-    );
+// const genClearBoard = board => 
+//     board.map(rowArr =>
+//         rowArr.map(cell =>
+//             ({
+//                 ...cell,
+//                 covered: false,
+//             })
+//         )
+//     );
 
 
-// const genClearBoard = board => {
-//     const arr = [];
+const genClearBoard = board => {
+    const arr = [];
 
-//     const leng = board.length;
-//     for(let i=0; i<leng; ++i) {
-//         for(let j=0; j<leng; ++j) {
-//             if(board[i][j].covered) {
-//                 arr.push({
-//                     y: i,
-//                     x: j,
-//                 })
-//             }
-//         }
-//     }
-//     arr.forEach(cell => {
-//         board[cell.y] = [ ...board[cell.y]];
-//         board[cell.y].splice(cell.x, 1, {
-//             covered: false,
-//         })
-//     });
+    const leng = board.length;
+    for(let i=0; i<leng; ++i) {
+        for(let j=0; j<leng; ++j) {
+            if(board[i][j].covered) {
+                arr.push({
+                    y: i,
+                    x: j,
+                })
+            }
+        }
+    }
+    arr.forEach(cell => {
+        board[cell.y] = [ ...board[cell.y]];
+        const popedCell = board[cell.y][cell.x];
+        board[cell.y].splice(cell.x, 1, {
+            ...popedCell,
+            covered: false,
+        })
+    });
 
-//     return board;
-// }
+    return board;
+}
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;
@@ -148,10 +150,20 @@ export const clickPieceThunk = ({ board, clicked, y, x, turn }) => (dispatch, ge
         });
     }
 
-    const clearBoard = genClearBoard(board);
+    // const clearBoard = genClearBoard(board);
+
+    // coveredAxis.forEach(axis => {
+    //     clearBoard[axis.dy][axis.dx].covered = true;
+    // });
+
+
+    const clearBoard = genClearBoard([...board]);
 
     coveredAxis.forEach(axis => {
-        clearBoard[axis.dy][axis.dx].covered = true;
+        clearBoard[axis.dy][axis.dx] = {
+            ...clearBoard[axis.dy][axis.dx],
+            covered: true,
+        }
     });
 
     dispatch(changeValue({ board: clearBoard, clicked: { y, x } }));

@@ -130,28 +130,28 @@ const CanvasContent = ({ board, onClick }) => {
         )
     }, []);
 
-    const genBoard = board.map((rowState, y) => (
-        <CanvasRowBlock
-            key={`row_${y}`}
-        >
-            {rowState.map((cell, x) => { console.dir('cell rerender'); return (
-                <CanvasCell
-                    key={`cell_${y}_${x}`}
-                    onClick={onClickCell.bind(null, {y, x}, 3)}
-                    covered={cell.covered}
-                    cellnum={(x + y) % 2}
-                >
-                    {pieceConverter({
-                        piece: cell.piece,
-                        owner: cell.owner
-                    })}
-                </CanvasCell>
-            )})
-            }
-        </CanvasRowBlock>
-    ))
+    // const genBoard = board.map((rowState, y) => (
+    //     <CanvasRowBlock
+    //         key={`row_${y}`}
+    //     >
+    //         {rowState.map((cell, x) => { console.dir('cell rerender'); return (
+    //             <CanvasCell
+    //                 key={`cell_${y}_${x}`}
+    //                 onClick={onClickCell.bind(null, {y, x}, 3)}
+    //                 covered={cell.covered}
+    //                 cellnum={(x + y) % 2}
+    //             >
+    //                 {pieceConverter({
+    //                     piece: cell.piece,
+    //                     owner: cell.owner
+    //                 })}
+    //             </CanvasCell>
+    //         )})
+    //         }
+    //     </CanvasRowBlock>
+    // ))
 
-    const gen = useCallback(board => board.map((row, y) => (
+    const gen = useCallback(board => board.map((row, y) => { console.dir(row === board[y]); return (
         <CanvasRow
             key={`row_${y}`}
             row={row}
@@ -159,7 +159,7 @@ const CanvasContent = ({ board, onClick }) => {
             onClickCell={onClickCell}
             pieceConverter={pieceConverter}
         />
-    )), [onClickCell, pieceConverter]);
+    )}), [onClickCell, pieceConverter]);
     console.dir(gen);
 
     return  (
