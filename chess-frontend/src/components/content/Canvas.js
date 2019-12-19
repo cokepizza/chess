@@ -1,7 +1,47 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { IconContext } from 'react-icons';
-import { GiChessBishop } from 'react-icons/gi';
+import { GiChessPawn, GiChessKing, GiChessQueen, GiChessBishop, GiChessKnight, GiChessRook } from 'react-icons/gi';
+
+const pieceMapper = {
+    'pawn': GiChessPawn,
+    'king': GiChessKing,
+    'queen': GiChessQueen,
+    'bishop': GiChessBishop,
+    'knight': GiChessKnight,
+    'rook': GiChessRook,
+}
+
+const playerMapper = {
+    'white': {
+        color: 'white',
+        style: {
+            width: '70%',
+            height: '70%',
+        }
+    },
+    'black': {
+        color: 'black',
+        style: {
+            width: '70%',
+            height: '70%',
+        }
+    }
+}
+
+const pieceConverter = ({piece, owner}) => {
+    
+    if(!piece || !owner) {
+        return null;
+    }
+    const Component = pieceMapper[piece];
+
+    return (
+        <IconContext.Provider  value={playerMapper[owner]}>
+            <Component />
+        </IconContext.Provider>
+    )
+};
 
 const CanvasBackgroundBlock = styled.div`
     position: absolute;
@@ -49,43 +89,35 @@ const CanvasCellBlock = styled.div`
     ${props => props.covered && css`
         border: 1px solid white;
     `}
-
-    ${props => props.owner === 'white' && css`
-        color: white;
-    `}
-
-    ${props => props.owner === 'black' && css`
-        color: black;
-    `}
 `
 
 const CanvasContent = ({ board, onClick }) => {
     if(!board) return null;
     
+    const genBoard = board.map((rowState, y) => (
+        <CanvasRowBlock
+            key={`row+${y}`}
+        >
+            {rowState.map((cell, x) => { console.dir('cell rerender'); return (
+                <CanvasCellBlock
+                    key={`cell+${x}`}
+                    onClick={e => onClick(e, y, x)}
+                    covered={cell.covered}
+                    cellnum={(x + y) % 2}
+                >
+                    {pieceConverter({
+                        piece: cell.piece,
+                        owner: cell.owner
+                    })}
+                </CanvasCellBlock>
+            )})
+            }
+        </CanvasRowBlock>
+    ))
+
     return  (
         <>
-            {
-                board.map((rowState, y) => (
-                    <CanvasRowBlock
-                        key={`row+${y}`}
-                    >
-                        {rowState.map((cell, x) => (
-                            <CanvasCellBlock
-                                key={`cell+${x}`}
-                                onClick={e => onClick(e, y, x)}
-                                covered={cell.covered}
-                                owner={cell.owner}
-                                cellnum={(x + y) % 2}
-                            >
-                                
-                                
-                                {cell.piece ? cell.piece : null}
-                            </CanvasCellBlock>
-                        ))
-                        }
-                    </CanvasRowBlock>
-                ))
-            }
+            {genBoard}
         </>
     )
 }
@@ -104,3 +136,24 @@ export default React.memo(Canvas);
 // <IconContext.Provider  value={{ size:'50', color: "black"}}>
 //     <GiChessBishop />
 // </IconContext.Provider>
+
+// board.map((rowState, y) => (
+//     <CanvasRowBlock
+//         key={`row+${y}`}
+//     >
+//         {rowState.map((cell, x) => (
+//             <CanvasCellBlock
+//                 key={`cell+${x}`}
+//                 onClick={e => onClick(e, y, x)}
+//                 covered={cell.covered}
+//                 owner={cell.owner}
+//                 cellnum={(x + y) % 2}
+//             >
+                
+                
+//                 {cell.piece ? cell.piece : null}
+//             </CanvasCellBlock>
+//         ))
+//         }
+//     </CanvasRowBlock>
+// ))
