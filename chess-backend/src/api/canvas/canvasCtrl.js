@@ -20,18 +20,22 @@ export const movePiece = (req, res) => {
     
     //  defensive code
     if(!roomMap.has(key)) {
+        console.dir(`There's no available Room #${key}`);
         res.send({ error: `There's no available Room #${key}` });
         return res.status(403).end();
     }
 
     const room = roomMap.get(key);
     if(!room._participant.has(req.sessionID)) {
+        console.dir(`Not Authorized`);
         res.send({ error: `Not Authorized` });
         return res.status(403).end();
     }
+    console.dir(room);
 
     //  check if the room is ready to start
-    if(!room._black || !room.white) {
+    if(!room._black || !room._white) {
+        console.dir(`The room is not yet ready to start`);
         res.send({ error: `The room is not yet ready to start` });
         return res.status(403).end();
     }
@@ -40,12 +44,14 @@ export const movePiece = (req, res) => {
     const player = room._black === req.sessionID ? 'black': (room._white === req.sessionID ? 'white' : 'spectator');
     console.dir(`player: ${player} (${req.sessionID})`);
     if(player === 'spectator') {
+        console.dir(`You're just a spectator`);
         res.send({ error: `You're just a spectator` });
         return res.status(403).end();
     }
     
     //  check if it's your turn
     if((room.turn % 2 === 0 && player !== 'black') || (room.turn % 2 === 1 && player !== 'white')) {
+        console.dir(`It's not your turn`);
         res.send({ error: `It's not your turn` });
         return res.status(403).end();
     }
@@ -53,6 +59,7 @@ export const movePiece = (req, res) => {
     //  check if piece is player's
     const board = canvasMap.get(key);
     if(board[prev.y][prev.x].owner !== player) {
+        console.dir(`It's not your piece`);
         res.send({ error: `It's not your piece` });
         return res.status(403).end();
     }
@@ -71,6 +78,7 @@ export const movePiece = (req, res) => {
         turn: room.turn + 1,
     });
 
+    console.dir('complete');
     //  broadcast canvas change to everyone in the room
     io.of('/canvas').to(key).emit('message', {
         type: 'change',

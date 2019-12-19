@@ -6,6 +6,10 @@ import { connectWebsocket as connectAuthWebsocket } from '../../modules/auth';
 import { connectWebsocket as connectChatWebsocket } from '../../modules/chat';
 import { connectWebsocket as connectCanvasWebsocket} from '../../modules/canvas';
 
+import { disconnectWebsocket as disconnectAuthWebsocket } from '../../modules/auth';
+import { disconnectWebsocket as disconnectChatWebsocket } from '../../modules/chat';
+import { disconnectWebsocket as disconnectCanvasWebsocket } from '../../modules/canvas';
+
 import useAsync from '../../lib/hook/useAsync';
 
 const GameLayoutContainer = ({ gameId }) => {
@@ -13,9 +17,15 @@ const GameLayoutContainer = ({ gameId }) => {
 
     const connection = async () => {
         await dispatch(setSessionThunk());
-        dispatch(connectAuthWebsocket());
-        dispatch(connectChatWebsocket(gameId));
-        dispatch(connectCanvasWebsocket(gameId));
+      
+        dispatch(disconnectAuthWebsocket());
+        dispatch(disconnectChatWebsocket());
+        dispatch(disconnectCanvasWebsocket());
+        setTimeout(() => {
+            dispatch(connectAuthWebsocket());
+            dispatch(connectChatWebsocket(gameId));
+            dispatch(connectCanvasWebsocket(gameId));
+        },0);
         return true;
     };
 

@@ -12,6 +12,7 @@ const SubmitFormContainer = ({ history, onCancelClick, ...rest }) => {
         (async() => {
             dispatch(disconnectWebsocket());
             const key = await dispatch(createRoomThunk());
+            onCancelClick();
             history.push(`/game/${key}`);
         })();
     }, [dispatch, history]);

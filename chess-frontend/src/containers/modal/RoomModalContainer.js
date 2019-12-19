@@ -28,9 +28,9 @@ const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
         setModal(false);
         setOpenModal(false);
         dispatch(disconnectRoomWebsocket());
-        dispatch(disconnectAuthWebsocket());
-        dispatch(disconnectChatWebsocket());
-        dispatch(disconnectCanvasWebsocket());
+        // dispatch(disconnectAuthWebsocket());
+        // dispatch(disconnectChatWebsocket());
+        // dispatch(disconnectCanvasWebsocket());
         history.push(`/game/${key}`);
     }, [dispatch, history, setOpenModal]);
 

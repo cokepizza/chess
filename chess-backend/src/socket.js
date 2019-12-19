@@ -116,17 +116,23 @@ export default (server, app, sessionMiddleware) => {
             room._participant.set(sessionId, 1);
         }
         
-        if(!room._black) {
-            room.black = nickname;
-            room._black = sessionId;
-        } else if(!room._white) {
+        if(!room._white) {
             room.white = nickname;
             room._white = sessionId;
 
-            //  게임 시작 메시지 보내야 함
-        }
+           
+        } else if(!room._black) {
+            room.black = nickname;
+            room._black = sessionId;
+             //  게임 시작 메시지 보내야 함
+        } 
 
         roomMap.set(key, room);
+
+        io.of('/room').emit('message', {
+            type: 'initialize',
+            room: [...roomMap.values()],
+        });
         
         //  canvas initialize
         const canvasMap = app.get('canvas');
@@ -169,6 +175,10 @@ export default (server, app, sessionMiddleware) => {
             }
 
             roomMap.set(key, room);
+            io.of('/room').emit('message', {
+                type: 'initialize',
+                room: [...roomMap.values()],
+            });
             console.dir(room);
             if(room._start && (room._black === null || room._white === null)) {
                 room._destory();

@@ -1,5 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { IconContext } from 'react-icons';
+import { GiChessBishop } from 'react-icons/gi';
 
 const CanvasBackgroundBlock = styled.div`
     position: absolute;
@@ -75,6 +77,8 @@ const CanvasContent = ({ board, onClick }) => {
                                 owner={cell.owner}
                                 cellnum={(x + y) % 2}
                             >
+                                
+                                
                                 {cell.piece ? cell.piece : null}
                             </CanvasCellBlock>
                         ))
@@ -96,3 +100,7 @@ const Canvas = props => {
 };
 
 export default React.memo(Canvas);
+
+// <IconContext.Provider  value={{ size:'50', color: "black"}}>
+//     <GiChessBishop />
+// </IconContext.Provider>
