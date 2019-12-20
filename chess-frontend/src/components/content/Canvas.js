@@ -89,8 +89,9 @@ const CanvasCellBlock = styled.div`
         border: 1px solid white;
     `}
 `
+
 const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
-    console.dir('Canvas Row');
+    // console.dir('Canvas Row');
     return (
         <CanvasRowBlock>
             {row.map((cell, x) => (
@@ -98,14 +99,10 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
                     key={`cell+${y}_${x}`}
                     onClick={onClickCell.bind(null, {y, x})}
                     covered={cell.covered}
+                    pieceConverter={pieceConverter}
                     cellnum={(x + y) % 2}
                     cell={cell}
-                >
-                    {pieceConverter({
-                        piece: cell.piece,
-                        owner: cell.owner
-                    })}
-                </CanvasCell>
+                />
             ))}
         </CanvasRowBlock>
     )
@@ -113,10 +110,17 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
     return prevProps.row === nextProps.row;
 });
 
-const CanvasCell = React.memo(props => {
-    console.dir('Canvas Cell')
+const CanvasCell = React.memo(({ cell, pieceConverter, ...rest }) => {
+    // console.dir('Canvas Cell')
     return (
-        <CanvasCellBlock {...props} />
+        <CanvasCellBlock
+            {...rest}
+        >
+            {pieceConverter({
+                piece: cell.piece,
+                owner: cell.owner
+            })}
+        </CanvasCellBlock>
     )
 }, (prevProps, nextProps) => {
     return prevProps.cell === nextProps.cell;
@@ -128,7 +132,7 @@ const CanvasContent = ({ board, onClick }) => {
         onClick(y, x);
     }, [onClick]);
 
-    console.dir('-----------------------------------------------');
+    // console.dir('-----------------------------------------------');
 
     return  (
         <>
