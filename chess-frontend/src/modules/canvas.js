@@ -28,12 +28,16 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { canvas: { board } } = getState();
     const cell = board[prev.y][prev.x];
     const clearBoard = genClearBoard([...board]);
+    clearBoard[next.y] = [ ...clearBoard[next.y] ];
     clearBoard[next.y][next.x] = {
         ...cell,
     }
+
+    clearBoard[prev.y]= [ ...clearBoard[prev.y] ];
     clearBoard[prev.y][prev.x] = {
         covered: false
     };
+    
     dispatch(changeValue({ board: clearBoard, clicked: null }));
 }
 
@@ -62,6 +66,7 @@ const genClearBoard = board => {
             }
         }
     }
+
     arr.forEach(cell => {
         board[cell.y] = [ ...board[cell.y]];
         const popedCell = board[cell.y][cell.x];
@@ -159,11 +164,20 @@ export const clickPieceThunk = ({ board, clicked, y, x, turn }) => (dispatch, ge
 
     const clearBoard = genClearBoard([...board]);
 
+    // coveredAxis.forEach(axis => {
+    //     clearBoard[axis.dy][axis.dx] = {
+    //         ...clearBoard[axis.dy][axis.dx],
+    //         covered: true,
+    //     }
+    // });
+
     coveredAxis.forEach(axis => {
-        clearBoard[axis.dy][axis.dx] = {
-            ...clearBoard[axis.dy][axis.dx],
-            covered: true,
-        }
+        clearBoard[axis.dy] = [ ...clearBoard[axis.dy] ];
+        const popedCell = clearBoard[axis.dy][axis.dx];
+        clearBoard[axis.dy].splice(axis.dx, 1, {
+            ...popedCell,
+            covered:true,
+        });
     });
 
     dispatch(changeValue({ board: clearBoard, clicked: { y, x } }));

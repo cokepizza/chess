@@ -29,6 +29,19 @@ const playerMapper = {
     }
 }
 
+const pieceConverter = ({piece, owner}) => {
+    if(!piece || !owner) {
+        return null;
+    }
+    const Component = pieceMapper[piece];
+
+    return (
+        <IconContext.Provider  value={playerMapper[owner]}>
+            <Component />
+        </IconContext.Provider>
+    )
+};
+
 const CanvasBackgroundBlock = styled.div`
     position: absolute;
     top: 0px;
@@ -86,6 +99,7 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
                     onClick={onClickCell.bind(null, {y, x})}
                     covered={cell.covered}
                     cellnum={(x + y) % 2}
+                    cell={cell}
                 >
                     {pieceConverter({
                         piece: cell.piece,
@@ -96,12 +110,7 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
         </CanvasRowBlock>
     )
 }, (prevProps, nextProps) => {
-    Object.entries(prevProps).forEach(([key, value]) => {
-        if(prevProps[key] !== nextProps[key]) {
-            console.dir(key);
-            console.dir(value);
-        }
-    })
+    return prevProps.row === nextProps.row;
 });
 
 const CanvasCell = React.memo(props => {
@@ -109,26 +118,34 @@ const CanvasCell = React.memo(props => {
     return (
         <CanvasCellBlock {...props} />
     )
+}, (prevProps, nextProps) => {
+    return prevProps.cell === nextProps.cell;
 });
 
 const CanvasContent = ({ board, onClick }) => {
-    const onClickCell = useCallback(({ y, x }, pp) => {
-        console.dir(pp);
+    //  can't memoization
+    const onClickCell = useCallback(({y, x}) => {
         onClick(y, x);
     }, [onClick]);
 
-    const pieceConverter = useCallback(({piece, owner}) => {
-        if(!piece || !owner) {
-            return null;
-        }
-        const Component = pieceMapper[piece];
-    
-        return (
-            <IconContext.Provider  value={playerMapper[owner]}>
-                <Component />
-            </IconContext.Provider>
-        )
-    }, []);
+    console.dir('-----------------------------------------------');
+
+    return  (
+        <>
+            {board.map((row, y) => (
+                <CanvasRow
+                    key={`row_${y}`}
+                    row={row}
+                    y={y}
+                    onClickCell={onClickCell}
+                    pieceConverter={pieceConverter}
+                />
+            ))}
+        </>
+    )
+}
+
+
 
     // const genBoard = board.map((rowState, y) => (
     //     <CanvasRowBlock
@@ -151,23 +168,23 @@ const CanvasContent = ({ board, onClick }) => {
     //     </CanvasRowBlock>
     // ))
 
-    const gen = useCallback(board => board.map((row, y) => { console.dir(row === board[y]); return (
-        <CanvasRow
-            key={`row_${y}`}
-            row={row}
-            y={y}
-            onClickCell={onClickCell}
-            pieceConverter={pieceConverter}
-        />
-    )}), [onClickCell, pieceConverter]);
-    console.dir(gen);
 
-    return  (
-        <>
-            {gen(board)}
-        </>
-    )
-}
+
+
+// {rowState.map((cell, x) => { console.dir('cell rerender'); return (
+//     <CanvasCell
+//         key={`cell_${y}_${x}`}
+//         onClick={onClickCell.bind(null, {y, x}, 3)}
+//         covered={cell.covered}
+//         cellnum={(x + y) % 2}
+//     >
+//         {pieceConverter({
+//             piece: cell.piece,
+//             owner: cell.owner
+//         })}
+//     </CanvasCell>
+// )})
+// }
 
 const Canvas = props => {
     return (
