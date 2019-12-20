@@ -7,24 +7,23 @@ import * as chatAPI from '../lib/api/chat';
 
 const CONNECT_WEBSOCKET = 'chat/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'chat/DISCONNECT_WEBSOCKET';
+export const connectWebsocket = createAction(CONNECT_WEBSOCKET, payload => payload);
+export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
+
 const INITIALIZE_SOCKET = 'chat/INITIALIZE_SOCKET';
 const INITIALIZE_VALUE = 'chat/INITIALIZE_VALUE';
 const CHANGE_VALUE = 'chat/CHANGE_VALUE';
-
-const CHANGE_TEXTFIELD = 'chat/CHANGE_TEXTFIELD';
-const INITIALIZE_TEXTFIELD = 'chat/INITIALIZE_TEXTFIELD';
-
-export const connectWebsocket = createAction(CONNECT_WEBSOCKET, payload => payload);
-export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 
-const [ SEND_MESSAGE, SEND_MESSAGE_SUCCESS, SEND_MESSAGE_FAILURE ] = createRequestActionTypes('chat/SEND_MESSAGE');
-export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, chatAPI.sendMessage);
-
+const CHANGE_TEXTFIELD = 'chat/CHANGE_TEXTFIELD';
+const INITIALIZE_TEXTFIELD = 'chat/INITIALIZE_TEXTFIELD';
 export const changeTextfield = createAction(CHANGE_TEXTFIELD, payload => payload);
 export const initializeTextfield = createAction(INITIALIZE_TEXTFIELD);
+
+const [ SEND_MESSAGE, SEND_MESSAGE_SUCCESS, SEND_MESSAGE_FAILURE ] = createRequestActionTypes('chat/SEND_MESSAGE');
+export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, chatAPI.sendMessage);
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;

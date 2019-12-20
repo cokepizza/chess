@@ -7,17 +7,15 @@ import * as authAPI from '../lib/api/auth';
 
 const CONNECT_WEBSOCKET = 'auth/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'auth/DISCONNECT_WEBSOCKET';
-const INITIALIZE_SOCKET = 'auth/INITIALIZE_SOCKET';
-const INITIALIZE_VALUE = 'auth/INITIALIZE_VALUE';
-
-
-const [ SET_SESSION, SET_SESSION_SUCCESS, SET_SESSION_FAILURE ] = createRequestActionTypes('auth/SET_SESSION');
-
 export const connectWebsocket = createAction(CONNECT_WEBSOCKET);
 export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
+
+const INITIALIZE_SOCKET = 'auth/INITIALIZE_SOCKET';
+const INITIALIZE_VALUE = 'auth/INITIALIZE_VALUE';
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 
+const [ SET_SESSION, SET_SESSION_SUCCESS, SET_SESSION_FAILURE ] = createRequestActionTypes('auth/SET_SESSION');
 export const setSessionThunk = createRequestThunk(SET_SESSION, authAPI.getSession);
 
 function* connectWebsocketSaga () {

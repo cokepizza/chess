@@ -10,12 +10,12 @@ import board from '../lib/base/board'
 
 const CONNECT_WEBSOCKET = 'canvas/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'canvas/DISCONNECT_WEBSOCKET';
+export const connectWebsocket = createAction(CONNECT_WEBSOCKET, payload => payload);
+export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
+
 const INITIALIZE_SOCKET = 'canvas/INITIALIZE_SOCKET';
 const INITIALIZE_VALUE = 'canvas/INITIALIZE_VALUE';
 const CHANGE_VALUE = 'canvas/CHANGE_VALUE';
-
-export const connectWebsocket = createAction(CONNECT_WEBSOCKET, payload => payload);
-export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);

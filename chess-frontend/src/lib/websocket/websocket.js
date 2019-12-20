@@ -44,14 +44,20 @@ export function* connectNamespace(params) {
     
         while(true) {
             const message = yield take(channel);
-            if(message.type === 'socket') {
-                yield put(initializeSocket(message));
-            } else if(message.type === 'initialize') {
-                yield put(initializeValue(message));
-            } else if(message.type === 'change') {
-                yield put(changeValue(message));
+            console.dir(message);
+            switch(message.type) {
+                case 'socket':
+                    yield put(initializeSocket(message));
+                    break;
+                case 'initialize':
+                    yield put(initializeValue(message));
+                    break;
+                case 'change':
+                    yield put(changeValue(message));
+                    break;
+                default:
+                    console.dir(message);
             }
-            
         }
     } catch(e) {
         console.dir(e);
