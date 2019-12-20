@@ -37,6 +37,7 @@ const RoomModalBlock = styled.div`
 `;
 
 const RoomModal = ({ onBackgroundClick, onContentClick, onRoomClick, room, ...rest }) => {
+    console.dir('room mooooodal')
     return (
         <RoomModalBackgroundBlock
             {...rest}

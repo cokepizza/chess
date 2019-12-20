@@ -37,6 +37,7 @@ export function* connectNamespace(params) {
         const io = SocketIo(url, {
             query,
             reconnection: false,
+            secure: true,
         });
         
         channel = yield call(createEventChannel, io);

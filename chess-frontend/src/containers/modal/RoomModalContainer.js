@@ -32,11 +32,12 @@ const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
         setModal(openModal);
     }, [openModal]);
 
-    // useEffect(() => {
-    //     return () => {
-    //         dispatch(disconnectRoomWebsocket());
-    //     }
-    // })
+    console.dir('roommodal');
+    useEffect(() => {
+        return () => {
+            dispatch(disconnectRoomWebsocket());
+        }
+    }, [dispatch]);
 
     return (
         <>
