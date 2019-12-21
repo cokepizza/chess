@@ -1,7 +1,8 @@
 import React, {useCallback} from 'react';
 import styled, { css } from 'styled-components';
 import { IconContext } from 'react-icons';
-import { GiChessPawn, GiChessKing, GiChessQueen, GiChessBishop, GiChessKnight, GiChessRook } from 'react-icons/gi';
+import { GiChessPawn, GiChessKing, GiChessQueen,
+    GiChessBishop, GiChessKnight, GiChessRook, GiPlainCircle } from 'react-icons/gi';
 
 const pieceMapper = {
     'pawn': GiChessPawn,
@@ -10,6 +11,7 @@ const pieceMapper = {
     'bishop': GiChessBishop,
     'knight': GiChessKnight,
     'rook': GiChessRook,
+    'covered': GiPlainCircle,
 }
 
 const playerMapper = {
@@ -26,13 +28,31 @@ const playerMapper = {
             width: '70%',
             height: '70%',
         }
+    },
+    'covered': {
+        style: {
+            width: '30%',
+            height: '30%',
+            opacity: 0.5,
+        }
     }
 }
 
-const pieceConverter = ({piece, owner}) => {
+const pieceConverter = ({ piece, owner, covered }) => {
+    if(covered) {
+        const Component = pieceMapper['covered'];
+
+        return (
+            <IconContext.Provider value={playerMapper['covered']}>
+                <Component />
+            </IconContext.Provider>
+        )    
+    }
+
     if(!piece || !owner) {
         return null;
     }
+
     const Component = pieceMapper[piece];
 
     return (
@@ -98,7 +118,6 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
                 <CanvasCell
                     key={`cell+${y}_${x}`}
                     onClick={onClickCell.bind(null, {y, x})}
-                    covered={cell.covered}
                     pieceConverter={pieceConverter}
                     cellnum={(x + y) % 2}
                     cell={cell}
@@ -118,7 +137,8 @@ const CanvasCell = React.memo(({ cell, pieceConverter, ...rest }) => {
         >
             {pieceConverter({
                 piece: cell.piece,
-                owner: cell.owner
+                owner: cell.owner,
+                covered: cell.covered,
             })}
         </CanvasCellBlock>
     )
