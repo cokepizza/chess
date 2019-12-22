@@ -11,8 +11,8 @@ export const movePiece = (req, res) => {
     const io = req.app.get('io');
     const roomMap = req.app.get('room');
     const canvasMap = req.app.get('canvas');
-    const socketMap = req.app.get('socket');
-    const key = socketMap.get(socketId);
+    const socketToRoomMap = req.app.get('socketToRoom');
+    const key = socketToRoomMap.get(socketId);
 
     const { prev, next } = move;
 

@@ -3,9 +3,13 @@ import defaultBoard from './lib/base/board';
 import _ from 'lodash';
 
 const connectRoom = (app, io, socket, key) => {
-    //  mapping socket => roomId;
-    const socketMap = app.get('socket');
-    socketMap.set(socket.id, key);
+    //  mapping socket => roomId
+    const socketToRoomMap = app.get('socketToRoom');
+    socketToRoomMap.set(socket.id, key);
+
+    //  mapping socket => session
+    const socketToSessionMap = app.get('socketToSession');
+    socketToSessionMap.set(socket.id, socket.request.sessionID);
 
     //  Broadcasting용 room 업데이트
     socket.join(key);
@@ -49,8 +53,12 @@ const connectRoom = (app, io, socket, key) => {
 
 const disconnectRoom = (app, io, socket, key) => {
     //  delete mapping socket => roomId;
-    const socketMap = app.get('socket');
-    socketMap.delete(socket.id);
+    const socketToRoomMap = app.get('socketToRoom');
+    socketToRoomMap.delete(socket.id);
+
+    //  delete mapping socket => session
+    const socketToSessionMap = app.get('socketToSession');
+    socketToSessionMap.delete(socket.id);
 
     //  Broadcasting용 room 업데이트
     socket.leave(key);
@@ -104,17 +112,6 @@ const disconnectRoom = (app, io, socket, key) => {
     }
 }
 
-const connectSocket = (app, socket) => {
-    const sessionId = socket.request.sessionID;
-    const socketMap = app.get('socket');
-    socketMap.set(socket.id, sessionId);
-}
-
-const disconnectSocket = (app, socket) => {
-    const socketMap = app.get('socket');
-    socketMap.delete(socket.id);
-}
-
 export default (server, app, sessionMiddleware) => {
     const io = SocketIO(server);
     
@@ -127,9 +124,8 @@ export default (server, app, sessionMiddleware) => {
     app.set('canvas', new Map());
     app.set('chat', new Map());
 
-    app.set('session', new Map());
-
-    app.set('socket', new Map());
+    app.set('socketToSession', new Map());
+    app.set('socketToRoom', new Map());
     app.set('room', new Map());
 
     io.use((socket, next) => {
@@ -167,15 +163,17 @@ export default (server, app, sessionMiddleware) => {
         if(!key) return;
 
         connectRoom(app, io, socket, key);
-        connectSocket(app, socket);
         
         const { nickname, color } = socket.request.session;
+        const socketToSessionMap = app.get('socketToSession');
+        console.dir('socketToSessionMap');
+        console.dir(socketToSessionMap);
 
         //  Broadcast only on the first session of a socket
         chat.in(key).clients((err, clients) => {
             let count = 0;
             clients.forEach(client => {
-                if(socketMap.get(client) === socketMap.get(socket.id)) {
+                if(socketToSessionMap.get(client) === socketToSessionMap.get(socket.id)) {
                     ++count;
                 }
             });
@@ -197,8 +195,27 @@ export default (server, app, sessionMiddleware) => {
         });
 
         socket.on('disconnect', () => {
-            disconnectRoom(app, io, socket, key);
-            disconnectSocket(app, socket);
+            const socketToSessionMap = app.get('socketToSession');
+
+            //  asynchronous function
+            chat.in(key).clients((err, clients) => {
+                let count = 0;
+                clients.forEach(client => {
+                    if(socketToSessionMap.get(client) === socketToSessionMap.get(socket.id)) {
+                        ++count;
+                    }
+                });
+    
+                if(count === 0) {
+                    socket.broadcast.to(key).emit('message', {
+                        type: 'change',
+                        color,
+                        message: `${nickname} left the game`,
+                    });
+                }
+
+                disconnectRoom(app, io, socket, key);
+            });
 
             console.dir('-------------socketDis(chat)--------------');
             console.dir(socket.request.sessionID);
