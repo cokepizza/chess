@@ -22,10 +22,11 @@ const connectRoom = (app, io, socket, key) => {
 
     const sessionId = socket.request.sessionID;
     if(room._participant.has(sessionId)) {
-        room._participant.set(sessionId, room._participant.get(sessionId) + 1);
+        const socketSet = room._participant.get(sessionId);
+        socketSet.add(socket.id);
     } else {
         room.participant.push(nickname);
-        room._participant.set(sessionId, 1);
+        room._participant.set(sessionId, new Set([socket.id]));
 
         if(!room._white) {
             room.white = nickname;
@@ -66,9 +67,10 @@ const disconnectRoom = (app, io, socket, key) => {
 
     const sessionId = socket.request.sessionID;
     if(room._participant.has(sessionId)) {
-        room._participant.set(sessionId, room._participant.get(sessionId) - 1);
+        const socketSet = room._participant.get(sessionId);
+        socketSet.delete(socket.id);
 
-        if(room._participant.get(sessionId) === 0) {
+        if(socketSet.size === 0) {
             room._participant.delete(sessionId);
             if(room._black === sessionId) {
                 room._black = null;
@@ -102,26 +104,15 @@ const disconnectRoom = (app, io, socket, key) => {
     }
 }
 
-const connectSession = (app, socket) => {
+const connectSocket = (app, socket) => {
     const sessionId = socket.request.sessionID;
-    const sessionMap = app.get('session');
-
-    if(sessionMap.has(sessionId)) {
-        const socketSet = sessionMap.get(sessionId);
-        socketSet.add(socket);
-    } else {
-        sessionMap.set(sessionId, new Set([socket]));
-    }
+    const socketMap = app.get('socket');
+    socketMap.set(socket.id, sessionId);
 }
 
-const disconnectSession = (app, socket) => {
-    const sessionId = socket.request.sessionID;
-    const sessionMap = app.get('session');
-
-    if(sessionMap.has(sessionId)) {
-        const socketSet = sessionMap.get(sessionId);
-        socketSet.delete(socket);
-    }
+const disconnectSocket = (app, socket) => {
+    const socketMap = app.get('socket');
+    socketMap.delete(socket.id);
 }
 
 export default (server, app, sessionMiddleware) => {
@@ -135,9 +126,10 @@ export default (server, app, sessionMiddleware) => {
     app.set('counter', 0);
     app.set('canvas', new Map());
     app.set('chat', new Map());
-    app.set('session', new Map());
-    app.set('socket', new Map());
 
+    app.set('session', new Map());
+
+    app.set('socket', new Map());
     app.set('room', new Map());
 
     io.use((socket, next) => {
@@ -175,28 +167,29 @@ export default (server, app, sessionMiddleware) => {
         if(!key) return;
 
         connectRoom(app, io, socket, key);
-        connectSession(app, socket);
-
+        connectSocket(app, socket);
+        
         const { nickname, color } = socket.request.session;
-        const sessionId = socket.request.sessionID;
-        const sessionMap = app.get('session');
-        const socketSet = sessionMap.get(sessionId);
-        const socketIdSet = new Set([...socketSet].map(socket => socket.id));
 
-        //  only broadcast to other sessionIds
+        //  Broadcast only on the first session of a socket
         chat.in(key).clients((err, clients) => {
+            let count = 0;
             clients.forEach(client => {
-                if(!socketIdSet.has(client)) {
-                    chat.connected[client].emit('message', {
-                        type: 'change',
-                        color,
-                        message: `${nickname} join the game`,
-                    })
+                if(socketMap.get(client) === socketMap.get(socket.id)) {
+                    ++count;
                 }
             });
+
+            if(count === 1) {
+                socket.broadcast.to(key).emit('message', {
+                    type: 'change',
+                    color,
+                    message: `${nickname} join the game`,
+                });    
+            }
         });
         
-        //  only broadcast to my socket
+        //  Broadcast only to my socket
         socket.emit('message', {
             type: 'initialize',
             color,
@@ -205,7 +198,7 @@ export default (server, app, sessionMiddleware) => {
 
         socket.on('disconnect', () => {
             disconnectRoom(app, io, socket, key);
-            disconnectSession(app, socket);
+            disconnectSocket(app, socket);
 
             console.dir('-------------socketDis(chat)--------------');
             console.dir(socket.request.sessionID);
