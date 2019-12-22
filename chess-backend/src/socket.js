@@ -100,8 +100,28 @@ const disconnectRoom = (app, io, socket, key) => {
         // console.dir(room);
         // roomMap.set(key, room);
     }
+}
 
-    
+const connectSession = (app, socket) => {
+    const sessionId = socket.request.sessionID;
+    const sessionMap = app.get('session');
+
+    if(sessionMap.has(sessionId)) {
+        const socketSet = sessionMap.get(sessionId);
+        socketSet.add(socket);
+    } else {
+        sessionMap.set(sessionId, new Set([socket]));
+    }
+}
+
+const disconnectSession = (app, socket) => {
+    const sessionId = socket.request.sessionID;
+    const sessionMap = app.get('session');
+
+    if(sessionMap.has(sessionId)) {
+        const socketSet = sessionMap.get(sessionId);
+        socketSet.delete(socket);
+    }
 }
 
 export default (server, app, sessionMiddleware) => {
@@ -155,37 +175,28 @@ export default (server, app, sessionMiddleware) => {
         if(!key) return;
 
         connectRoom(app, io, socket, key);
+        connectSession(app, socket);
 
-        const roomMap = app.get('room');
-        const room = roomMap.get(key);
         const { nickname, color } = socket.request.session;
         const sessionId = socket.request.sessionID;
+        const sessionMap = app.get('session');
+        const socketSet = sessionMap.get(sessionId);
+        const socketIdSet = new Set([...socketSet].map(socket => socket.id));
 
-
-        //  socket initialize
-
-        // const chatMap = app.get('chat');
-        // let chat;
-        // if(chatMap.has(key)) {
-        //     chat = chatMap.get(key);
-        // } else {
-        //     chatMap.set(key, [{
-        //         color,
-        //         message: `welcome ${nickname}`,
-        //     }]);
-        // }
-        
-        // if(!room._participant.has(sessionId)) {
-            
-        // }
-
-        socket.broadcast.to(key).emit('message', {
-            type: 'change',
-            color,
-            message: `${nickname} join the game`,
+        //  only broadcast to other sessionIds
+        chat.in(key).clients((err, clients) => {
+            clients.forEach(client => {
+                if(!socketIdSet.has(client)) {
+                    chat.connected[client].emit('message', {
+                        type: 'change',
+                        color,
+                        message: `${nickname} join the game`,
+                    })
+                }
+            });
         });
-
-        //  socket only
+        
+        //  only broadcast to my socket
         socket.emit('message', {
             type: 'initialize',
             color,
@@ -194,6 +205,7 @@ export default (server, app, sessionMiddleware) => {
 
         socket.on('disconnect', () => {
             disconnectRoom(app, io, socket, key);
+            disconnectSession(app, socket);
 
             console.dir('-------------socketDis(chat)--------------');
             console.dir(socket.request.sessionID);
