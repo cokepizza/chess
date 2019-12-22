@@ -159,6 +159,12 @@ export const clickPieceThunk = ({ y, x, turn }) => (dispatch, getState) => {
         });
     });
 
+    clearBoard[y] = [ ...clearBoard[y] ];
+    clearBoard[y][x] = {
+        ...clearBoard[y][x],
+        clicked: true,
+    }
+
     dispatch(changeValue({ board: clearBoard, clicked: { y, x } }));
 };
 

@@ -103,11 +103,11 @@ const CanvasCellBlock = styled.div`
     align-items: center;
     width: 90px;
     height: 90px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     z-index: 1;
-    &:hover {
+    /* &:hover {
         border: 1px solid pink;
-    }
+    } */
 
     &:active {
         background-color: skyblue;
@@ -119,8 +119,12 @@ const CanvasCellBlock = styled.div`
     ${props => props.cellnum === 1 && css`
         background-color: rgb(211, 138, 69);   
     `}
-    ${props => props.covered && css`
+    /* ${props => props.covered && css`
         border: 1px solid white;
+    `} */
+
+    ${props => props.clicked && css`
+        background-color: green;
     `}
 `
 
@@ -148,6 +152,7 @@ const CanvasCell = React.memo(({ cell, pieceConverter, ...rest }) => {
     return (
         <CanvasCellBlock
             {...rest}
+            {...cell}
         >
             {pieceConverter({
                 piece: cell.piece,
