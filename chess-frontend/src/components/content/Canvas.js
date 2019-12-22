@@ -18,15 +18,16 @@ const playerMapper = {
     'white': {
         color: 'white',
         style: {
-            width: '70%',
-            height: '70%',
+            width: '80%',
+            height: '80%',
         }
     },
     'black': {
         color: 'black',
         style: {
-            width: '70%',
-            height: '70%',
+            // filter: `drop-shadow(2px 4px 6px black)`,
+            width: '80%',
+            height: '80%',
         }
     },
     'covered': {
@@ -39,24 +40,37 @@ const playerMapper = {
 }
 
 const pieceConverter = ({ piece, owner, covered }) => {
+    let coveredCanvas = null;
+    
     if(covered) {
         const Component = pieceMapper['covered'];
 
-        return (
+        coveredCanvas = (
             <IconContext.Provider value={playerMapper['covered']}>
                 <Component />
             </IconContext.Provider>
-        )    
+        );
     }
 
     if(!piece || !owner) {
-        return null;
+        return coveredCanvas;
     }
 
     const Component = pieceMapper[piece];
+    const capturedObject = coveredCanvas ? {
+        opacity: 0.5,
+    } : null;
+
+    const styleObject = {
+        ...playerMapper[owner],
+        style: {
+            ...playerMapper[owner].style,
+            ...capturedObject,
+        }
+    };
 
     return (
-        <IconContext.Provider  value={playerMapper[owner]}>
+        <IconContext.Provider value={styleObject}>
             <Component />
         </IconContext.Provider>
     )

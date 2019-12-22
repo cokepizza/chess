@@ -2,6 +2,108 @@ import SocketIO from 'socket.io';
 import defaultBoard from './lib/base/board';
 import _ from 'lodash';
 
+const connectRoom = (app, io, socket, key) => {
+    //  mapping socket => roomId;
+    const socketMap = app.get('socket');
+    socketMap.set(socket.id, key);
+
+    //  Broadcasting용 room 업데이트
+    socket.join(key);
+
+    //  Server용 room 객체 업데이트
+    const roomMap = app.get('room');
+    const originRoom = roomMap.get(key);
+
+    //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
+    if(!originRoom) return;
+
+    const room = { ...originRoom };
+    const { nickname } = socket.request.session;
+
+    const sessionId = socket.request.sessionID;
+    if(room._participant.has(sessionId)) {
+        room._participant.set(sessionId, room._participant.get(sessionId) + 1);
+    } else {
+        room.participant.push(nickname);
+        room._participant.set(sessionId, 1);
+
+        if(!room._white) {
+            room.white = nickname;
+            room._white = sessionId;
+        } else if(!room._black) {
+            room.black = nickname;
+            room._black = sessionId;
+            //  게임 시작 메시지 보내야 함
+        }
+
+        io.of('/room').emit('message', {
+            type: 'initialize',
+            room: [...roomMap.values()],
+        });
+    }
+    console.dir(room);
+
+    roomMap.set(key, room);
+}
+
+const disconnectRoom = (app, io, socket, key) => {
+    //  delete mapping socket => roomId;
+    const socketMap = app.get('socket');
+    socketMap.delete(socket.id);
+
+    //  Broadcasting용 room 업데이트
+    socket.leave(key);
+
+    //  Server용 room 객체 업데이트
+    const roomMap = app.get('room');
+    const originRoom = roomMap.get(key);
+
+    //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
+    if(!originRoom) return;
+
+    const room = { ...originRoom };
+    const { nickname } = socket.request.session;
+
+    const sessionId = socket.request.sessionID;
+    if(room._participant.has(sessionId)) {
+        room._participant.set(sessionId, room._participant.get(sessionId) - 1);
+
+        if(room._participant.get(sessionId) === 0) {
+            room._participant.delete(sessionId);
+            if(room._black === sessionId) {
+                room._black = null;
+                room.black = null;
+            }
+            if(room._white === sessionId) {
+                room._white = null;
+                room.white = null;
+            }
+            
+            const index = room.participant.findIndex(ele => ele === nickname);
+            if(index >= 0) {
+                room.participant.splice(index, 1);
+            }
+
+            console.dir(room);
+            roomMap.set(key, room);
+
+            io.of('/room').emit('message', {
+                type: 'initialize',
+                room: [...roomMap.values()],
+            });
+            
+            if(room._start && (room._black === null || room._white === null)) {
+                room._destory();
+            }
+        }
+    } else {
+        // console.dir(room);
+        // roomMap.set(key, room);
+    }
+
+    
+}
+
 export default (server, app, sessionMiddleware) => {
     const io = SocketIO(server);
     
@@ -47,14 +149,36 @@ export default (server, app, sessionMiddleware) => {
     chat.on('connect', socket => {
         console.dir('-------------socket(chat)--------------');
         console.dir(socket.request.sessionID);
-        
-        const { nickname, color } = socket.request.session;
 
         //  room join & broadcast
         const key = socket.handshake.query['key'];
         if(!key) return;
 
-        socket.join(key);
+        connectRoom(app, io, socket, key);
+
+        const roomMap = app.get('room');
+        const room = roomMap.get(key);
+        const { nickname, color } = socket.request.session;
+        const sessionId = socket.request.sessionID;
+
+
+        //  socket initialize
+
+        // const chatMap = app.get('chat');
+        // let chat;
+        // if(chatMap.has(key)) {
+        //     chat = chatMap.get(key);
+        // } else {
+        //     chatMap.set(key, [{
+        //         color,
+        //         message: `welcome ${nickname}`,
+        //     }]);
+        // }
+        
+        // if(!room._participant.has(sessionId)) {
+            
+        // }
+
         socket.broadcast.to(key).emit('message', {
             type: 'change',
             color,
@@ -63,12 +187,14 @@ export default (server, app, sessionMiddleware) => {
 
         //  socket only
         socket.emit('message', {
-            type: 'change',
+            type: 'initialize',
             color,
             message: `welcome ${nickname}`,
         });
 
         socket.on('disconnect', () => {
+            disconnectRoom(app, io, socket, key);
+
             console.dir('-------------socketDis(chat)--------------');
             console.dir(socket.request.sessionID);
         })
@@ -80,60 +206,13 @@ export default (server, app, sessionMiddleware) => {
     canvas.on('connect', socket => {
         console.dir('-------------socket(canvas)--------------');
         console.dir(socket.request.sessionID);
-        
-        // 필요하다면 동일 sessionID간의 socket 객체들간에 room을 만들어 관리하는 방법도 생각해볼 수 있음
-        // canvas.in(key).clients((err, clients) => {
-        //     console.log(clients);
-        // })
-        
-        const { nickname } = socket.request.session;
 
-        //  filter
         //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것 (서버쪽에서 message를 보내면 좋을 듯)
         const key = socket.handshake.query['key'];
         if(!key) return;
        
-        //  room join
-        socket.join(key);
-        
-        //  mapping socket => roomId;
-        const socketMap = app.get('socket');
-        socketMap.set(socket.id, key);
+        connectRoom(app, io, socket, key);
 
-        //  room객체 추가 정보는 canvas쪽에서 일괄처리
-        const roomMap = app.get('room');
-        const originRoom = roomMap.get(key);
-
-        //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
-        if(!originRoom) return;
-        const room = { ...originRoom };
-        
-        const sessionId = socket.request.sessionID;
-        if(room._participant.has(sessionId)) {
-            room._participant.set(sessionId, room._participant.get(sessionId) + 1);
-        } else {
-            room.participant.push(nickname);
-            room._participant.set(sessionId, 1);
-        }
-        
-        if(!room._white) {
-            room.white = nickname;
-            room._white = sessionId;
-
-           
-        } else if(!room._black) {
-            room.black = nickname;
-            room._black = sessionId;
-             //  게임 시작 메시지 보내야 함
-        } 
-
-        roomMap.set(key, room);
-
-        io.of('/room').emit('message', {
-            type: 'initialize',
-            room: [...roomMap.values()],
-        });
-        
         //  canvas initialize
         const canvasMap = app.get('canvas');
         let board;
@@ -150,40 +229,8 @@ export default (server, app, sessionMiddleware) => {
         })
         
         socket.on('disconnect', () => {
-            //  synchronize room object with real room
-            socketMap.delete(socket.id);
-            const originRoom = roomMap.get(key);
-            const room = { ...originRoom };
+            disconnectRoom(app, io, socket, key);
 
-            room._participant.set(sessionId, room._participant.get(sessionId) - 1);
-
-            if(room._participant.get(sessionId) === 0) {
-                room._participant.delete(sessionId);
-                if(room._black === sessionId) {
-                    room._black = null;
-                    room.black = null;
-                }
-                if(room._white === sessionId) {
-                    room._white = null;
-                    room.white = null;
-                }
-                
-                const index = room.participant.findIndex(ele => ele === nickname);
-                if(index >= 0) {
-                    room.participant.splice(index, 1);
-                }   
-            }
-
-            roomMap.set(key, room);
-            io.of('/room').emit('message', {
-                type: 'initialize',
-                room: [...roomMap.values()],
-            });
-            console.dir(room);
-            if(room._start && (room._black === null || room._white === null)) {
-                room._destory();
-            }
-            
             console.dir('-------------socketDis(canvas)--------------');
             console.dir(socket.request.sessionID);
         });

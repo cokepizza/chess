@@ -57,13 +57,13 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: messages }) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { nickname, color, message }}) => ({
         ...state,
-        messages,
+        messages: [{ nickname, color, message }],
     }),
-    [CHANGE_VALUE]: (state, { payload: message }) => ({
+    [CHANGE_VALUE]: (state, { payload: { nickname, color, message} }) => ({
         ...state,
-        messages: [ ...state.messages, message ],
+        messages: [ ...state.messages, { nickname, color, message} ],
     }),
     [SEND_MESSAGE_SUCCESS]: state => state,
     [SEND_MESSAGE_FAILURE]: state => state,
