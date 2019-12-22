@@ -26,12 +26,14 @@ export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.m
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board } } = getState();
+    
     const cell = board[prev.y][prev.x];
     const clearBoard = genClearBoard([...board]);
+    
     clearBoard[next.y] = [ ...clearBoard[next.y] ];
     clearBoard[next.y][next.x] = {
         ...cell,
-    }
+    };
 
     clearBoard[prev.y]= [ ...clearBoard[prev.y] ];
     clearBoard[prev.y][prev.x] = {
@@ -40,17 +42,6 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     
     dispatch(changeValue({ board: clearBoard, clicked: null }));
 }
-
-// const genClearBoard = board => 
-//     board.map(rowArr =>
-//         rowArr.map(cell =>
-//             ({
-//                 ...cell,
-//                 covered: false,
-//             })
-//         )
-//     );
-
 
 const genClearBoard = board => {
     const arr = [];
@@ -100,7 +91,9 @@ export function* canvasSaga () {
     yield takeEvery(CONNECT_WEBSOCKET, connectWebsocketSaga);
 }
 
-export const clickPieceThunk = ({ board, clicked, y, x, turn }) => (dispatch, getState) => {
+export const clickPieceThunk = ({ y, x, turn }) => (dispatch, getState) => {
+    const { canvas: { board, clicked } } = getState();
+
     if(clicked && board[y][x].covered) {
         const { canvas: { socket } } = getState();
 
@@ -114,9 +107,9 @@ export const clickPieceThunk = ({ board, clicked, y, x, turn }) => (dispatch, ge
         
         return;
     }
-
+    
     const { piece, owner } = board[y][x];
-    let inform = { board, y, x, turn, owner }
+    let inform = { board, y, x, turn, owner };
     if(!piece) return;
 
     const { type, move }= rules[piece];
@@ -155,21 +148,7 @@ export const clickPieceThunk = ({ board, clicked, y, x, turn }) => (dispatch, ge
         });
     }
 
-    // const clearBoard = genClearBoard(board);
-
-    // coveredAxis.forEach(axis => {
-    //     clearBoard[axis.dy][axis.dx].covered = true;
-    // });
-
-
     const clearBoard = genClearBoard([...board]);
-
-    // coveredAxis.forEach(axis => {
-    //     clearBoard[axis.dy][axis.dx] = {
-    //         ...clearBoard[axis.dy][axis.dx],
-    //         covered: true,
-    //     }
-    // });
 
     coveredAxis.forEach(axis => {
         clearBoard[axis.dy] = [ ...clearBoard[axis.dy] ];

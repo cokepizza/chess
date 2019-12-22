@@ -96,15 +96,16 @@ const disconnectRoom = (app, io, socket, key) => {
 
             console.dir(room);
             roomMap.set(key, room);
-
+            
             io.of('/room').emit('message', {
                 type: 'initialize',
                 room: [...roomMap.values()],
             });
             
-            if(room._start && (room._black === null || room._white === null)) {
-                room._destory();
-            }
+            //  나가는 선택권은 프론트에 주어져야 할 듯
+            // if(room._start && (room._black === null || room._white === null)) {
+            //     room._destory();
+            // }
         }
     } else {
         // console.dir(room);
@@ -166,8 +167,6 @@ export default (server, app, sessionMiddleware) => {
         
         const { nickname, color } = socket.request.session;
         const socketToSessionMap = app.get('socketToSession');
-        console.dir('socketToSessionMap');
-        console.dir(socketToSessionMap);
 
         //  Broadcast only on the first session of a socket
         chat.in(key).clients((err, clients) => {

@@ -21,7 +21,7 @@ export const createRoom = (req, res, next) => {
         _white: null,
         _start: false,
         _destroy: function() {
-
+            roomMap.delete(this.key);
         },
     }
 

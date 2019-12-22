@@ -130,7 +130,7 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
         <CanvasRowBlock>
             {row.map((cell, x) => (
                 <CanvasCell
-                    key={`cell+${y}_${x}`}
+                    key={`cell_${y}_${x}`}
                     onClick={onClickCell.bind(null, {y, x})}
                     pieceConverter={pieceConverter}
                     cellnum={(x + y) % 2}
@@ -183,47 +183,6 @@ const CanvasContent = ({ board, onClick }) => {
     )
 }
 
-
-
-    // const genBoard = board.map((rowState, y) => (
-    //     <CanvasRowBlock
-    //         key={`row_${y}`}
-    //     >
-    //         {rowState.map((cell, x) => { console.dir('cell rerender'); return (
-    //             <CanvasCell
-    //                 key={`cell_${y}_${x}`}
-    //                 onClick={onClickCell.bind(null, {y, x}, 3)}
-    //                 covered={cell.covered}
-    //                 cellnum={(x + y) % 2}
-    //             >
-    //                 {pieceConverter({
-    //                     piece: cell.piece,
-    //                     owner: cell.owner
-    //                 })}
-    //             </CanvasCell>
-    //         )})
-    //         }
-    //     </CanvasRowBlock>
-    // ))
-
-
-
-
-// {rowState.map((cell, x) => { console.dir('cell rerender'); return (
-//     <CanvasCell
-//         key={`cell_${y}_${x}`}
-//         onClick={onClickCell.bind(null, {y, x}, 3)}
-//         covered={cell.covered}
-//         cellnum={(x + y) % 2}
-//     >
-//         {pieceConverter({
-//             piece: cell.piece,
-//             owner: cell.owner
-//         })}
-//     </CanvasCell>
-// )})
-// }
-
 const Canvas = props => {
     return (
         <CanvasBlock>
@@ -234,28 +193,3 @@ const Canvas = props => {
 };
 
 export default React.memo(Canvas);
-
-// <IconContext.Provider  value={{ size:'50', color: "black"}}>
-//     <GiChessBishop />
-// </IconContext.Provider>
-
-// board.map((rowState, y) => (
-//     <CanvasRowBlock
-//         key={`row+${y}`}
-//     >
-//         {rowState.map((cell, x) => (
-//             <CanvasCellBlock
-//                 key={`cell+${x}`}
-//                 onClick={e => onClick(e, y, x)}
-//                 covered={cell.covered}
-//                 owner={cell.owner}
-//                 cellnum={(x + y) % 2}
-//             >
-                
-                
-//                 {cell.piece ? cell.piece : null}
-//             </CanvasCellBlock>
-//         ))
-//         }
-//     </CanvasRowBlock>
-// ))
