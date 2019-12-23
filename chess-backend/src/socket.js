@@ -3,6 +3,7 @@ import defaultBoard from './lib/base/board';
 import _ from 'lodash';
 
 const connectRoom = (app, io, socket, key) => {
+    console.dir(key);
     //  mapping socket => roomId
     const socketToRoomMap = app.get('socketToRoom');
     socketToRoomMap.set(socket.id, key);
@@ -46,7 +47,7 @@ const connectRoom = (app, io, socket, key) => {
             room: [...roomMap.values()],
         });
     }
-    console.dir(room);
+    // console.dir(room);
 
     roomMap.set(key, room);
 }
@@ -94,7 +95,7 @@ const disconnectRoom = (app, io, socket, key) => {
                 room.participant.splice(index, 1);
             }
 
-            console.dir(room);
+            // console.dir(room);
             roomMap.set(key, room);
             
             io.of('/room').emit('message', {
@@ -158,9 +159,10 @@ export default (server, app, sessionMiddleware) => {
     chat.on('connect', socket => {
         console.dir('-------------socket(chat)--------------');
         console.dir(socket.request.sessionID);
-
+        
         //  room join & broadcast
         const key = socket.handshake.query['key'];
+        console.dir(key);
         if(!key) return;
 
         connectRoom(app, io, socket, key);
@@ -230,6 +232,7 @@ export default (server, app, sessionMiddleware) => {
 
         //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것 (서버쪽에서 message를 보내면 좋을 듯)
         const key = socket.handshake.query['key'];
+        console.dir(key);
         if(!key) return;
        
         connectRoom(app, io, socket, key);
@@ -244,11 +247,17 @@ export default (server, app, sessionMiddleware) => {
             canvasMap.set(key, board);
         }
 
-        const room = app.get('room');
+        const roomMap = app.get('room');
+        // console.dir(roomMap);
+        console.dir(key);
+        const room = app.get('room').get(key);
+        console.dir(roomMap);
+        // if(!room) return;
+
         socket.emit('message', {
             type: 'initialize',
             board,
-            turn: room.turn,
+            // turn: room.turn,
         })
         
         socket.on('disconnect', () => {
@@ -259,47 +268,48 @@ export default (server, app, sessionMiddleware) => {
         });
     });
 
-    // subscribe Default Namespace
+    // subscribe 'Auth' Namespace
     const auth = io.of('/auth');
     auth.on('connect', socket => {      
         //  io connection시에는 sessionID가 다르지만, 첫 http request 이후 세션 고정
         //  socket과 http request가 동일한 세션을 공유할 수 있음
         
-        console.dir('-------------socket(default)--------------');
+        console.dir('-------------socket(auth)--------------');
         console.dir(socket.request.sessionID);
-        console.dir(socket.id);
-        //  socket.emit()은 소켓이 직접 연결된 세션에만
-        //  io.emit()은 연결된 모든 소켓에 broadcast
-        
-        const { nickname, role, color } = socket.request.session;
-        
-        if(!nickname) return;
-       
-        // const { mapSocketToSession, mapSessionToSocket } = app.get('mapper');
-        // if(!mapSocketToSession.has(socket.id)) {
-        //     mapSocketToSession.set(socket.id, socket.request.sessionID);
-        //     mapSessionToSocket.set(socket.request.sessionID, socket);
-        // }
 
+        const key = socket.handshake.query['key'];
+        console.dir(key);
+        if(!key) return;
+
+        connectRoom(app, io, socket, key);
+
+        const { nickname, color } = socket.request.session;
+        if(!nickname) return;
+
+        const sessionId = socket.request.sessionID;
+        const room = app.get('room').get(key);
+        if(!room) return;
+
+        const role = room._black === sessionId ? 'black': (room._white === sessionId ? 'white' : 'spectator');
+
+        // console.dir(room);
+        console.dir('auth initialized~!');
         socket.emit('message', {
             type: 'initialize',
             nickname,
-            role,
+            role: 'aaa',
             color,
         });
 
-        // const { sessions } = app.get('auth');
-        // if(!sessions.has(socket.request.sessionID)) {
-        //     sessions.add(socket.request.sessionID);
-        // }
 
-        socket.on('message', () => {
-            console.dir('-------------serveronMessage--------------')
-            console.dir(socket.request.sessionID);
-        });
+        // socket.on('message', () => {
+        //     console.dir('-------------serveronMessage--------------')
+        //     console.dir(socket.request.sessionID);
+        // });
 
         socket.on('disconnect', () => {
-            console.dir('-------------socketDis(default)--------------')
+            disconnectRoom(app, io, socket, key);
+            console.dir('-------------socketDis(auth)--------------')
             console.dir(socket.request.sessionID);
         })
     })

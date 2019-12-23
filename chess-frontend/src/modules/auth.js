@@ -18,11 +18,16 @@ export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload
 const [ SET_SESSION, SET_SESSION_SUCCESS, SET_SESSION_FAILURE ] = createRequestActionTypes('auth/SET_SESSION');
 export const setSessionThunk = createRequestThunk(SET_SESSION, authAPI.getSession);
 
-function* connectWebsocketSaga () {
+function* connectWebsocketSaga (action) {
+    const key = action.payload;
+        
+    const query = `key=${key}`;
+    
     const socketTask = yield fork(connectNamespace, {
         url: '/auth',
         initializeSocket,
         initializeValue,
+        query,
     });
     
     yield take(DISCONNECT_WEBSOCKET);

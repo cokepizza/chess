@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { clickPieceThunk } from '../../modules/canvas';
 
 const CanvasContainer = () => {
-    const { board } = useSelector(({ canvas }) => ({
-        board: canvas.board
+    const { board, turn } = useSelector(({ canvas }) => ({
+        board: canvas.board,
+        turn: canvas.turn,
     }));
 
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const CanvasContainer = () => {
     return (
         <Canvas
             board={board}
+            turn={turn}
             onClick={onClick}
         />
     )

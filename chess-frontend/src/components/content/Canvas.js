@@ -171,7 +171,9 @@ const CanvasCell = React.memo(({ cell, onClick, cellNum, pieceConverter }) => {
     return prevProps.cell === nextProps.cell;
 });
 
-const CanvasContent = ({ board, onClick }) => {
+const CanvasContentBlock = styled.div``;
+
+const CanvasContent = ({ board, turn, onClick }) => {
     //  can't memoization
     const onClickCell = useCallback(({y, x}) => {
         onClick(y, x);
@@ -180,7 +182,7 @@ const CanvasContent = ({ board, onClick }) => {
     // console.dir('-----------------------------------------------');
 
     return  (
-        <>
+        <CanvasContentBlock>
             {board.map((row, y) => (
                 <CanvasRow
                     key={`row_${y}`}
@@ -190,7 +192,7 @@ const CanvasContent = ({ board, onClick }) => {
                     pieceConverter={pieceConverter}
                 />
             ))}
-        </>
+        </ CanvasContentBlock>
     )
 }
 

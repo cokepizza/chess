@@ -13,6 +13,7 @@ import { disconnectWebsocket as disconnectCanvasWebsocket } from '../../modules/
 import useAsync from '../../lib/hook/useAsync';
 
 const GameLayoutContainer = ({ gameId }) => {
+    console.dir(gameId);
     const dispatch = useDispatch();
 
     const connection = async () => {
@@ -22,7 +23,7 @@ const GameLayoutContainer = ({ gameId }) => {
         dispatch(disconnectChatWebsocket());
         dispatch(disconnectCanvasWebsocket());
         setTimeout(() => {
-            dispatch(connectAuthWebsocket());
+            dispatch(connectAuthWebsocket(gameId));
             dispatch(connectChatWebsocket(gameId));
             dispatch(connectCanvasWebsocket(gameId));
         },0);
