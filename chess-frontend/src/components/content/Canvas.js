@@ -18,6 +18,7 @@ const playerMapper = {
     'white': {
         color: 'white',
         style: {
+            filter: `drop-shadow(1px 1px 1px white)`,
             width: '80%',
             height: '80%',
         }
@@ -25,13 +26,14 @@ const playerMapper = {
     'black': {
         color: 'black',
         style: {
-            // filter: `drop-shadow(2px 4px 6px black)`,
+            filter: `drop-shadow(1px 1px 1px black)`,
             width: '80%',
             height: '80%',
         }
     },
     'covered0': {
         style: {
+            filter: `drop-shadow(1px 1px 1px black)`,
             width: '30%',
             height: '30%',
             color: 'rgb(130, 151, 105)',
@@ -40,6 +42,7 @@ const playerMapper = {
     },
     'covered1': {
         style: {
+            filter: `drop-shadow(1px 1px 1px black)`,
             width: '30%',
             height: '30%',
             color: 'rgb(100, 111, 64)',
@@ -67,6 +70,7 @@ const pieceConverter = ({ piece, owner, covered, cellNum }) => {
     const Component = pieceMapper[piece];
     const capturedObject = coveredCanvas ? {
         opacity: 0.5,
+        filter: owner === 'black' ? `drop-shadow(1px 1px 1px white)` : `drop-shadow(1px 1px 1px black)`,
     } : null;
 
     const styleObject = {
@@ -100,10 +104,6 @@ const CanvasCellBlock = styled.div`
     width: 90px;
     height: 90px;
 
-    &:active {
-        background-color: skyblue;
-    }
-
     ${props => props.cellNum === 0 && css`
         background-color: rgb(240, 217, 181);
     `}
@@ -119,6 +119,17 @@ const CanvasCellBlock = styled.div`
     ${props => props.cellNum === 1 && props.clicked && css`
         background-color: rgb(100, 111, 64);
     `}
+
+    
+    &:hover {
+        ${props => props.cellNum === 0 && props.covered && css`
+            background-color: rgb(174, 177, 135);
+        `}
+
+        ${props => props.cellNum === 1 && props.covered && css`
+            background-color: rgb(132, 121, 78);
+        `}  
+    }
 `
 
 const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {

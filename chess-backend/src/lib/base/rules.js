@@ -20,6 +20,7 @@ const rules = {
                     const { board, y, x, owner } = props;
                     if((owner === 'black' && y !== 1) || (owner === 'white' && y !== 6)) return false;
                     if((owner === 'black' && board[2][x].piece) || (owner === 'white' && board[5][x].piece)) return false;
+                    if((owner === 'black' && board[3][x].piece) || (owner === 'white' && board[4][x].piece)) return false;
                     return true;
                 }
             },

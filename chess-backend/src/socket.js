@@ -182,7 +182,7 @@ export default (server, app, sessionMiddleware) => {
                     type: 'change',
                     color,
                     message: `${nickname} join the game`,
-                });    
+                });
             }
         });
         
@@ -244,9 +244,11 @@ export default (server, app, sessionMiddleware) => {
             canvasMap.set(key, board);
         }
 
+        const room = app.get('room');
         socket.emit('message', {
             type: 'initialize',
             board,
+            turn: room.turn,
         })
         
         socket.on('disconnect', () => {

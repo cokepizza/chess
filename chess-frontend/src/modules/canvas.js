@@ -23,7 +23,7 @@ export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 const [ SET_MOVE_PIECE, SET_MOVE_PIECE_SUCCESS, SET_MOVE_PIECE_FAILURE ] = createRequestActionTypes('chat/SET_MOVE_PIECE');
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
 
-export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
+export const changeValueThunk = ({ move, turn }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board } } = getState();
     
@@ -40,7 +40,7 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
         covered: false
     };
     
-    dispatch(changeValue({ board: clearBoard, clicked: null }));
+    dispatch(changeValue({ board: clearBoard, turn, clicked: null }));
 }
 
 const genClearBoard = board => {
@@ -49,7 +49,7 @@ const genClearBoard = board => {
     const leng = board.length;
     for(let i=0; i<leng; ++i) {
         for(let j=0; j<leng; ++j) {
-            if(board[i][j].covered) {
+            if(board[i][j].covered || board[i][j].clicked) {
                 arr.push({
                     y: i,
                     x: j,
@@ -63,6 +63,7 @@ const genClearBoard = board => {
         const popedCell = board[cell.y][cell.x];
         board[cell.y].splice(cell.x, 1, {
             ...popedCell,
+            clicked: false,
             covered: false,
         })
     });
@@ -170,10 +171,11 @@ export const clickPieceThunk = ({ y, x, turn }) => (dispatch, getState) => {
 
 const initialState = {
     socket: null,
-    moved: null,
     error: null,
-    clicked: null,
     board,
+    turn: 0,
+    track: {},
+    clicked: null,
 };
 
 export default handleActions({
@@ -181,13 +183,15 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { board } }) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { board, turn } }) => ({
         ...state,
         board,
+        turn,
     }),
-    [CHANGE_VALUE]: (state, { payload : { board, clicked } }) => ({
+    [CHANGE_VALUE]: (state, { payload : { board, turn, clicked } }) => ({
         ...state,
         board,
+        turn,
         clicked,
     }),
     [SET_MOVE_PIECE_SUCCESS]: state => state,
