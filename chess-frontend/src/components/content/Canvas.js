@@ -30,23 +30,31 @@ const playerMapper = {
             height: '80%',
         }
     },
-    'covered': {
+    'covered0': {
         style: {
             width: '30%',
             height: '30%',
-            opacity: 0.5,
+            color: 'rgb(130, 151, 105)',
+            
+        }
+    },
+    'covered1': {
+        style: {
+            width: '30%',
+            height: '30%',
+            color: 'rgb(100, 111, 64)',
         }
     }
 }
 
-const pieceConverter = ({ piece, owner, covered }) => {
+const pieceConverter = ({ piece, owner, covered, cellNum }) => {
     let coveredCanvas = null;
     
     if(covered) {
         const Component = pieceMapper['covered'];
 
         coveredCanvas = (
-            <IconContext.Provider value={playerMapper['covered']}>
+            <IconContext.Provider value={playerMapper[`covered${cellNum}`]}>
                 <Component />
             </IconContext.Provider>
         );
@@ -76,20 +84,8 @@ const pieceConverter = ({ piece, owner, covered }) => {
     )
 };
 
-const CanvasBackgroundBlock = styled.div`
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    border: 10px solid black;
-    box-sizing: border-box;
-    z-index: 0;
-`;
-
 const CanvasBlock = styled.div`
-    position: relative;
-    border: 1px solid black;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
 const CanvasRowBlock = styled.div`
@@ -103,28 +99,25 @@ const CanvasCellBlock = styled.div`
     align-items: center;
     width: 90px;
     height: 90px;
-    /* border: 1px solid black; */
-    z-index: 1;
-    /* &:hover {
-        border: 1px solid pink;
-    } */
 
     &:active {
         background-color: skyblue;
     }
 
-    ${props => props.cellnum === 0 && css`
-        background-color: rgb(254, 206, 158);
+    ${props => props.cellNum === 0 && css`
+        background-color: rgb(240, 217, 181);
     `}
-    ${props => props.cellnum === 1 && css`
-        background-color: rgb(211, 138, 69);   
-    `}
-    /* ${props => props.covered && css`
-        border: 1px solid white;
-    `} */
 
-    ${props => props.clicked && css`
-        background-color: green;
+    ${props => props.cellNum === 1 && css`
+        background-color: rgb(181, 136, 99);
+    `}
+
+    ${props => props.cellNum === 0 && props.clicked && css`
+        background-color: rgb(130, 151, 105);
+    `}
+
+    ${props => props.cellNum === 1 && props.clicked && css`
+        background-color: rgb(100, 111, 64);
     `}
 `
 
@@ -137,7 +130,7 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
                     key={`cell_${y}_${x}`}
                     onClick={onClickCell.bind(null, {y, x})}
                     pieceConverter={pieceConverter}
-                    cellnum={(x + y) % 2}
+                    cellNum={(x + y) % 2}
                     cell={cell}
                 />
             ))}
@@ -147,17 +140,19 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
     return prevProps.row === nextProps.row;
 });
 
-const CanvasCell = React.memo(({ cell, pieceConverter, ...rest }) => {
+const CanvasCell = React.memo(({ cell, onClick, cellNum, pieceConverter }) => {
     // console.dir('Canvas Cell')
     return (
         <CanvasCellBlock
-            {...rest}
+            onClick={onClick}
+            cellNum={cellNum}
             {...cell}
         >
             {pieceConverter({
                 piece: cell.piece,
                 owner: cell.owner,
                 covered: cell.covered,
+                cellNum,
             })}
         </CanvasCellBlock>
     )
@@ -191,7 +186,6 @@ const CanvasContent = ({ board, onClick }) => {
 const Canvas = props => {
     return (
         <CanvasBlock>
-            <CanvasBackgroundBlock></CanvasBackgroundBlock>
             <CanvasContent {...props} />
         </CanvasBlock>
     )
