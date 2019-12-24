@@ -120,7 +120,14 @@ const CanvasCellBlock = styled.div`
         background-color: rgb(100, 111, 64);
     `}
 
-    
+    ${props => props.cellNum === 0 && props.tracked && css`
+        background-color: rgb(205, 210, 106);
+    `}
+
+    ${props => props.cellNum === 1 && props.tracked && css`
+        background-color: rgb(170, 162, 58);
+    `}
+
     &:hover {
         ${props => props.cellNum === 0 && props.covered && css`
             background-color: rgb(174, 177, 135);

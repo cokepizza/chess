@@ -25,7 +25,7 @@ const GameLayoutContainer = ({ gameId }) => {
             dispatch(connectAuthWebsocket(gameId));
             dispatch(connectChatWebsocket(gameId));
             dispatch(connectCanvasWebsocket(gameId));
-        },0);
+        }, 0);
         return true;
     };
 
