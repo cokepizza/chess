@@ -80,9 +80,13 @@ export const movePiece = (req, res) => {
     //  broadcast canvas change to everyone in the room
     io.of('/canvas').to(key).emit('message', {
         type: 'change',
-        move,
-        turn: newRoom.turn,
+        move
     });
+
+    io.of('/game').to(key).emit('message', {
+        type: 'initialize',
+        status: newRoom,
+    })
     
     return res.status(200).end();
 };

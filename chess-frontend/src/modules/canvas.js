@@ -27,12 +27,15 @@ export const changeBlocked = createAction(CHANGE_BLOCKED, payload => payload);
 const [ SET_MOVE_PIECE, SET_MOVE_PIECE_SUCCESS, SET_MOVE_PIECE_FAILURE ] = createRequestActionTypes('chat/SET_MOVE_PIECE');
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
 
-export const changeValueThunk = ({ move, turn }) => ( dispatch, getState ) => {
+export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
-    const { canvas: { board }, auth: { tempAuth } } = getState();
+    const { canvas: { board },
+            auth: { tempAuth },
+            game: { status }
+        } = getState();
     
     if(tempAuth) {
-        if((tempAuth.role === 'white' && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
+        if((tempAuth.role === 'white' && status.turn % 2 === 0) || (tempAuth.role === 'black' && status.turn % 2 === 1)) {
             dispatch(changeBlocked({ blocked: false }));
         } else {
             dispatch(changeBlocked({ blocked: true }));
@@ -58,7 +61,7 @@ export const changeValueThunk = ({ move, turn }) => ( dispatch, getState ) => {
         tracked: true,
     };
     
-    dispatch(changeValue({ board: clearBoard, turn, clicked: null }));
+    dispatch(changeValue({ board: clearBoard, clicked: null }));
 }
 
 const genClearBoard = (board, params) => {
@@ -118,7 +121,10 @@ export function* canvasSaga () {
 }
 
 export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
-    const { canvas: { board, turn, clicked } } = getState();
+    const {
+            canvas: { board, clicked },
+            game: { status }
+        } = getState();
 
     if(clicked && board[y][x].covered) {
         const { canvas: { socket } } = getState();
@@ -135,7 +141,7 @@ export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
     }
     
     const { piece, owner } = board[y][x];
-    let inform = { board, y, x, turn, owner };
+    let inform = { board, y, x, turn: status.turn, owner };
     if(!piece) return;
 
     const { type, move }= rules[piece];
@@ -194,14 +200,13 @@ export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
         clicked: true,
     }
 
-    dispatch(changeValue({ board: clearBoard, turn, clicked: { y, x } }));
+    dispatch(changeValue({ board: clearBoard, clicked: { y, x } }));
 };
 
 const initialState = {
     socket: null,
     error: null,
     board,
-    turn: 0,
     clicked: null,
     blocked: false,
 };
@@ -211,15 +216,13 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { board, turn } }) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { board } }) => ({
         ...state,
         board,
-        turn,
     }),
-    [CHANGE_VALUE]: (state, { payload : { board, turn, clicked } }) => ({
+    [CHANGE_VALUE]: (state, { payload : { board, clicked } }) => ({
         ...state,
         board,
-        turn,
         clicked,
     }),
     [INITIALIZE_BLOCKED]: (state, { payload: { blocked } }) => ({

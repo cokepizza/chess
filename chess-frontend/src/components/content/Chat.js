@@ -5,12 +5,13 @@ const ChatSubmitBlock = styled.form`
 `;
 
 const ChatFrameBlock = styled.div`
-    margin: 10px 10px 10px 10px;
+    /* margin: 10px 10px 10px 10px; */
     border : 3px groove gray;
     border-style: outset;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
-    width: 450px;
+    /* width: 450px; */
+    /* width: 100%; */
     box-shadow: 5px 5px 5px;
 `;
 

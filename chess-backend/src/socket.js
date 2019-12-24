@@ -149,6 +149,36 @@ export default (server, app, sessionMiddleware) => {
         })
     });
 
+
+    //  subscribe 'Game' Namespace
+    const game = io.of('/game');
+
+    game.on('connect', socket => {
+        console.dir('-------------socket(game)--------------');
+        console.dir(socket.request.sessionID);
+        
+        //  room join & broadcast
+        const key = socket.handshake.query['key'];
+        if(!key) return;
+
+        connectRoom(app, io, socket, key);
+
+        const room = app.get('room').get(key);
+
+        socket.emit('message', {
+            type: 'initialize',
+            status: room,
+        });
+
+        socket.on('disconnect', () => {
+            disconnectRoom(app, io, socket, key);
+
+            console.dir('-------------socket(game)--------------');
+            console.dir(socket.request.sessionID);
+        })
+    });
+
+
     //  subscribe 'Chat' Namespace
     const chat = io.of('/chat');
 
@@ -241,14 +271,10 @@ export default (server, app, sessionMiddleware) => {
             canvasMap.set(key, board);
         }
 
-        const room = app.get('room').get(key);
-        if(!room) return;
-
         socket.emit('message', {
             type: 'initialize',
             board,
-            turn: room.turn,
-        })
+        });
         
         socket.on('disconnect', () => {
             disconnectRoom(app, io, socket, key);

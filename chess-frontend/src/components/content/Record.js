@@ -1,58 +1,22 @@
-import React, { useRef, useEffect } from 'react';
-import Time from './Time';
+import React from 'react';
 import styled from 'styled-components';
-
-const RecordFrameBlock = styled.div`
-    margin: 10px 10px 10px 10px;
-    border : 3px groove gray;
-    border-style: outset;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    width: 450px;
-    box-shadow: 5px 5px 5px;
-    display: flex;
-    flex-direction: column;
-`;
+import TimerContainer from '../../containers/common/TimerContainer';
 
 const RecordBlock = styled.div`
-    border: 1px solid black;
+    width: 100%;
+    height: 300px;
     background-color: white;
-    height: 80%;
-    overflow-y: auto;
+    box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
-const RecordItem = styled.div`
-    padding: 0.3rem;
-    display: flex;
-    &:nth-child(even) {
-        background: #f2f3f4;
-    }
-    & + & {
-        border-top: 1px solid #dee2e6;
-    }
-`;
-
-const Record = ( ) => {
-    const ref = useRef();
-    const records = [ '1. e4 h5', '2. g4 e5', '3. h4 f6', '4. Rh3 d5', '5. Ke2 hxg4', '6. Nf3 Qd7', '7. Ke2 Qb6', '8. Qa4 c5'];
-    
-    useEffect(() => {
-        ref.current.scrollTop = ref.current.scrollHeight;
-    }, [records]);
-
+const Record = () => {
     return (
         <>
-
-            <RecordFrameBlock>
-                <Time/>
-                <RecordBlock ref={ref}>
-                    {records.map(record => (
-                        <RecordItem>{record}</RecordItem>
-                    ))}
-                </RecordBlock>
-            </RecordFrameBlock>
+            <TimerContainer />
+            <RecordBlock />
+            <TimerContainer />
         </>
-    );
+    )
 };
 
 export default React.memo(Record);

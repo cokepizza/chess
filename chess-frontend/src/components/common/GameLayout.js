@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import CanvasContainer from '../../containers/content/CanvasContainer';
 import ChatContainer from '../../containers/content/ChatContainer';
 import RecordContainer from '../../containers/content/RecordContainer';
@@ -13,23 +13,35 @@ const GameLayoutBlock = styled.div`
     align-items: center;
 `;
 
-const ChatAndRecordBlock = styled.div`
+const sideBlockStyle = css`
     background-color: white;
     height: 90%;
     display: flex;
     flex-direction: column;
-    margin-left: 80px;
-    width: 25%;
+    justify-content: center;
+    width: 20%;
 `;
+
+const LeftSideBlock = styled.div`
+    ${sideBlockStyle}
+    margin-right: 1%;
+`;
+
+const RightSideBlock = styled.div`
+    ${sideBlockStyle}
+    margin-left: 1%;
+`
 
 const GameLayout = props => {
     return (
-        <GameLayoutBlock>
-            <CanvasContainer {...props} />
-            <ChatAndRecordBlock>
-                <RecordContainer />
+        <GameLayoutBlock>          
+            <LeftSideBlock>
                 <ChatContainer />
-            </ChatAndRecordBlock>
+            </LeftSideBlock>
+            <CanvasContainer {...props} />
+            <RightSideBlock>
+                <RecordContainer />
+            </RightSideBlock>
         </GameLayoutBlock>
     )
 };
