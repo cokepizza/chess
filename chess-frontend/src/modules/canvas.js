@@ -28,28 +28,38 @@ export const changeValueThunk = ({ move, turn }) => ( dispatch, getState ) => {
     const { canvas: { board } } = getState();
     
     const cell = board[prev.y][prev.x];
-    const clearBoard = genClearBoard([...board]);
+    const clearBoard = genClearBoard([...board], [
+        'covered',
+        'clicked',
+        'tracked',
+    ]);
     
     clearBoard[next.y] = [ ...clearBoard[next.y] ];
     clearBoard[next.y][next.x] = {
         ...cell,
+        tracked: true,
     };
 
     clearBoard[prev.y]= [ ...clearBoard[prev.y] ];
     clearBoard[prev.y][prev.x] = {
-        covered: false
+        covered: false,
+        tracked: true,
     };
     
-    dispatch(changeValue({ board: clearBoard, turn, clicked: null }));
+    dispatch(changeValue({ board: clearBoard, turn, track: move, clicked: null }));
 }
 
-const genClearBoard = board => {
+const genClearBoard = (board, params) => {
     const arr = [];
 
     const leng = board.length;
     for(let i=0; i<leng; ++i) {
         for(let j=0; j<leng; ++j) {
-            if(board[i][j].covered || board[i][j].clicked) {
+            let pass = false;
+            params.forEach(param => {
+                pass |= board[i][j][param];
+            });
+            if(pass) {
                 arr.push({
                     y: i,
                     x: j,
@@ -61,11 +71,14 @@ const genClearBoard = board => {
     arr.forEach(cell => {
         board[cell.y] = [ ...board[cell.y]];
         const popedCell = board[cell.y][cell.x];
-        board[cell.y].splice(cell.x, 1, {
+        const newCell = {
             ...popedCell,
-            clicked: false,
-            covered: false,
-        })
+        };
+        params.forEach(param => {
+            newCell[param] = false;
+        });
+
+        board[cell.y].splice(cell.x, 1, newCell);
     });
 
     return board;
@@ -149,7 +162,10 @@ export const clickPieceThunk = ({ y, x, turn }) => (dispatch, getState) => {
         });
     }
 
-    const clearBoard = genClearBoard([...board]);
+    const clearBoard = genClearBoard([...board], [
+        'covered',
+        'clicked',
+    ]);
 
     coveredAxis.forEach(axis => {
         clearBoard[axis.dy] = [ ...clearBoard[axis.dy] ];
@@ -188,10 +204,11 @@ export default handleActions({
         board,
         turn,
     }),
-    [CHANGE_VALUE]: (state, { payload : { board, turn, clicked } }) => ({
+    [CHANGE_VALUE]: (state, { payload : { board, turn, track, clicked } }) => ({
         ...state,
         board,
         turn,
+        track,
         clicked,
     }),
     [SET_MOVE_PIECE_SUCCESS]: state => state,

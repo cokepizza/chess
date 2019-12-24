@@ -3,11 +3,10 @@ import defaultBoard from './lib/base/board';
 import _ from 'lodash';
 
 const connectRoom = (app, io, socket, key) => {
-    console.dir(key);
     //  mapping socket => roomId
     const socketToRoomMap = app.get('socketToRoom');
     socketToRoomMap.set(socket.id, key);
-
+    
     //  mapping socket => session
     const socketToSessionMap = app.get('socketToSession');
     socketToSessionMap.set(socket.id, socket.request.sessionID);
@@ -47,7 +46,7 @@ const connectRoom = (app, io, socket, key) => {
             room: [...roomMap.values()],
         });
     }
-    // console.dir(room);
+    console.dir(room);
 
     roomMap.set(key, room);
 }
@@ -118,9 +117,6 @@ export default (server, app, sessionMiddleware) => {
     const io = SocketIO(server);
     
     app.set('io', io);
-    app.set('auth', {
-        sessions: new Set(),
-    });
 
     app.set('counter', 0);
     app.set('canvas', new Map());
@@ -162,7 +158,6 @@ export default (server, app, sessionMiddleware) => {
         
         //  room join & broadcast
         const key = socket.handshake.query['key'];
-        console.dir(key);
         if(!key) return;
 
         connectRoom(app, io, socket, key);
@@ -232,7 +227,6 @@ export default (server, app, sessionMiddleware) => {
 
         //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것 (서버쪽에서 message를 보내면 좋을 듯)
         const key = socket.handshake.query['key'];
-        console.dir(key);
         if(!key) return;
        
         connectRoom(app, io, socket, key);
@@ -247,17 +241,13 @@ export default (server, app, sessionMiddleware) => {
             canvasMap.set(key, board);
         }
 
-        const roomMap = app.get('room');
-        // console.dir(roomMap);
-        console.dir(key);
         const room = app.get('room').get(key);
-        console.dir(roomMap);
-        // if(!room) return;
+        if(!room) return;
 
         socket.emit('message', {
             type: 'initialize',
             board,
-            // turn: room.turn,
+            turn: room.turn,
         })
         
         socket.on('disconnect', () => {
@@ -278,7 +268,6 @@ export default (server, app, sessionMiddleware) => {
         console.dir(socket.request.sessionID);
 
         const key = socket.handshake.query['key'];
-        console.dir(key);
         if(!key) return;
 
         connectRoom(app, io, socket, key);
@@ -291,13 +280,11 @@ export default (server, app, sessionMiddleware) => {
         if(!room) return;
 
         const role = room._black === sessionId ? 'black': (room._white === sessionId ? 'white' : 'spectator');
-
-        // console.dir(room);
-        console.dir('auth initialized~!');
+        
         socket.emit('message', {
             type: 'initialize',
             nickname,
-            role: 'aaa',
+            role,
             color,
         });
 

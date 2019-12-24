@@ -171,18 +171,29 @@ const CanvasCell = React.memo(({ cell, onClick, cellNum, pieceConverter }) => {
     return prevProps.cell === nextProps.cell;
 });
 
-const CanvasContentBlock = styled.div``;
+const CanvasContentBlock = styled.div`
+    ${props => !props.clickable && css`
+        pointer-events: none;
+    `}
+`;
 
-const CanvasContent = ({ board, turn, onClick }) => {
+const CanvasContent = ({ board, turn, tempAuth, onClick }) => {
     //  can't memoization
     const onClickCell = useCallback(({y, x}) => {
         onClick(y, x);
     }, [onClick]);
 
     // console.dir('-----------------------------------------------');
+    console.dir(turn);
+    console.dir(tempAuth);
+    let clickable = false;
 
+    if(tempAuth) {
+        clickable = (turn % 2 === 0 && tempAuth.role === 'white') || (turn % 2 !== 0 && tempAuth.role === 'black');
+    }
+    
     return  (
-        <CanvasContentBlock>
+        <CanvasContentBlock clickable>
             {board.map((row, y) => (
                 <CanvasRow
                     key={`row_${y}`}

@@ -33,6 +33,8 @@ export function* connectNamespace(params) {
         query,
     } = params;
 
+    console.dir(url);
+    console.dir(query);
     try {
         const io = SocketIo(url, {
             query,
