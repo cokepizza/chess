@@ -23,7 +23,12 @@ const TimerContainer = ({ status, white, black }) => {
     useEffect(() => {
         if(time) {
             setTimeout(() => {
-                setTime(targetTime.current - (new Date().getTime() - ref.current));
+                const calculatedTime = targetTime.current - (new Date().getTime() - ref.current);
+                if(calculatedTime >= 0) {
+                    setTime(calculatedTime);
+                } else {
+                    setTime(0);
+                }
             }, 10);
         }
     }, [time]);
