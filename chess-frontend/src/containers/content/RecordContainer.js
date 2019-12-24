@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux';
 import Record from '../../components/content/Record';
 
 const RecordContainer = () => {
-    const {  } = useSelector(({  }) => ({
-
+    const { status } = useSelector(({ game }) => ({
+        status: game.status,
     }));
 
     return (
-        <Record />
+        <Record
+            status={status}
+        />
     );
 };
 

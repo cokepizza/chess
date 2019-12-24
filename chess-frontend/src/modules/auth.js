@@ -38,6 +38,8 @@ export function* authSaga () {
     yield takeEvery(CONNECT_WEBSOCKET, connectWebsocketSaga);
 }
 
+//  session 정보와 socket정보가 혼재되어 있는 reducer
+//  tempAuth의 경우 key로 소켓마다 가지고 있는 정보
 const initialState = {
     socket: null,
     tempAuth: null,
