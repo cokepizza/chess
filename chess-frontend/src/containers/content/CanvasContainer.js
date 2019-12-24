@@ -1,14 +1,26 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Canvas from '../../components/content/Canvas';
 import { useSelector, useDispatch } from 'react-redux';
-import { clickPieceThunk } from '../../modules/canvas';
+import { clickPieceThunk, initializeBlocked } from '../../modules/canvas';
 
 const CanvasContainer = () => {
-    const { board, turn, tempAuth } = useSelector(({ canvas, auth }) => ({
+    const { board, blocked, turn, tempAuth } = useSelector(({ canvas, auth }) => ({
         board: canvas.board,
+        blocked: canvas.blocked,
         turn: canvas.turn,
         tempAuth: auth.tempAuth,
     }));
+
+    useEffect(() => {
+        if(tempAuth) {
+            console.dir(turn);
+            if((tempAuth.role === 'white' && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
+                dispatch(initializeBlocked({ blocked: false }));
+            } else {
+                dispatch(initializeBlocked({ blocked: true }));
+            }
+        }
+    }, [dispatch, turn, tempAuth]);
 
     const dispatch = useDispatch();
     
@@ -18,14 +30,13 @@ const CanvasContainer = () => {
     //  혹은 redux state라면 이 코드와 같이 thunk를 사용하는 방법이 있다
 
     const onClick = useCallback((y, x) => {
-        dispatch(clickPieceThunk({y, x, turn: 1}));
+        dispatch(clickPieceThunk({ y, x }));
     }, [dispatch]);
 
     return (
         <Canvas
             board={board}
-            turn={turn}
-            tempAuth={tempAuth}
+            blocked={blocked}
             onClick={onClick}
         />
     )

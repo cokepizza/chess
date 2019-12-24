@@ -16,17 +16,29 @@ export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 const INITIALIZE_SOCKET = 'canvas/INITIALIZE_SOCKET';
 const INITIALIZE_VALUE = 'canvas/INITIALIZE_VALUE';
 const CHANGE_VALUE = 'canvas/CHANGE_VALUE';
+const INITIALIZE_BLOCKED = 'canvas/INITIALIZE_BLOCKED';
+const CHANGE_BLOCKED = 'canvas/CHANGE_BLOCKED';
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
+export const initializeBlocked = createAction(INITIALIZE_BLOCKED, payload => payload);
+export const changeBlocked = createAction(CHANGE_BLOCKED, payload => payload);
 
 const [ SET_MOVE_PIECE, SET_MOVE_PIECE_SUCCESS, SET_MOVE_PIECE_FAILURE ] = createRequestActionTypes('chat/SET_MOVE_PIECE');
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
 
 export const changeValueThunk = ({ move, turn }) => ( dispatch, getState ) => {
     const { prev, next } = move;
-    const { canvas: { board } } = getState();
+    const { canvas: { board }, auth: { tempAuth } } = getState();
     
+    if(tempAuth) {
+        if((tempAuth.role === 'white' && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
+            dispatch(changeBlocked({ blocked: false }));
+        } else {
+            dispatch(changeBlocked({ blocked: true }));
+        };
+    }
+
     const cell = board[prev.y][prev.x];
     const clearBoard = genClearBoard([...board], [
         'covered',
@@ -46,7 +58,7 @@ export const changeValueThunk = ({ move, turn }) => ( dispatch, getState ) => {
         tracked: true,
     };
     
-    dispatch(changeValue({ board: clearBoard, turn, track: move, clicked: null }));
+    dispatch(changeValue({ board: clearBoard, turn, clicked: null }));
 }
 
 const genClearBoard = (board, params) => {
@@ -105,8 +117,8 @@ export function* canvasSaga () {
     yield takeEvery(CONNECT_WEBSOCKET, connectWebsocketSaga);
 }
 
-export const clickPieceThunk = ({ y, x, turn }) => (dispatch, getState) => {
-    const { canvas: { board, clicked } } = getState();
+export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
+    const { canvas: { board, turn, clicked } } = getState();
 
     if(clicked && board[y][x].covered) {
         const { canvas: { socket } } = getState();
@@ -182,7 +194,7 @@ export const clickPieceThunk = ({ y, x, turn }) => (dispatch, getState) => {
         clicked: true,
     }
 
-    dispatch(changeValue({ board: clearBoard, clicked: { y, x } }));
+    dispatch(changeValue({ board: clearBoard, turn, clicked: { y, x } }));
 };
 
 const initialState = {
@@ -190,8 +202,8 @@ const initialState = {
     error: null,
     board,
     turn: 0,
-    track: {},
     clicked: null,
+    blocked: false,
 };
 
 export default handleActions({
@@ -204,12 +216,19 @@ export default handleActions({
         board,
         turn,
     }),
-    [CHANGE_VALUE]: (state, { payload : { board, turn, track, clicked } }) => ({
+    [CHANGE_VALUE]: (state, { payload : { board, turn, clicked } }) => ({
         ...state,
         board,
         turn,
-        track,
         clicked,
+    }),
+    [INITIALIZE_BLOCKED]: (state, { payload: { blocked } }) => ({
+        ...state,
+        blocked,
+    }),
+    [CHANGE_BLOCKED]: (state, { payload: { blocked } }) => ({
+        ...state,
+        blocked,
     }),
     [SET_MOVE_PIECE_SUCCESS]: state => state,
     [SET_MOVE_PIECE_FAILURE]: state => state,
