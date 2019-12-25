@@ -68,13 +68,17 @@ export const movePiece = (req, res) => {
     };
     board[next.y][next.x] = copied;
 
-    //  set server room object
-    roomMap.set(key, {
-        ...room,
-        turn: room.turn + 1,
-    });
+    // //  set server room object
+    // roomMap.set(key, {
+    //     ...room,
+    //     turn: room.turn + 1,
+    // });
 
-    const newRoom = roomMap.get(key);
+    // const newRoom = roomMap.get(key);
+
+    //  set server room object
+    room.turn = room.turn + 1,
+
     console.dir('complete');
     
     //  broadcast canvas change to everyone in the room
@@ -83,9 +87,14 @@ export const movePiece = (req, res) => {
         move
     });
 
+    // io.of('/game').to(key).emit('message', {
+    //     type: 'initialize',
+    //     status: newRoom,
+    // })
+
     io.of('/game').to(key).emit('message', {
         type: 'initialize',
-        status: newRoom,
+        status: room,
     })
     
     return res.status(200).end();

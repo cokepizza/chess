@@ -20,6 +20,25 @@ export const createRoom = (req, res, next) => {
         blackTime: 30000,
         whiteTime: 30000,
         start: false,
+        // _startTime: null,
+        // _repTime: null,
+        // _start: function () {
+        //     this.start = true;
+        //     this._startTime = new Date().getTime();
+        //     this._repTime = this._startTime;
+        //     this._broadcastTime();
+        // },
+        // _boradcastTime: function() {
+        //     // const record = app.get('record').get(key);
+            
+        //     io.of('/record').emit('message', {
+        //         type: 'initialize',
+        //         time: {
+        //             black: this.blackTime,
+        //             white: this.whiteTime,
+        //         }
+        //     });
+        // },
         _participant: new Map(),
         _black: null,
         _white: null,

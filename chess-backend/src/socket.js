@@ -39,6 +39,7 @@ const connectRoom = (app, io, socket, key) => {
             room.black = nickname;
             room._black = sessionId;
             room.start = true;
+            // room._start();
         }
 
         io.of('/game').to(key).emit('message', {
@@ -126,6 +127,7 @@ export default (server, app, sessionMiddleware) => {
     app.set('counter', 0);
     app.set('canvas', new Map());
     app.set('chat', new Map());
+    app.set('record', new Map());
 
     app.set('socketToSession', new Map());
     app.set('socketToRoom', new Map());
@@ -289,6 +291,54 @@ export default (server, app, sessionMiddleware) => {
         });
     });
 
+
+    // subscribe 'Record' Namespace
+    const record = io.of('/record');
+    record.on('connect', socket => {
+        console.dir('-------------socket(record)--------------');
+        console.dir(socket.request.sessionID);
+
+        const key = socket.handshake.query['key'];
+        if(!key) return;
+
+        connectRoom(app, io, socket, key);
+
+        const recordMap = app.get('record');
+        if(!recordMap.has(key)) {
+            const recordSkeleton = {
+                blackTime: null,
+                whiteTime: null,
+                _broadcast: function() {
+                    io.of('/record').to(key).emit('message', {
+                        type: 'initialize',
+                        record: this,
+                    })
+                },
+                _unicast: function() {
+                    socket.emit('/record', {
+                        type: 'initialize',
+                        record: this,
+                    })
+                },
+            };
+            app.get('record').set(key, recordSkeleton);
+        }
+
+        const recordInstance = app.get('record').get(key);
+
+        
+
+
+
+        socket.on('disconnect', () => {
+            disconnectRoom(app, io, socket, key);
+            
+            console.dir('-------------socketDis(record)--------------')
+            console.dir(socket.request.sessionID);
+        })
+    });
+
+
     // subscribe 'Auth' Namespace
     const auth = io.of('/auth');
     auth.on('connect', socket => {      
@@ -331,4 +381,5 @@ export default (server, app, sessionMiddleware) => {
             console.dir(socket.request.sessionID);
         })
     })
+
 };
