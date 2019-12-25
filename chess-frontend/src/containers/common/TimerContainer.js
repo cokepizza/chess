@@ -13,20 +13,22 @@ const TimerContainer = ({ status, white, black }) => {
     useEffect(() => {
         if(status && status.start) {
             if(white) {
+                targetTime.current = currentTime.current + status.whiteTime;
+                startTime.current = new Date().getTime();
+                setTime(targetTime.current);
+                
                 if(status.turn % 2 === 0) {
-                    targetTime.current = currentTime.current + status.whiteTime;
-                    startTime.current = new Date().getTime();
-                    setTime(targetTime.current);
                     lockTime.current = true;
                 } else {
                     lockTime.current = false;
                 }
             }
             else if(black) {
+                targetTime.current = currentTime.current + status.blackTime;
+                startTime.current = new Date().getTime();
+                setTime(targetTime.current);
+
                 if(status.turn % 2 === 1) {
-                    targetTime.current = currentTime.current + status.blackTime;
-                    startTime.current = new Date().getTime();
-                    setTime(targetTime.current);
                     lockTime.current = true;
                 } else {
                     lockTime.current = false;
