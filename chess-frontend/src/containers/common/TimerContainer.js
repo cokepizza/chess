@@ -5,6 +5,7 @@ const TimerContainer = ({ status, white, black }) => {
     const startTime = useRef();
     const targetTime = useRef();
     const timeoutRef = useRef();
+    const stopTime = useRef();
 
     const [ time, setTime ] = useState();
     
@@ -18,8 +19,9 @@ const TimerContainer = ({ status, white, black }) => {
                     targetTime.current = status.whiteTime;
                     startTime.current = new Date().getTime();
                     setTime(targetTime.current);
+                    stopTime.current = false;
                 } else {
-                    clearTimeout(timeoutRef.current);
+                    stopTime.current = true;
                 }
             }
             else if(black) {
@@ -28,8 +30,9 @@ const TimerContainer = ({ status, white, black }) => {
                     targetTime.current = status.blackTime;
                     startTime.current = new Date().getTime();
                     setTime(targetTime.current);
+                    stopTime.current = false;
                 } else {
-                    clearTimeout(timeoutRef.current);
+                    stopTime.current = true;
                 }
             }
         }
@@ -37,7 +40,8 @@ const TimerContainer = ({ status, white, black }) => {
     
     
     useEffect(() => {
-        if(time) {
+        if(time && !stopTime.current) {
+            clearTimeout(timeoutRef.current);
             timeoutRef.current = setTimeout(() => {
                 const calculatedTime = targetTime.current - (new Date().getTime() - startTime.current);
                 if(calculatedTime >= 0) {
