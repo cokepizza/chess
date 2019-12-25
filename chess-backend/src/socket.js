@@ -39,6 +39,7 @@ const connectRoom = (app, io, socket, key) => {
             room.black = nickname;
             room._black = sessionId;
             const record = app.get('record').get(key);
+            console.dir('start~~');
             record._start();
         }
 
@@ -314,16 +315,21 @@ export default (server, app, sessionMiddleware) => {
                     this.whiteTime = room.defaultTime;
                 },
                 _start: function() {
+                    console.dir('start func');
                     this.startTime = new Date().getTime();
                     this._reduce();
                 },
                 _reduce: function() {
+                    console.dir('reduce func');
                     this._timeoutRef = setTimeout(() => {
                         clearTimeout(this._timeoutRef);
                         this.blackTime -= 1000;
                         this.whiteTime -= 1000;
+                        console.dir(this.blackTime);
                         this._broadcast();
-                        this._reduce();
+                        if(this.blackTime >= 0 && this.whiteTime >= 0) {
+                            this._reduce();
+                        }
                     }, 1000);
                 },
                 _broadcast: function() {
@@ -339,12 +345,11 @@ export default (server, app, sessionMiddleware) => {
                     })
                 },
             };
-
+            recordSkeleton._initialize();
             app.get('record').set(key, recordSkeleton);
         }
 
         const record = app.get('record').get(key);
-        record._initialize();
         record._unicast(socket);
 
         socket.on('disconnect', () => {
