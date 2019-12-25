@@ -57,7 +57,7 @@ const Timer = ({ time }) => {
                 :
             </ColonBlock>
             <TimeSliceBlock>
-                {timeConverter(millisecond)}
+            {timeConverter(millisecond)}
             </TimeSliceBlock>
         </TimerBlock>
     )

@@ -6,11 +6,13 @@ import { connectWebsocket as connectAuthWebsocket } from '../../modules/auth';
 import { connectWebsocket as connectGameWebsocket } from '../../modules/game';
 import { connectWebsocket as connectChatWebsocket } from '../../modules/chat';
 import { connectWebsocket as connectCanvasWebsocket} from '../../modules/canvas';
+import { connectWebsocket as connectRecordWebsocket } from '../../modules/record';
 
 import { disconnectWebsocket as disconnectAuthWebsocket } from '../../modules/auth';
 import { disconnectWebsocket as disconnectGameWebsocket } from '../../modules/game';
 import { disconnectWebsocket as disconnectChatWebsocket } from '../../modules/chat';
 import { disconnectWebsocket as disconnectCanvasWebsocket } from '../../modules/canvas';
+import { disconnectWebsocket as disconnectRecordWebsocket } from '../../modules/record';
 
 import useAsync from '../../lib/hook/useAsync';
 
@@ -24,11 +26,13 @@ const GameLayoutContainer = ({ gameId }) => {
         dispatch(disconnectGameWebsocket());
         dispatch(disconnectChatWebsocket());
         dispatch(disconnectCanvasWebsocket());
+        dispatch(disconnectRecordWebsocket());
         setTimeout(() => {
             dispatch(connectAuthWebsocket(gameId));
             dispatch(connectGameWebsocket(gameId));
             dispatch(connectChatWebsocket(gameId));
             dispatch(connectCanvasWebsocket(gameId));
+            dispatch(connectRecordWebsocket(gameId));
         }, 0);
         return true;
     };
@@ -39,6 +43,7 @@ const GameLayoutContainer = ({ gameId }) => {
             dispatch(disconnectGameWebsocket());
             dispatch(disconnectChatWebsocket());
             dispatch(disconnectCanvasWebsocket());
+            dispatch(disconnectRecordWebsocket());
         }
     }, [dispatch]);
 

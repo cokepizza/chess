@@ -38,8 +38,8 @@ const connectRoom = (app, io, socket, key) => {
         } else if(!room._black) {
             room.black = nickname;
             room._black = sessionId;
-            room.start = true;
-            // room._start();
+            const record = app.get('record').get(key);
+            record._start();
         }
 
         io.of('/game').to(key).emit('message', {
@@ -256,9 +256,8 @@ export default (server, app, sessionMiddleware) => {
     })
 
     //  subscribe 'Canvas' Namespace
-    const canvas = io.of('/canvas');
 
-    canvas.on('connect', socket => {
+    io.of('/canvas').on('connect', socket => {
         console.dir('-------------socket(canvas)--------------');
         console.dir(socket.request.sessionID);
 
@@ -293,8 +292,7 @@ export default (server, app, sessionMiddleware) => {
 
 
     // subscribe 'Record' Namespace
-    const record = io.of('/record');
-    record.on('connect', socket => {
+    io.of('/record').on('connect', socket => {
         console.dir('-------------socket(record)--------------');
         console.dir(socket.request.sessionID);
 
@@ -306,29 +304,48 @@ export default (server, app, sessionMiddleware) => {
         const recordMap = app.get('record');
         if(!recordMap.has(key)) {
             const recordSkeleton = {
+                startTime: null,
                 blackTime: null,
                 whiteTime: null,
+                _timeoutRef: null,
+                _initialize: function() {
+                    const room = app.get('room').get(key);
+                    this.blackTime = room.defaultTime;
+                    this.whiteTime = room.defaultTime;
+                },
+                _start: function() {
+                    this.startTime = new Date().getTime();
+                    this._reduce();
+                },
+                _reduce: function() {
+                    this._timeoutRef = setTimeout(() => {
+                        clearTimeout(this._timeoutRef);
+                        this.blackTime -= 1000;
+                        this.whiteTime -= 1000;
+                        this._broadcast();
+                        this._reduce();
+                    }, 1000);
+                },
                 _broadcast: function() {
                     io.of('/record').to(key).emit('message', {
                         type: 'initialize',
                         record: this,
                     })
                 },
-                _unicast: function() {
-                    socket.emit('/record', {
+                _unicast: function(socket) {
+                    socket.emit('message', {
                         type: 'initialize',
                         record: this,
                     })
                 },
             };
+
             app.get('record').set(key, recordSkeleton);
         }
 
-        const recordInstance = app.get('record').get(key);
-
-        
-
-
+        const record = app.get('record').get(key);
+        record._initialize();
+        record._unicast(socket);
 
         socket.on('disconnect', () => {
             disconnectRoom(app, io, socket, key);
