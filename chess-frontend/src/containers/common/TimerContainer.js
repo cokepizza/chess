@@ -5,34 +5,31 @@ const TimerContainer = ({ status, white, black }) => {
     const startTime = useRef();
     const targetTime = useRef();
     const timeoutRef = useRef();
-    const stopTime = useRef();
+    const lockTime = useRef();
+    const currentTime = useRef(0);
 
     const [ time, setTime ] = useState();
     
     useEffect(() => {
-        console.dir(status);
         if(status && status.start) {
-            console.dir(status.start);
             if(white) {
-                console.dir('white');
                 if(status.turn % 2 === 0) {
-                    targetTime.current = status.whiteTime;
+                    targetTime.current = currentTime.current + status.whiteTime;
                     startTime.current = new Date().getTime();
                     setTime(targetTime.current);
-                    stopTime.current = false;
+                    lockTime.current = true;
                 } else {
-                    stopTime.current = true;
+                    lockTime.current = false;
                 }
             }
             else if(black) {
-                console.dir('black');
                 if(status.turn % 2 === 1) {
-                    targetTime.current = status.blackTime;
+                    targetTime.current = currentTime.current + status.blackTime;
                     startTime.current = new Date().getTime();
                     setTime(targetTime.current);
-                    stopTime.current = false;
+                    lockTime.current = true;
                 } else {
-                    stopTime.current = true;
+                    lockTime.current = false;
                 }
             }
         }
@@ -40,13 +37,15 @@ const TimerContainer = ({ status, white, black }) => {
     
     
     useEffect(() => {
-        if(time && !stopTime.current) {
+        if(time && lockTime.current) {
             clearTimeout(timeoutRef.current);
             timeoutRef.current = setTimeout(() => {
                 const calculatedTime = targetTime.current - (new Date().getTime() - startTime.current);
                 if(calculatedTime >= 0) {
+                    currentTime.current = calculatedTime;
                     setTime(calculatedTime);
                 } else {
+                    currentTime.current = 0;
                     setTime(0);
                 }
             }, 10);
