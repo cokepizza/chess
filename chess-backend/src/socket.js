@@ -38,7 +38,7 @@ const connectRoom = (app, io, socket, key) => {
         } else if(!room._black) {
             room.black = nickname;
             room._black = sessionId;
-            //  게임 시작 메시지 보내야 함
+            room.start = true;
         }
 
         io.of('/room').emit('message', {

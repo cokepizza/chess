@@ -2,28 +2,42 @@ import React, { useState, useEffect, useRef } from 'react';
 import Timer from '../../components/common/Timer';
 
 const TimerContainer = ({ status, white, black }) => {
-    const ref = useRef(new Date().getTime());
+    const startTime = useRef(new Date().getTime());
     const targetTime = useRef();
+    const timeoutRef = useRef();
 
     const [ time, setTime ] = useState();
     
     useEffect(() => {
-        if(status) {
+        console.dir(status);
+        if(status && status.start) {
+            console.dir(status.start);
             if(white) {
-                targetTime.current = status.whiteTime;
+                console.dir('white');
+                if(status.turn % 2 === 0) {
+                    targetTime.current = status.whiteTime;
+                    setTime(targetTime.current);
+                } else {
+                    clearTimeout(timeoutRef.current);
+                }
             }
             else if(black) {
-                targetTime.current = status.blackTime;
-            }   
-            setTime(targetTime.current); 
+                console.dir('black');
+                if(status.turn % 2 === 1) {
+                    targetTime.current = status.blackTime;
+                    setTime(targetTime.current);
+                } else {
+                    clearTimeout(timeoutRef.current);
+                }
+            }
         }
     }, [status, white, black]);
     
     
     useEffect(() => {
         if(time) {
-            setTimeout(() => {
-                const calculatedTime = targetTime.current - (new Date().getTime() - ref.current);
+            timeoutRef.current = setTimeout(() => {
+                const calculatedTime = targetTime.current - (new Date().getTime() - startTime.current);
                 if(calculatedTime >= 0) {
                     setTime(calculatedTime);
                 } else {

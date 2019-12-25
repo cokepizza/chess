@@ -12,6 +12,8 @@ function* createEventChannel(io) {
             });
         })
 
+        //  reconnect 전에 session연결을 위한 http call 추가 예정
+
         io.on('message', message => {
             emit(message)
         });

@@ -19,10 +19,10 @@ export const createRoom = (req, res, next) => {
         method: 'timeAttack',
         blackTime: 30000,
         whiteTime: 30000,
+        start: false,
         _participant: new Map(),
         _black: null,
         _white: null,
-        _start: false,
         _destroy: function() {
             roomMap.delete(this.key);
         },
