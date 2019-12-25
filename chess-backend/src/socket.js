@@ -41,6 +41,11 @@ const connectRoom = (app, io, socket, key) => {
             room.start = true;
         }
 
+        io.of('/game').to(key).emit('message', {
+            type: 'initialize',
+            status: room,
+        });
+
         io.of('/room').emit('message', {
             type: 'initialize',
             room: [...roomMap.values()],
