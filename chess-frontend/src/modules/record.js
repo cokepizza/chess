@@ -9,8 +9,25 @@ export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 
 const INITIALIZE_VALUE = 'record/INITIALIZE_VALUE';
 const INITIALIZE_SOCKET = 'record/INITIALIZE_SOCKET';
+const CHANGE_VALUE = 'record/CHANGE_VALUE';
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
+export const changeValue = createAction(CHANGE_VALUE, payload => payload);
+
+export const changeValueThunk = props => ( dispatch, getState ) => {
+    const {
+        record
+    } = getState();
+
+    const newRecord = { ...record };
+    Object.keys(props).forEach(key => {
+        if(newRecord.hasOwnProperty(key)) {
+            newRecord[key] = props[key];
+        }
+    });
+
+    dispatch(changeValue({ record: newRecord }));
+};
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;
@@ -21,6 +38,7 @@ function* connectWebsocketSaga (action) {
         url: '/record',
         initializeSocket,
         initializeValue,
+        changeValue: changeValueThunk,
         query,
     });
     
@@ -34,7 +52,7 @@ export function* recordSaga () {
 
 const initialState = {
     socket: null,
-    instance: null,
+    record: null,
     error: null,
 }
 
@@ -43,8 +61,12 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { record }}) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { record } }) => ({
         ...state,
         record,
     }),
+    [CHANGE_VALUE]: (state, { payload: { record } }) => ({
+        ...state,
+        record,
+    })
 }, initialState);

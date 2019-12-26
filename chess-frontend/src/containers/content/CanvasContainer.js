@@ -12,7 +12,7 @@ const CanvasContainer = () => {
     }));
 
     const dispatch = useDispatch();
-
+    
     useEffect(() => {
         if(tempAuth && status) {
             console.dir(status.turn);

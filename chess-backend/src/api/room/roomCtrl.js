@@ -13,6 +13,7 @@ export const createRoom = (req, res, next) => {
         key: uuid(),
         name: `room${size}`,
         turn: 0,
+        order: 'white',
         participant: [],
         black: null,
         white: null,

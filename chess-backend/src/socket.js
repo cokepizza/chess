@@ -41,7 +41,7 @@ const connectRoom = (app, io, socket, key) => {
             room._black = sessionId;
             const record = app.get('record').get(key);
             console.dir('start~~');
-            record._start();
+            record._start(room.order);
         }
 
         io.of('/game').to(key).emit('message', {
@@ -307,40 +307,49 @@ export default (server, app, sessionMiddleware) => {
         if(!recordMap.has(key)) {
             const recordSkeleton = {
                 startTime: null,
+                endTime: null,
                 blackTime: null,
                 whiteTime: null,
-                _timeoutRef: null,
+                setTimeRef: null,
                 _initialize: function() {
                     const room = app.get('room').get(key);
                     this.blackTime = room.defaultTime;
                     this.whiteTime = room.defaultTime;
                 },
-                _start: function() {
-                    console.dir('start func');
+                _start: function(order) {
                     this.startTime = new Date().getTime();
-                    this._reduce();
+                    this._reduce(order);
                 },
-                _reduce: function() {
-                    console.dir('reduce func');
-                    this._timeoutRef = setTimeout(() => {
-                        this.blackTime -= 1000;
-                        this.whiteTime -= 1000;
-                        if(this.blackTime >= 0 && this.whiteTime >= 0) {
-                            this._broadcast();
-                            this._reduce();
+                _end: function(order) {
+                    this.endTime = new Date().getTime();
+                    console.dir(order + ' end');
+                },
+                _change: function() {
+                    this._stop();
+                    const room = app.get('room').get(key);
+                    this._start(room.order);
+                },
+                _stop: function() {
+                    clearTimeout(this.setTimeRef);
+                },
+                _reduce: function(order) {
+                    this.setTimeRef = setTimeout(() => {
+                        this[order + 'Time']-= 1000;
+                        if(this[order + 'Time'] >= 0) {
+                            this._broadcast({
+                                type: 'change',
+                                [order + 'Time']: this[order + 'Time'],
+                            });
+                            this._reduce(order);
+                        } else {
+                            this._end(order);
                         }
                     }, 1000);
                 },
-                _broadcast: function() {
-                    console.dir(instanceSanitizer(this));
-                    io.of('/record').to(key).emit('message', {
-                        type: 'initialize',
-                        record: instanceSanitizer(this),
-                    })
+                _broadcast: function(message) {
+                    io.of('/record').to(key).emit('message', message);
                 },
                 _unicast: function(socket) {
-                    console.dir(this);
-                    console.dir(instanceSanitizer(this));
                     socket.emit('message', {
                         type: 'initialize',
                         record: instanceSanitizer(this),
