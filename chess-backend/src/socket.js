@@ -1,6 +1,7 @@
 import SocketIO from 'socket.io';
 import defaultBoard from './lib/base/board';
 import _ from 'lodash';
+import instanceSanitizer from './lib/util/instanceSanitizer';
 
 const connectRoom = (app, io, socket, key) => {
     //  mapping socket => roomId
@@ -331,15 +332,18 @@ export default (server, app, sessionMiddleware) => {
                     }, 1000);
                 },
                 _broadcast: function() {
+                    console.dir(instanceSanitizer(this));
                     io.of('/record').to(key).emit('message', {
                         type: 'initialize',
-                        record: this,
+                        record: instanceSanitizer(this),
                     })
                 },
                 _unicast: function(socket) {
+                    console.dir(this);
+                    console.dir(instanceSanitizer(this));
                     socket.emit('message', {
                         type: 'initialize',
-                        record: this,
+                        record: instanceSanitizer(this),
                     })
                 },
             };
