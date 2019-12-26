@@ -310,7 +310,7 @@ export default (server, app, sessionMiddleware) => {
                 endTime: null,
                 blackTime: null,
                 whiteTime: null,
-                setTimeRef: null,
+                _setTimeRef: null,
                 _initialize: function() {
                     const room = app.get('room').get(key);
                     this.blackTime = room.defaultTime;
@@ -330,10 +330,11 @@ export default (server, app, sessionMiddleware) => {
                     this._start(room.order);
                 },
                 _stop: function() {
-                    clearTimeout(this.setTimeRef);
+                    clearTimeout(this._setTimeRef);
                 },
                 _reduce: function(order) {
-                    this.setTimeRef = setTimeout(() => {
+                    
+                    this._setTimeRef = setTimeout(() => {
                         this[order + 'Time']-= 1000;
                         if(this[order + 'Time'] >= 0) {
                             this._broadcast({

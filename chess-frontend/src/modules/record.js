@@ -19,10 +19,12 @@ export const changeValueThunk = props => ( dispatch, getState ) => {
         record
     } = getState();
 
+    console.dir(props);
+
     const newRecord = { ...record };
     Object.keys(props).forEach(key => {
-        if(newRecord.hasOwnProperty(key)) {
-            newRecord[key] = props[key];
+        if(newRecord.record.hasOwnProperty(key)) {
+            newRecord.record[key] = props[key];
         }
     });
 
