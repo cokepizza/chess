@@ -18,7 +18,7 @@ export const createRoom = (req, res, next) => {
         black: null,
         white: null,
         method: 'timeAttack',
-        defaultTime: 60000,
+        defaultTime: 50000,
         rechargeTime: 10000,
         start: false,
         // _startTime: null,

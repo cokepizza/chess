@@ -318,6 +318,7 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _start: function(order) {
                     this.startTime = new Date().getTime();
+                    this._recharge(order);
                     this._reduce(order);
                 },
                 _end: function(order) {
@@ -327,13 +328,20 @@ export default (server, app, sessionMiddleware) => {
                 _change: function() {
                     this._stop();
                     const room = app.get('room').get(key);
+                    this._recharge(room.order);
                     this._start(room.order);
                 },
                 _stop: function() {
                     clearTimeout(this._setTimeRef);
                 },
+                _recharge: function(order) {
+                    this[order + 'Time'] += room.rechangeTime;
+                    this._broadcast({
+                        type: 'change',
+                        [order + 'Time']: this[order + 'Time'],
+                    })
+                },
                 _reduce: function(order) {
-                    
                     this._setTimeRef = setTimeout(() => {
                         this[order + 'Time']-= 1000;
                         if(this[order + 'Time'] >= 0) {
