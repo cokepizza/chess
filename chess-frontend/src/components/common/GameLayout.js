@@ -7,14 +7,13 @@ import RecordContainer from '../../containers/content/RecordContainer';
 const GameLayoutBlock = styled.div`
     height: 800px;
     width: 100%;
-    background-color: yellow;
+    background-color: rgb(237, 235, 233);
     display: flex;
     justify-content: center;
     align-items: center;
 `;
 
 const sideBlockStyle = css`
-    background-color: white;
     height: 90%;
     display: flex;
     flex-direction: column;

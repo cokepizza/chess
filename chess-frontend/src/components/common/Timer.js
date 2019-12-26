@@ -8,8 +8,12 @@ const TimerBlock = styled.div`
     justify-content: center;
     align-items: center;
     box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    background-color: white;
     ${props => props.color && css`
         background-color: rgb(208, 224, 189);
+    `}
+    ${props => props.time <= 10000 && css`
+        background-color: rgb(230, 153, 153);
     `}
 `;
 
@@ -18,7 +22,7 @@ const TimeSliceBlock = styled.div`
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 45%;
+    width: 47%;
     color: black;
     font-size: 50px;
 `;
@@ -28,7 +32,7 @@ const ColonBlock = styled.div`
     justify-content: center;
     align-items: flex-end;
     height: 100%;
-    width: 10%;
+    width: 6%;
     color: black;
     opacity: 0.5;
     font-size: 50px;
@@ -52,7 +56,10 @@ const Timer = ({ time, color }) => {
     }
 
     return (
-        <TimerBlock color={color} >
+        <TimerBlock
+            time={time}
+            color={color}
+        >
             <TimeSliceBlock>
                 {timeConverter(second)}
             </TimeSliceBlock>
