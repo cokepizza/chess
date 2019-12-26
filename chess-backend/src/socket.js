@@ -322,12 +322,10 @@ export default (server, app, sessionMiddleware) => {
                 _reduce: function() {
                     console.dir('reduce func');
                     this._timeoutRef = setTimeout(() => {
-                        clearTimeout(this._timeoutRef);
                         this.blackTime -= 1000;
                         this.whiteTime -= 1000;
-                        console.dir(this.blackTime);
-                        this._broadcast();
                         if(this.blackTime >= 0 && this.whiteTime >= 0) {
+                            this._broadcast();
                             this._reduce();
                         }
                     }, 1000);
