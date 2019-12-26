@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import TimerContainer from '../../containers/common/TimerContainer';
+import PieceMoveContainer from '../../containers/content/PieceMoveContainer';
 
 const RecordBlock = styled.div`
     width: 100%;
@@ -15,33 +16,18 @@ const NameBlock = styled.div`
     background-color: gray;
 `;
 
-const MoveBlock = styled.div`
-    width: 100%;
-    height: 240px;
-    background-color: lightgray;
-`;
-
-const Record = ({ record, game }) => {
+const Record = () => {
     return (
         <>
-            <TimerContainer
-                record={record}
-                game={game}
-                black
-            />
+            <TimerContainer black />
             <RecordBlock>
                 <NameBlock>
                 </NameBlock>
-                <MoveBlock>
-                </MoveBlock>
+                <PieceMoveContainer />
                 <NameBlock>
                 </NameBlock>
             </RecordBlock>
-            <TimerContainer
-                record={record}
-                game={game}
-                white
-            />
+            <TimerContainer white />
         </>
     )
 };

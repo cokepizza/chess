@@ -312,6 +312,7 @@ export default (server, app, sessionMiddleware) => {
                 endTime: null,
                 blackTime: null,
                 whiteTime: null,
+                pieceMove: [],
                 _setTimeRef: null,
                 _initialize: function() {
                     const room = app.get('room').get(key);
@@ -343,6 +344,7 @@ export default (server, app, sessionMiddleware) => {
                     this._broadcast({
                         type: 'change',
                         [order + 'Time']: this[order + 'Time'],
+                        pieceMove: this.pieceMove,
                     })
                 },
                 _reduce: function(order) {
@@ -366,7 +368,7 @@ export default (server, app, sessionMiddleware) => {
                 _unicast: function(socket) {
                     socket.emit('message', {
                         type: 'initialize',
-                        record: instanceSanitizer(this),
+                        ...instanceSanitizer(this),
                     })
                 },
             };

@@ -1,33 +1,25 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Timer from '../../components/common/Timer';
 
-const TimerContainer = ({ record, game, white, black }) => {
+const TimerContainer = ({ white }) => {
 
-    if(!record) {
-        return (
-            <Timer />    
-        )
-    }
+    const { whiteTime, blackTime, start, order } = useSelector(({ record , game}) => ({
+        whiteTime: record.whiteTime,
+        blackTime: record.blackTime,
+        start: game.start,
+        order: game.order,
+    }));
 
-    if(white) {
-        const color = game.start && game.order === 'white';
-        return (
-            <Timer
-              time={record.whiteTime}
-              color={color}
-            />
-        )
-    }
+    const time = white ? whiteTime : blackTime;
+    const color = white ? (start && order === 'white') : (start && order === 'black');
 
-    if(black) {
-        const color = game.start && game.order === 'black';
-        return (
-            <Timer
-              time={record.blackTime}
-              color={color}
-            />
-        )
-    }
+    return (
+        <Timer
+          time={time}
+          color={color}
+        />
+    )
     
 };
 

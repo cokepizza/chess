@@ -62,11 +62,12 @@ export const movePiece = (req, res) => {
 
     //  set server board object
     //  참조값 변경에 유의해야함 roomMap.set 참고할 것
-    const copied = { ...board[prev.y][prev.x]};
+    const prevPiece = { ...board[prev.y][prev.x] };
+    const nextPiece = { ...board[next.y][next.x] };
     board[prev.y][prev.x] = {
         covered: false
     };
-    board[next.y][next.x] = copied;
+    board[next.y][next.x] = prevPiece;
 
     // //  set server room object
     // roomMap.set(key, {
@@ -80,8 +81,13 @@ export const movePiece = (req, res) => {
     room.turn = room.turn + 1,
     room.order = room.turn % 2 === 0 ? 'white' : 'black';
     const record = req.app.get('record').get(key);
+    record.pieceMove.push({
+        prevPiece,
+        nextPiece,
+        ...move
+    });
     record._change();
-
+    
     console.dir('complete');
     
     //  broadcast canvas change to everyone in the room

@@ -4,25 +4,24 @@ import { useSelector, useDispatch } from 'react-redux';
 import { clickPieceThunk, initializeBlocked } from '../../modules/canvas';
 
 const CanvasContainer = () => {
-    const { board, blocked, game, tempAuth } = useSelector(({ canvas, auth, game }) => ({
+    const { board, blocked, turn, tempAuth } = useSelector(({ canvas, auth, game }) => ({
         board: canvas.board,
         blocked: canvas.blocked,
-        game: game.game,
+        turn: game.turn,
         tempAuth: auth.tempAuth,
     }));
 
     const dispatch = useDispatch();
     
     useEffect(() => {
-        if(tempAuth && game) {
-            console.dir(game.turn);
-            if((tempAuth.role === 'white' && game.turn % 2 === 0) || (tempAuth.role === 'black' && game.turn % 2 === 1)) {
+        if(tempAuth) {
+            if((tempAuth.role === 'white' && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
                 dispatch(initializeBlocked({ blocked: false }));
             } else {
                 dispatch(initializeBlocked({ blocked: true }));
             }
         }
-    }, [dispatch, game, tempAuth]);
+    }, [dispatch, turn, tempAuth]);
     
     //  function은 생성 당시의 Context를 가지고 있기 때문에 redux state값이 제대로 반영되지 않는다
     //  생성되었던 event handler가 React dom에 붙어있기 때문에 dom이 rerender되지 않는 이상
