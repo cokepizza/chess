@@ -79,7 +79,7 @@ export const movePiece = (req, res) => {
     //  set server room object
     room.turn = room.turn + 1,
     room.order = room.turn % 2 === 0 ? 'white' : 'black';
-    const record = app.get('record').get(key);
+    const record = req.app.get('record').get(key);
     record._change();
 
     console.dir('complete');

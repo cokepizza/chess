@@ -16,15 +16,15 @@ export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 
 export const changeValueThunk = props => ( dispatch, getState ) => {
     const {
-        record
+        record: { record }
     } = getState();
 
     console.dir(props);
 
     const newRecord = { ...record };
     Object.keys(props).forEach(key => {
-        if(newRecord.record.hasOwnProperty(key)) {
-            newRecord.record[key] = props[key];
+        if(newRecord.hasOwnProperty(key)) {
+            newRecord[key] = props[key];
         }
     });
 
