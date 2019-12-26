@@ -31,11 +31,11 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board },
             auth: { tempAuth },
-            game: { status }
+            game: { game }
         } = getState();
     
     if(tempAuth) {
-        if((tempAuth.role === 'white' && status.turn % 2 === 0) || (tempAuth.role === 'black' && status.turn % 2 === 1)) {
+        if((tempAuth.role === 'white' && game.turn % 2 === 0) || (tempAuth.role === 'black' && game.turn % 2 === 1)) {
             dispatch(changeBlocked({ blocked: false }));
         } else {
             dispatch(changeBlocked({ blocked: true }));
@@ -123,7 +123,7 @@ export function* canvasSaga () {
 export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
     const {
             canvas: { board, clicked },
-            game: { status }
+            game: { game }
         } = getState();
 
     if(clicked && board[y][x].covered) {
@@ -141,7 +141,7 @@ export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
     }
     
     const { piece, owner } = board[y][x];
-    let inform = { board, y, x, turn: status.turn, owner };
+    let inform = { board, y, x, turn: game.turn, owner };
     if(!piece) return;
 
     const { type, move }= rules[piece];

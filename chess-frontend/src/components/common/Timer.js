@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const TimerBlock = styled.div`
     width: 50%;
@@ -8,6 +8,9 @@ const TimerBlock = styled.div`
     justify-content: center;
     align-items: center;
     box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    ${props => props.color && css`
+        background-color: rgb(208, 224, 189);
+    `}
 `;
 
 const TimeSliceBlock = styled.div`
@@ -24,7 +27,7 @@ const ColonBlock = styled.div`
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    height: 80%;
+    height: 100%;
     width: 10%;
     color: black;
     opacity: 0.5;
@@ -38,7 +41,7 @@ const timeConverter = timeSlice => {
     return convertedTime;
 }
 
-const Timer = ({ time }) => {
+const Timer = ({ time, color }) => {
     
     const second = Math.floor(time / 1000);
     const millisecond = Math.floor((time % 1000) / 10);
@@ -49,7 +52,7 @@ const Timer = ({ time }) => {
     }
 
     return (
-        <TimerBlock>
+        <TimerBlock color={color} >
             <TimeSliceBlock>
                 {timeConverter(second)}
             </TimeSliceBlock>

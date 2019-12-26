@@ -17,12 +17,11 @@ const connectRoom = (app, io, socket, key) => {
 
     //  Server용 room 객체 업데이트
     const roomMap = app.get('room');
-    const originRoom = roomMap.get(key);
+    const room = roomMap.get(key);
 
     //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
-    if(!originRoom) return;
+    if(!room) return;
 
-    const room = { ...originRoom };
     const { nickname } = socket.request.session;
 
     const sessionId = socket.request.sessionID;
@@ -30,23 +29,29 @@ const connectRoom = (app, io, socket, key) => {
         const socketSet = room._participant.get(sessionId);
         socketSet.add(socket.id);
     } else {
+        //  first socket only serve
         room.participant.push(nickname);
         room._participant.set(sessionId, new Set([socket.id]));
 
         if(!room._white) {
             room.white = nickname;
             room._white = sessionId;
-        } else if(!room._black) {
+        } else if(room._white !== sessionId && !room._black) {
             room.black = nickname;
             room._black = sessionId;
-            const record = app.get('record').get(key);
-            console.dir('start~~');
-            record._start(room.order);
+        }
+
+        if(room._white && room._black) {
+            if(sessionId === room._white || sessionId === room._black) {
+                const record = app.get('record').get(key);
+                record._start(room.order);
+                room.start = true;
+            }
         }
 
         io.of('/game').to(key).emit('message', {
             type: 'initialize',
-            status: room,
+            game: room,
         });
 
         io.of('/room').emit('message', {
@@ -56,7 +61,6 @@ const connectRoom = (app, io, socket, key) => {
     }
     console.dir(room);
 
-    roomMap.set(key, room);
 }
 
 const disconnectRoom = (app, io, socket, key) => {
@@ -73,12 +77,11 @@ const disconnectRoom = (app, io, socket, key) => {
 
     //  Server용 room 객체 업데이트
     const roomMap = app.get('room');
-    const originRoom = roomMap.get(key);
+    const room = roomMap.get(key);
 
     //  프론트쪽에 room 없는 접근 redirect하는 코드 넣어둘 것
-    if(!originRoom) return;
+    if(!room) return;
 
-    const room = { ...originRoom };
     const { nickname } = socket.request.session;
 
     const sessionId = socket.request.sessionID;
@@ -89,22 +92,22 @@ const disconnectRoom = (app, io, socket, key) => {
         if(socketSet.size === 0) {
             room._participant.delete(sessionId);
             if(room._black === sessionId) {
-                room._black = null;
-                room.black = null;
+                // room._black = null;
+                // room.black = null;
             }
             if(room._white === sessionId) {
-                room._white = null;
-                room.white = null;
+                // room._white = null;
+                // room.white = null;
             }
             
             const index = room.participant.findIndex(ele => ele === nickname);
             if(index >= 0) {
                 room.participant.splice(index, 1);
             }
-
-            // console.dir(room);
-            roomMap.set(key, room);
             
+            const record = app.get('record').get(key);
+            record._stop();
+
             io.of('/room').emit('message', {
                 type: 'initialize',
                 room: [...roomMap.values()],
@@ -116,8 +119,7 @@ const disconnectRoom = (app, io, socket, key) => {
             // }
         }
     } else {
-        // console.dir(room);
-        // roomMap.set(key, room);
+        
     }
 }
 
@@ -176,7 +178,7 @@ export default (server, app, sessionMiddleware) => {
 
         socket.emit('message', {
             type: 'initialize',
-            status: room,
+            game: room,
         });
 
         socket.on('disconnect', () => {
@@ -318,7 +320,6 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _start: function(order) {
                     this.startTime = new Date().getTime();
-                    this._recharge(order);
                     this._reduce(order);
                 },
                 _end: function(order) {
@@ -328,14 +329,17 @@ export default (server, app, sessionMiddleware) => {
                 _change: function() {
                     this._stop();
                     const room = app.get('room').get(key);
-                    this._recharge(room.order);
-                    this._start(room.order);
+                    this._recharge(room.order === 'white' ? 'black': 'white');
+                    this._start(room.order, true);
                 },
                 _stop: function() {
                     clearTimeout(this._setTimeRef);
                 },
                 _recharge: function(order) {
-                    this[order + 'Time'] += room.rechangeTime;
+                    console.dir(`recharge ${order}`);
+
+                    const room = app.get('room').get(key);
+                    this[order + 'Time'] += room.rechargeTime;
                     this._broadcast({
                         type: 'change',
                         [order + 'Time']: this[order + 'Time'],
@@ -343,14 +347,15 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _reduce: function(order) {
                     this._setTimeRef = setTimeout(() => {
-                        this[order + 'Time']-= 1000;
+                        this[order + 'Time'] -= 1000;
                         if(this[order + 'Time'] >= 0) {
                             this._broadcast({
                                 type: 'change',
                                 [order + 'Time']: this[order + 'Time'],
-                            });
+                            });    
                             this._reduce(order);
                         } else {
+                            this[order + 'Time'] = 0;
                             this._end(order);
                         }
                     }, 1000);

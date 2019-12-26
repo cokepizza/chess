@@ -4,14 +4,16 @@ import Record from '../../components/content/Record';
 
 const RecordContainer = () => {
     
-    const { record } = useSelector(({ record }) => ({
+    const { record, game } = useSelector(({ record, game }) => ({
         record: record.record,
+        game: game.game,
     }));
 
-    console.dir(record);
+    
     return (
         <Record
             record={record}
+            game={game}
         />
     );
 };

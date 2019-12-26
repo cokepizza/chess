@@ -35,7 +35,7 @@ export function* gameSaga () {
 
 const initialState = {
     socket: null,
-    status: null,
+    game: null,
     error: null,
 };
 
@@ -44,8 +44,8 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { status }}) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { game }}) => ({
         ...state,
-        status,
+        game,
     }),
 }, initialState);

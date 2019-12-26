@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Timer from '../../components/common/Timer';
 
-const TimerContainer = ({ status, white, black }) => {
+const TimerContainer = ({ game, white, black }) => {
     const startTime = useRef();
     const targetTime = useRef();
     const timeoutRef = useRef();
@@ -11,10 +11,10 @@ const TimerContainer = ({ status, white, black }) => {
     const [ time, setTime ] = useState();
     
     useEffect(() => {
-        if(status && status.start) {
+        if(game && game.start) {
             if(white) {
-                if(status.turn % 2 === 0) {
-                    targetTime.current = currentTime.current + status.whiteTime;
+                if(game.turn % 2 === 0) {
+                    targetTime.current = currentTime.current + game.whiteTime;
                     setTime(targetTime.current);
                     startTime.current = new Date().getTime();
                     lockTime.current = true;
@@ -23,8 +23,8 @@ const TimerContainer = ({ status, white, black }) => {
                 }
             }
             else if(black) {
-                if(status.turn % 2 === 1) {
-                    targetTime.current = currentTime.current + status.blackTime;
+                if(game.turn % 2 === 1) {
+                    targetTime.current = currentTime.current + game.blackTime;
                     setTime(targetTime.current);
                     startTime.current = new Date().getTime();
                     lockTime.current = true;
@@ -33,7 +33,7 @@ const TimerContainer = ({ status, white, black }) => {
                 }
             }
         }
-    }, [status, white, black]);
+    }, [game, white, black]);
     
     
     useEffect(() => {
