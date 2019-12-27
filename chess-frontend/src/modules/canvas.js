@@ -24,7 +24,7 @@ export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 export const initializeBlocked = createAction(INITIALIZE_BLOCKED, payload => payload);
 export const changeBlocked = createAction(CHANGE_BLOCKED, payload => payload);
 
-const [ SET_MOVE_PIECE, SET_MOVE_PIECE_SUCCESS, SET_MOVE_PIECE_FAILURE ] = createRequestActionTypes('chat/SET_MOVE_PIECE');
+const [ SET_MOVE_PIECE, SET_MOVE_PIECE_SUCCESS, SET_MOVE_PIECE_FAILURE ] = createRequestActionTypes('canvas/SET_MOVE_PIECE');
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
 
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {

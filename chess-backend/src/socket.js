@@ -344,11 +344,12 @@ export default (server, app, sessionMiddleware) => {
                     this._broadcast({
                         type: 'change',
                         [order + 'Time']: this[order + 'Time'],
-                    })
+                    });
+                    console.dir(this.pieceMove[this.pieceMove.length - 1]);
                     this._broadcast({
                         type: 'update',
                         pieceMove: this.pieceMove[this.pieceMove.length - 1],
-                    })
+                    });
                 },
                 _reduce: function(order) {
                     this._stop();

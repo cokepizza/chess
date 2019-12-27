@@ -16,20 +16,22 @@ export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 export const updateValue = createAction(UPDATE_VALUE, payload => payload);
 
-export const updateValueThunk = params => ({ dispatch, getState }) => {
+export const updateValueThunk = params => ( dispatch, getState ) => {
     const { record } = getState();
-    const newRecord = { ...record };
+    let newRecord = { ...record };
     Object.keys(params).forEach(key => {
-        newRecord = {
-            ...newRecord,
-            [key]: [
-                ...newRecord[key],
-                params[key],
-            ]
-        };
+        if(typeof params[key] === 'object') {
+            newRecord = {
+                ...newRecord,
+                [key]: [
+                    ...newRecord[key],
+                    params[key],
+                ]
+            };
+        }
     });
     console.dir(newRecord);
-    
+
     dispatch(updateValue({ record: newRecord }));
 };
 
