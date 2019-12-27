@@ -57,5 +57,5 @@ export default handleActions({
     [CHANGE_VALUE]: (state, { payload: { type, ...rest } }) => ({
         ...state,
         ...rest,
-    })
+    }),
 }, initialState);
