@@ -1,6 +1,7 @@
 import SocketIO from 'socket.io';
-import defaultBoard from './lib/base/board';
 import _ from 'lodash';
+
+import defaultBoard from './lib/base/board';
 import instanceSanitizer from './lib/util/instanceSanitizer';
 
 const connectRoom = (app, io, socket, key) => {
@@ -51,7 +52,7 @@ const connectRoom = (app, io, socket, key) => {
 
         io.of('/game').to(key).emit('message', {
             type: 'initialize',
-            game: room,
+            ...room,
         });
 
         io.of('/room').emit('message', {
@@ -91,15 +92,7 @@ const disconnectRoom = (app, io, socket, key) => {
 
         if(socketSet.size === 0) {
             room._participant.delete(sessionId);
-            if(room._black === sessionId) {
-                // room._black = null;
-                // room.black = null;
-            }
-            if(room._white === sessionId) {
-                // room._white = null;
-                // room.white = null;
-            }
-            
+
             const index = room.participant.findIndex(ele => ele === nickname);
             if(index >= 0) {
                 room.participant.splice(index, 1);
@@ -178,7 +171,7 @@ export default (server, app, sessionMiddleware) => {
 
         socket.emit('message', {
             type: 'initialize',
-            game: room,
+            ...room,
         });
 
         socket.on('disconnect', () => {
@@ -345,7 +338,6 @@ export default (server, app, sessionMiddleware) => {
                         type: 'change',
                         [order + 'Time']: this[order + 'Time'],
                     });
-                    console.dir(this.pieceMove[this.pieceMove.length - 1]);
                     this._broadcast({
                         type: 'update',
                         pieceMove: this.pieceMove[this.pieceMove.length - 1],

@@ -103,7 +103,7 @@ export const movePiece = (req, res) => {
 
     io.of('/game').to(key).emit('message', {
         type: 'initialize',
-        game: room,
+        ...room,
     })
     
     return res.status(200).end();

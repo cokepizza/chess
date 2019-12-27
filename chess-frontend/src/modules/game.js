@@ -43,8 +43,8 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { game }}) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { type, ...rest }}) => ({
         ...state,
-        ...game,
+        ...rest,
     }),
 }, initialState);

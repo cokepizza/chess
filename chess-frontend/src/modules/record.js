@@ -30,7 +30,6 @@ export const updateValueThunk = params => ( dispatch, getState ) => {
             };
         }
     });
-    console.dir(newRecord);
 
     dispatch(updateValue({ record: newRecord }));
 };

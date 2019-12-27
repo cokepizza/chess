@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import Timer from '../../components/common/Timer';
+import Timer from '../../components/content/Timer';
 
 const TimerContainer = ({ white }) => {
 
