@@ -10,9 +10,28 @@ export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 const INITIALIZE_VALUE = 'record/INITIALIZE_VALUE';
 const INITIALIZE_SOCKET = 'record/INITIALIZE_SOCKET';
 const CHANGE_VALUE = 'record/CHANGE_VALUE';
+const UPDATE_VALUE = 'record/UPDATE_VALUE';
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
+export const updateValue = createAction(UPDATE_VALUE, payload => payload);
+
+export const updateValueThunk = params => ({ dispatch, getState }) => {
+    const { record } = getState();
+    const newRecord = { ...record };
+    Object.keys(params).forEach(key => {
+        newRecord = {
+            ...newRecord,
+            [key]: [
+                ...newRecord[key],
+                params[key],
+            ]
+        };
+    });
+    console.dir(newRecord);
+    
+    dispatch(updateValue({ record: newRecord }));
+};
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;
@@ -24,6 +43,7 @@ function* connectWebsocketSaga (action) {
         initializeSocket,
         initializeValue,
         changeValue,
+        updateValue: updateValueThunk,
         query,
     });
     
@@ -58,4 +78,7 @@ export default handleActions({
         ...state,
         ...rest,
     }),
+    [UPDATE_VALUE]: (state, { payload: { record } }) => ({
+        ...record,
+    })
 }, initialState);

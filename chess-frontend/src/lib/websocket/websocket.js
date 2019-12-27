@@ -32,6 +32,7 @@ export function* connectNamespace(params) {
         initializeSocket,
         initializeValue,
         changeValue,
+        updateValue,
         query,
     } = params;
 
@@ -57,6 +58,9 @@ export function* connectNamespace(params) {
                     break;
                 case 'change':
                     yield put(changeValue(message));
+                    break;
+                case 'update':
+                    yield put(updateValue(message));
                     break;
                 default:
                     console.dir(message);
