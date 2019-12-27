@@ -58,7 +58,7 @@ const Timer = ({ time, color }) => {
     return (
         <TimerBlock
             time={time}
-            color={color}
+            color={color ? 1 : 0}
         >
             <TimeSliceBlock>
                 {timeConverter(second)}

@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PieceMove from '../../components/content/PieceMove';
+import PieceMoveList from '../../components/content/PieceMoveList';
 
-const PieceMoveContainer = () => {
+const PieceMoveListContainer = () => {
     
     const dispatch = useDispatch();
 
@@ -14,17 +14,12 @@ const PieceMoveContainer = () => {
 
     }, []);
 
-    const moves = pieceMove.map(obj => {
-        console.dir(obj);
-        return 'a';
-    });
-
     return (
-        <PieceMove
+        <PieceMoveList
             onClickBlock = {onClickBlock}
-            moves={moves}
+            pieceMove={pieceMove}
         />
     )
 };
 
-export default PieceMoveContainer;
+export default PieceMoveListContainer;

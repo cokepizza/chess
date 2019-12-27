@@ -348,6 +348,7 @@ export default (server, app, sessionMiddleware) => {
                     })
                 },
                 _reduce: function(order) {
+                    this._stop();
                     this._setTimeRef = setTimeout(() => {
                         this[order + 'Time'] -= 1000;
                         if(this[order + 'Time'] >= 0) {
