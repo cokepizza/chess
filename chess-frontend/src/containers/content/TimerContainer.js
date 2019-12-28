@@ -4,7 +4,7 @@ import Timer from '../../components/content/Timer';
 
 const TimerContainer = ({ white }) => {
 
-    const { whiteTime, blackTime, start, order } = useSelector(({ record , game}) => ({
+    const { whiteTime, blackTime, start, order } = useSelector(({ record, game }) => ({
         whiteTime: record.whiteTime,
         blackTime: record.blackTime,
         start: game.start,

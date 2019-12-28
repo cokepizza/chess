@@ -54,7 +54,6 @@ const TextBlock = styled.div`
 const IndexBlock = styled.div`
     width: 20%;
     height: 100%;
-    background-color: gray;
     display: flex;
     justify-content: center;
     align-items: center;

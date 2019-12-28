@@ -6,9 +6,15 @@ import PieceMoveListContainer from '../../containers/content/PieceMoveListContai
 
 const RecordBlock = styled.div`
     width: 100%;
-    height: 300px;
+    height: 360px;
     background-color: white;
     box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+`;
+
+const MenuBarBlock = styled.div`
+    width: 100%;
+    height: 30px;
+    background-color: rgb(247, 246, 245);
 `;
 
 const Record = () => {
@@ -16,9 +22,11 @@ const Record = () => {
         <>
             <TimerContainer black />
             <RecordBlock>
-                <StatusContainer />
+                <StatusContainer black />
+                <MenuBarBlock />
                 <PieceMoveListContainer />
-                <StatusContainer />
+                <MenuBarBlock />
+                <StatusContainer white />
             </RecordBlock>
             <TimerContainer white />
         </>

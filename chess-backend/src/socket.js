@@ -52,7 +52,7 @@ const connectRoom = (app, io, socket, key) => {
 
         io.of('/game').to(key).emit('message', {
             type: 'initialize',
-            ...room,
+            ...instanceSanitizer(room),
         });
 
         io.of('/room').emit('message', {
@@ -100,6 +100,11 @@ const disconnectRoom = (app, io, socket, key) => {
             
             const record = app.get('record').get(key);
             record._stop();
+
+            io.of('/game').to(key).emit('message', {
+                type: 'initialize',
+                ...instanceSanitizer(room),
+            });
 
             io.of('/room').emit('message', {
                 type: 'initialize',

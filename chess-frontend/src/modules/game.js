@@ -36,6 +36,7 @@ export function* gameSaga () {
 const initialState = {
     socket: null,
     error: null,
+    participant: [],
 };
 
 export default handleActions({
