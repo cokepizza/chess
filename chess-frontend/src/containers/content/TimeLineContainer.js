@@ -28,8 +28,8 @@ const TimeLineContainer = ({ white }) => {
     // }, [white, whiteTime, blackTime]);
 
     let remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
-    remainTime = Math.max(remainTime, 1);
-    
+    remainTime = Math.min(remainTime, 1);
+
     return (
         <TimeLine
             time={remainTime}

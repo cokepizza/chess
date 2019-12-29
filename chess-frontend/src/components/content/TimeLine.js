@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 const TimeLineBlock = styled.div`
     position: absolute;
     height: 2px;
-    width: 100%;
     background-color: green;
     transition-duration: 1s;
     transition-timing-function: linear;
