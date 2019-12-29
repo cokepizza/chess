@@ -366,9 +366,11 @@ export default (server, app, sessionMiddleware) => {
                     this._setTimeRef = setTimeout(() => {
                         this[order + 'Time'] -= 1000;
                         if(this[order + 'Time'] >= 0) {
+                            this[order + 'Ratio'] = this[order + 'Time'] / this[order + 'MaxTime'];
                             this._broadcast({
                                 type: 'change',
                                 [order + 'Time']: this[order + 'Time'],
+                                [order + 'Ratio']: this[order + 'Ratio'],
                             });    
                             this._reduce(order);
                         } else {
