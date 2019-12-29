@@ -9,6 +9,7 @@ const TimeLineContainer = ({ white, black }) => {
         defaultTime: game.defaultTime,
     }));
 
+    const [ time, setTime ] = useState();
     const maximumTime = useRef(0.01);
 
     useEffect(() => {
@@ -19,11 +20,19 @@ const TimeLineContainer = ({ white, black }) => {
         }
     }, [white, whiteTime, blackTime]);
 
-    const remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
+    useEffect(() => {
+        if(white) {
+            setTime(whiteTime / maximumTime.current);
+        } else {
+            setTime(blackTime / maximumTime.current);
+        }
+    }, [white, whiteTime, blackTime]);
+
+    // const remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
 
     return (
         <TimeLine
-            time={remainTime}
+            time={time}
         />
     )
 };
