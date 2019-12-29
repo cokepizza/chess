@@ -5,13 +5,13 @@ import { IoIosArrowRoundForward } from 'react-icons/io';
 import { pieceMapper } from '../../lib/base/pieceConverter';
 
 const PieceMoveListHiddenBlock = styled.div`
-    height: 240px;
+    height: 270px;
     width: 100%;
     overflow: hidden;
 `
 
 const PieceMoveListBlock = styled.div`
-    height: 240px;
+    height: 270px;
     width: 100%;
     overflow: auto;
     padding-right: 20px;

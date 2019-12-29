@@ -12,7 +12,7 @@ const StatusBlock = styled.div`
     background-color: white;
 
     ${props => props.white && css`
-        margin-top: 60px;
+        margin-top: 30px;
     `}
 `;
 
