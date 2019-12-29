@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { IconContext } from 'react-icons';
 import { FaCircle, FaRegCircle } from 'react-icons/fa';
 
@@ -10,6 +10,10 @@ const StatusBlock = styled.div`
     width: 100%;
     height: 30px;
     background-color: white;
+
+    ${props => props.white && css`
+        margin-top: 60px;
+    `}
 `;
 
 const NameBlock = styled.div`
@@ -19,7 +23,7 @@ const NameBlock = styled.div`
     align-items: center;
 `
 
-const Status = ({ light, name }) => {
+const Status = ({ light, name, white }) => {
     const iconStyle = {
         style: {
             height: '15px',
@@ -32,7 +36,7 @@ const Status = ({ light, name }) => {
     };
 
     return (
-        <StatusBlock>
+        <StatusBlock white={white ? 1 : 0}>
             {light
                 ? (
                     <IconContext.Provider value={iconStyle}>

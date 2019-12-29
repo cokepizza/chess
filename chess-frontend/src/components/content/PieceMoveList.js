@@ -29,10 +29,6 @@ const PieceMoveBlock = styled.div`
     &:first-child {
         margin-top: 30px;
     }
-
-    &:last-child {
-        margin-bottom: 30px;
-    }
 `;
 
 const moveConverter = ({x, y}) => {

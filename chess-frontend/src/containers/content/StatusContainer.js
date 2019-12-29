@@ -17,6 +17,7 @@ const StatusContainer = ({ black, white }) => {
         <Status
             light={light}
             name={name}
+            white={white}
         />
     )
 };

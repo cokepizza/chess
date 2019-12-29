@@ -5,6 +5,8 @@ import { TiArrowBack } from 'react-icons/ti';
 import { IconContext } from 'react-icons';
 
 const UtilBlock = styled.div`
+    position: absolute;
+    top: 30px;
     display: flex;
     width: 100%;
     height: 30px;

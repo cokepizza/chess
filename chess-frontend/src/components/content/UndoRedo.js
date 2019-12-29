@@ -4,10 +4,13 @@ import { FaFastBackward, FaStepBackward, FaFastForward, FaStepForward } from 're
 import { IconContext } from 'react-icons';
 
 const UndoRedoBlock = styled.div`
+    position: absolute;
+    top: 300px;
     display: flex;
     width: 100%;
     height: 30px;
     background-color: rgb(247, 246, 245);
+    z-index: 10;
     box-shadow: rgba(0, 0, 0, 0.14) 0px -2px 2px 0px, rgba(0, 0, 0, 0.2) 0px -3px 1px -2px, rgba(0, 0, 0, 0.12) 0px -1px 5px 0px;
 `;
 
