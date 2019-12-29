@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const TimeLineBlock = styled.div`
     position: absolute;
@@ -10,6 +10,9 @@ const TimeLineBlock = styled.div`
     transition-timing-function: linear;
 
     width: ${props => (props.time * 100) + '%'};
+    ${props => props.time <= 0.1 & css`
+        background-color: red;
+    `}
 `;
 
 const TimeLine = ({ time }) => {

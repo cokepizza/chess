@@ -27,8 +27,9 @@ const TimeLineContainer = ({ white }) => {
     //     }
     // }, [white, whiteTime, blackTime]);
 
-    const remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
-
+    let remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
+    remainTime = Math.max(remainTime, 1);
+    
     return (
         <TimeLine
             time={remainTime}
