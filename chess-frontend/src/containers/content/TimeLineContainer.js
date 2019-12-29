@@ -2,11 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import TimeLine from '../../components/content/TimeLine';
 
-const TimeLineContainer = ({ white, black }) => {
-    const { whiteTime, blackTime } = useSelector(({ record, game }) => ({
+const TimeLineContainer = ({ white }) => {
+    const { whiteTime, blackTime } = useSelector(({ record }) => ({
         whiteTime: record.whiteTime,
         blackTime: record.blackTime,
-        defaultTime: game.defaultTime,
     }));
 
     const [ time, setTime ] = useState();

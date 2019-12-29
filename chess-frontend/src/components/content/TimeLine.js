@@ -7,10 +7,7 @@ const TimeLineBlock = styled.div`
     width: 100%;
     background-color: green;
 
-    ${props => props.time && css`
-        width: ${(props.time * 100)} + '%';
-        background-color: red;
-    `}
+    width: ${props => (props.time * 100) + '%'};
 `;
 
 const TimeLine = ({ time }) => {
