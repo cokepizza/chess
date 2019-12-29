@@ -10,7 +10,7 @@ const RoomModalBackgroundBlock = styled.div`
     width: 100%;
     height: 100%;
     background-color: rgb(0,0,0, 0.5);
-    z-index: 10;
+    z-index: 100;
     opacity: 0;
     visibility: hidden;
     transition: 1s;
@@ -33,7 +33,7 @@ const RoomModalBlock = styled.div`
     justify-content: space-between;
     background-color: rgb(245,245,245, 0.8);
     box-shadow: 10px 10px 10px;
-    z-index: 100;
+    z-index: 1000;
 `;
 
 const RoomModal = ({ onBackgroundClick, onContentClick, onRoomClick, room, ...rest }) => {
