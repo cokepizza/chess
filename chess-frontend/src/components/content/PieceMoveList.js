@@ -25,6 +25,14 @@ const PieceMoveBlock = styled.div`
     justify-content: center;
     align-items: center;
     cursor: pointer;
+
+    &:first-child {
+        margin-top: 30px;
+    }
+
+    &:last-child {
+        margin-bottom: 30px;
+    }
 `;
 
 const moveConverter = ({x, y}) => {
