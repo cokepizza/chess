@@ -1,14 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import TimeLine from '../../components/content/TimeLine';
 
-const TimeLineContainer = ({ white }) => {
-    const { whiteTime, blackTime } = useSelector(({ record }) => ({
+const TimeLineContainer = ({ white, black }) => {
+    const { whiteNick, blackNick, whiteTime, blackTime, participant } = useSelector(({ record, game }) => ({
         whiteTime: record.whiteTime,
         blackTime: record.blackTime,
+        whiteNick: game.white,
+        blackNick: game.black,
+        participant: game.participant,
     }));
 
-    // const [ time, setTime ] = useState();
     const maximumTime = useRef(0.01);
 
     useEffect(() => {
@@ -19,15 +21,13 @@ const TimeLineContainer = ({ white }) => {
         }
     }, [white, whiteTime, blackTime]);
 
-    // useEffect(() => {
-    //     if(white) {
-    //         setTime(whiteTime / maximumTime.current);
-    //     } else {
-    //         setTime(blackTime / maximumTime.current);
-    //     }
-    // }, [white, whiteTime, blackTime]);
+    const participantSet = new Set(participant);
+    let remainTime = 0;
 
-    let remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
+    if((white && participantSet.has(whiteNick)) || (black && participantSet.has(blackNick))) {
+        remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
+    }
+
     remainTime = Math.min(remainTime, 1);
 
     return (
