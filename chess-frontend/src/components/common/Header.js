@@ -8,7 +8,7 @@ const RoomBlock = styled.div`
     justify-content: center;
     align-items: center;
     width: 100px;
-    height: 30px;
+    height: 50px;
     margin-left: 10px;
     background-color: white;
     cursor: pointer;
@@ -30,20 +30,18 @@ const HeaderBlock = styled.div`
     align-items: center;
     width: 100%;
     height: 50px;
-    background-color: red;
+    background-color: rgb(237,235,233);
 `;
 
 const Header = ({ onToggle, openModal, setOpenModal }) => {
     return (
         <>
             <HeaderBlock>
-                <RoomBlock
-                    onClick={onToggle}
-                >
+                <RoomBlock onClick={onToggle}>
                     Modal
                 </RoomBlock>
                 <LinkBlock to='/' />
-            </ HeaderBlock>
+            </HeaderBlock>
             <RoomModalContainer
                 openModal={openModal}
                 setOpenModal={setOpenModal}

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import TimerContainer from '../../containers/content/TimerContainer';
 import StatusContainer from '../../containers/content/StatusContainer';
 import PieceMoveListContainer from '../../containers/content/PieceMoveListContainer';
+import TimeLineContainer from '../../containers/content/TimeLineContainer';
 
 const RecordBlock = styled.div`
     width: 100%;
@@ -22,11 +23,13 @@ const Record = () => {
         <>
             <TimerContainer black />
             <RecordBlock>
+                <TimeLineContainer black />
                 <StatusContainer black />
                 <MenuBarBlock />
                 <PieceMoveListContainer />
                 <MenuBarBlock />
                 <StatusContainer white />
+                <TimeLineContainer white />
             </RecordBlock>
             <TimerContainer white />
         </>
