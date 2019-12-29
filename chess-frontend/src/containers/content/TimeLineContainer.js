@@ -8,7 +8,7 @@ const TimeLineContainer = ({ white }) => {
         blackTime: record.blackTime,
     }));
 
-    const [ time, setTime ] = useState();
+    // const [ time, setTime ] = useState();
     const maximumTime = useRef(0.01);
 
     useEffect(() => {
@@ -19,19 +19,19 @@ const TimeLineContainer = ({ white }) => {
         }
     }, [white, whiteTime, blackTime]);
 
-    useEffect(() => {
-        if(white) {
-            setTime(whiteTime / maximumTime.current);
-        } else {
-            setTime(blackTime / maximumTime.current);
-        }
-    }, [white, whiteTime, blackTime]);
+    // useEffect(() => {
+    //     if(white) {
+    //         setTime(whiteTime / maximumTime.current);
+    //     } else {
+    //         setTime(blackTime / maximumTime.current);
+    //     }
+    // }, [white, whiteTime, blackTime]);
 
-    // const remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
+    const remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
 
     return (
         <TimeLine
-            time={time}
+            time={remainTime}
         />
     )
 };
