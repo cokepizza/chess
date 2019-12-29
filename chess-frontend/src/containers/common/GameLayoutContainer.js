@@ -14,6 +14,9 @@ import { disconnectWebsocket as disconnectChatWebsocket } from '../../modules/ch
 import { disconnectWebsocket as disconnectCanvasWebsocket } from '../../modules/canvas';
 import { disconnectWebsocket as disconnectRecordWebsocket } from '../../modules/record';
 
+import { clearValue as clearRecordValue } from '../../modules/record';
+import { clearValue as clearCanvasValue } from '../../modules/canvas';
+
 import useAsync from '../../lib/hook/useAsync';
 
 const GameLayoutContainer = ({ gameId }) => {

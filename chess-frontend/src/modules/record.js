@@ -11,10 +11,12 @@ const INITIALIZE_VALUE = 'record/INITIALIZE_VALUE';
 const INITIALIZE_SOCKET = 'record/INITIALIZE_SOCKET';
 const CHANGE_VALUE = 'record/CHANGE_VALUE';
 const UPDATE_VALUE = 'record/UPDATE_VALUE';
+const CLEAR_VALUE = 'record/CLEAR_VALUE';
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 export const updateValue = createAction(UPDATE_VALUE, payload => payload);
+export const clearValue = createAction(CLEAR_VALUE);
 
 export const updateValueThunk = params => ( dispatch, getState ) => {
     const { record } = getState();
@@ -63,6 +65,10 @@ const initialState = {
     endTime: null,
     blackTime: null,
     whiteTime: null,
+    blackMaxTime: null,
+    whiteMaxTime: null,
+    whiteRatio: 0,
+    blackRatio: 0,
     pieceMove: [],
 }
 
@@ -81,5 +87,6 @@ export default handleActions({
     }),
     [UPDATE_VALUE]: (state, { payload: { record } }) => ({
         ...record,
-    })
+    }),
+    [CLEAR_VALUE]: state => initialState,
 }, initialState);

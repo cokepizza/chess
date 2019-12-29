@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
-import Canvas from '../../components/content/Canvas';
 import { useSelector, useDispatch } from 'react-redux';
+import Canvas from '../../components/content/Canvas';
 import { clickPieceThunk, initializeBlocked } from '../../modules/canvas';
+import { clearValue } from '../../modules/canvas';
 
 const CanvasContainer = () => {
     const { board, blocked, turn, tempAuth } = useSelector(({ canvas, auth, game }) => ({
@@ -23,6 +24,12 @@ const CanvasContainer = () => {
         }
     }, [dispatch, turn, tempAuth]);
     
+    useEffect(() => {
+        return () => {
+            dispatch(clearValue());
+        }
+    }, [dispatch])
+
     //  function은 생성 당시의 Context를 가지고 있기 때문에 redux state값이 제대로 반영되지 않는다
     //  생성되었던 event handler가 React dom에 붙어있기 때문에 dom이 rerender되지 않는 이상
     //  오래된 state를 가지고 있을 수 밖에 없다. 따라서 ref를 통해 참조값을 가지고 있거나

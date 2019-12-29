@@ -9,13 +9,12 @@ const TimeLineBlock = styled.div`
     transition-timing-function: linear;
 
     width: ${props => (props.time * 100) + '%'};
-    ${props => props.time <= 0.1 & css`
+    ${props => props.time <= 0.1 && css`
         background-color: red;
     `}
 `;
 
 const TimeLine = ({ time }) => {
-    console.dir(time);
     return (
         <TimeLineBlock time={time}/>
     )

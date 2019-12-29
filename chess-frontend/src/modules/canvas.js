@@ -16,11 +16,13 @@ export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 const INITIALIZE_SOCKET = 'canvas/INITIALIZE_SOCKET';
 const INITIALIZE_VALUE = 'canvas/INITIALIZE_VALUE';
 const CHANGE_VALUE = 'canvas/CHANGE_VALUE';
+const CLEAR_VALUE = 'canvas/CLEAR_VALUE';
 const INITIALIZE_BLOCKED = 'canvas/INITIALIZE_BLOCKED';
 const CHANGE_BLOCKED = 'canvas/CHANGE_BLOCKED';
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
+export const clearValue = createAction(CLEAR_VALUE);
 export const initializeBlocked = createAction(INITIALIZE_BLOCKED, payload => payload);
 export const changeBlocked = createAction(CHANGE_BLOCKED, payload => payload);
 
@@ -225,6 +227,7 @@ export default handleActions({
         board,
         clicked,
     }),
+    [CLEAR_VALUE]: state => initialState,
     [INITIALIZE_BLOCKED]: (state, { payload: { blocked } }) => ({
         ...state,
         blocked,

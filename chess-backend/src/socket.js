@@ -310,12 +310,20 @@ export default (server, app, sessionMiddleware) => {
                 endTime: null,
                 blackTime: null,
                 whiteTime: null,
+                blackMaxTime: null,
+                whiteMaxTime: null,
+                blackRatio: null,
+                whiteRatio: null,
                 pieceMove: [],
                 _setTimeRef: null,
                 _initialize: function() {
                     const room = app.get('room').get(key);
                     this.blackTime = room.defaultTime;
                     this.whiteTime = room.defaultTime;
+                    this.blackMaxTime = room.defaultTime;
+                    this.whiteMaxTime = room.defaultTime;
+                    this.blackRatio = 1;
+                    this.whiteRatio = 1;
                 },
                 _start: function(order) {
                     this.startTime = new Date().getTime();
@@ -339,9 +347,14 @@ export default (server, app, sessionMiddleware) => {
 
                     const room = app.get('room').get(key);
                     this[order + 'Time'] += room.rechargeTime;
+                    this[order + 'MaxTime'] = Math.max(this[order + 'MaxTime'], this[order + 'Time']);
+                    this[order + 'Ratio'] = this[order + 'Time'] / this[order + 'MaxTime'];
+                    
                     this._broadcast({
                         type: 'change',
                         [order + 'Time']: this[order + 'Time'],
+                        [order + 'MaxTime']: this[order + 'MaxTime'],
+                        [order + 'Ratio']: this[order + 'Ratio'],
                     });
                     this._broadcast({
                         type: 'update',
