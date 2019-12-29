@@ -6,6 +6,7 @@ import PieceMoveListContainer from '../../containers/content/PieceMoveListContai
 import TimeLineContainer from '../../containers/content/TimeLineContainer';
 
 const RecordBlock = styled.div`
+    position: relative;
     width: 100%;
     height: 360px;
     background-color: white;

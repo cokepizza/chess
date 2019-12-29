@@ -9,34 +9,21 @@ const TimeLineContainer = ({ white, black }) => {
         defaultTime: game.defaultTime,
     }));
 
-    const maximumTime = useRef(0);
-    const [ time, setTime ] = useState();
+    const maximumTime = useRef(0.01);
 
     useEffect(() => {
         if(white) {
             maximumTime.current = Math.max(whiteTime, maximumTime.current);
-            console.dir(whiteTime);
         } else {
             maximumTime.current = Math.max(blackTime, maximumTime.current);
-            console.dir(blackTime);
         }
     }, [white, whiteTime, blackTime]);
 
-    useEffect(() => {
-        if(white) {
-            setTime(whiteTime / maximumTime.current);
-        } else {
-            setTime(blackTime / maximumTime.current);
-        }   
-    });
-    // const xtime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
-    const xtime = white ? whiteTime : blackTime;
-    // console.dir(maximumTime.current);
+    const remainTime = white ? (whiteTime / maximumTime.current) : (blackTime / maximumTime.current);
 
     return (
         <TimeLine
-            time={xtime}
-
+            time={remainTime}
         />
     )
 };
