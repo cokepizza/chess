@@ -20,6 +20,7 @@ const RoomModalBackgroundBlock = styled.div`
         visibility: visible;
     `}
 `;
+
 const RoomModalBlock = styled.div`
     position: fixed;
     top: 20%;

@@ -10,6 +10,7 @@ const rules = {
                     if(board[dy][dx].piece) {
                         return false;
                     }
+
                     return true;
                 }
             },

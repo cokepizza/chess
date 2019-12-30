@@ -55,12 +55,22 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     clearBoard[next.y][next.x] = {
         ...cell,
         tracked: true,
+        dirty: true,
     };
 
     clearBoard[prev.y]= [ ...clearBoard[prev.y] ];
     clearBoard[prev.y][prev.x] = {
         covered: false,
         tracked: true,
+    };
+
+    //  promotion
+    const { owner, piece } = clearBoard[next.y][next.x];
+    if((owner === 'white' && piece === 'pawn' && next.y === 0) || (owner === 'black' && piece === 'pawn' && next.y === 7)) {
+        clearBoard[next.y][next.x] = {
+            ...clearBoard[next.y][next.x],
+            piece: 'queen',
+        }
     };
     
     dispatch(changeValue({ board: clearBoard, clicked: null }));
