@@ -45,11 +45,13 @@ const validation = (board, prev, next) => {
     };
 
     coveredAxisBundle.forEach(axis => {
-        afterBoard[axis.y][axis.x] = {
-            ...afterBoard[axis.y][axis.x],
+        afterBoard[axis.dy][axis.dx] = {
+            ...afterBoard[axis.dy][axis.dx],
             dirty: true,
         }
-    })
+    });
+
+    console.dir(coveredAxisBundle);
 
     //  dirty check
     // const playerKing;
