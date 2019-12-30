@@ -100,9 +100,9 @@ const validation = (board, prev, next) => {
 
 export default validation;
 
-export const checkCovered = ({ board, y, x, turn }) => {
+export const checkCovered = (board, y, x) => {
     const { piece, owner } = board[y][x];
-    let inform = { board, y, x, turn, owner };
+    let inform = { board, y, x, owner };
     if(!piece) return;
 
     const { type, move }= rules[piece];

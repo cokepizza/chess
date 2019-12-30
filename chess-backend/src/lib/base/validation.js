@@ -34,6 +34,23 @@ const validation = (board, prev, next) => {
         }
     }
 
+    let coveredAxisBundle = [];
+    for(let i=0; i<8; ++i) {
+        for(let j=0; j<8; ++j) {
+            if(afterBoard[i][j].owner === enemy) {
+                const coveredAxis = checkCovered(afterBoard, i, j);
+                coveredAxisBundle = [ ...coveredAxisBundle, ...coveredAxis ];
+            }
+        }
+    };
+
+    coveredAxisBundle.forEach(axis => {
+        afterBoard[axis.y][axis.x] = {
+            ...afterBoard[axis.y][axis.x],
+            dirty: true,
+        }
+    })
+
     //  dirty check
     // const playerKing;
     // for(let i=0; i<8; ++i) {
@@ -93,6 +110,7 @@ const validation = (board, prev, next) => {
         return false;
     }
 
+    return true;
     //  opposite validate check (checkmate)
 
 
@@ -100,9 +118,9 @@ const validation = (board, prev, next) => {
 
 export default validation;
 
-export const checkCovered = (board, y, x, turn) => {
+export const checkCovered = (board, y, x) => {
     const { piece, owner } = board[y][x];
-    let inform = { board, y, x, turn, owner };
+    let inform = { board, y, x, owner };
     if(!piece) return;
 
     const { type, move }= rules[piece];

@@ -1,3 +1,5 @@
+import validation from '../../lib/base/validation';
+
 export const movePiece = (req, res) => {
     console.dir('----------http(movePiece)---------')
     console.dir(req.sessionID);
@@ -60,8 +62,14 @@ export const movePiece = (req, res) => {
         return res.status(403).end();
     }
 
+    //  validation check
+    if(!validation(board, prev, next)) {
+        console.dir(`validation check fail`);
+        res.send({ error: `validation check fail` });
+        return res.status(403).end();
+    };
+
     //  set server board object
-    //  참조값 변경에 유의해야함 roomMap.set 참고할 것
     const prevPiece = { ...board[prev.y][prev.x] };
     const nextPiece = { ...board[next.y][next.x] };
     board[prev.y][prev.x] = {

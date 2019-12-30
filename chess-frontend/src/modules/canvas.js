@@ -153,47 +153,7 @@ export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
         return;
     }
     
-    let coveredAxis = checkCovered({ board, y, x, turn });
-    // const { piece, owner } = board[y][x];
-    // let inform = { board, y, x, turn, owner };
-    // if(!piece) return;
-
-    // const { type, move }= rules[piece];
-    // let coveredAxis = [];
-
-    // if(type === 'onetime') {
-    //     coveredAxis = move.reduce((acc, cur) => {
-    //         const dy = y + (owner === 'black' ? -cur.dy: +cur.dy);
-    //         const dx = x + cur.dx;
-    //         if(dy < 0 || dx < 0 || dy > 7 || dx > 7) return acc;
-            
-    //         inform = { ...inform, dy, dx };
-    //         if(!cur.except || (cur.except && cur.except(inform))) {
-    //             if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
-    //                 acc.push({dy, dx});
-    //             }
-    //         }
-
-    //         return acc;
-    //     }, []);
-    // } else {
-    //     coveredAxis = move.flatMap(cur => {
-    //         let counter = 0;
-    //         let coveredArr = [];
-    //         while(true) {
-    //             ++counter;
-    //             const dy = y + counter * (owner === 'black' ? -cur.dy: +cur.dy);
-    //             const dx = x + counter * cur.dx;
-                
-    //             if(dy < 0 || dx < 0 || dy > 7 || dx > 7) break;
-    //             if(board[dy][dx].owner && board[dy][dx].owner === owner) break;
-    //             coveredArr.push({dy, dx});
-    //             if(board[dy][dx].owner && board[dy][dx].owner !== owner) break;
-    //         }
-    //         return coveredArr;
-    //     });
-    // }
-
+    let coveredAxis = checkCovered(board, y, x);
     const clearBoard = genClearBoard([...board], [
         'covered',
         'clicked',
