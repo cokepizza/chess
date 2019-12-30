@@ -1,13 +1,17 @@
 export const sendMessage = (req, res, next) => {
     const io = req.app.get('io');
-    const { message } = req.body;
+    const { socket: socketId, message } = req.body;
     const { nickname, color } = req.session;
+    const socketToRoomMap = req.app.get('socketToRoom');
+    const key = socketToRoomMap.get(socketId);
     
-    io.of('/chat').emit('message', {
+    console.dir(socketId);
+    console.dir(key);
+    io.of('/chat').to(key).emit('message', {
         type: 'change',
         nickname,
         color,
-        message: `${req.session.nickname} : ${message}`,
+        message,
     });
 
     console.dir('----------http(sendMessage)---------')

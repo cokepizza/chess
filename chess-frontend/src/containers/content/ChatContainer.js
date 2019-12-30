@@ -7,7 +7,8 @@ import Chat from '../../components/content/Chat';
 const ChatContainer = () => {
     const dispatch = useDispatch();
 
-    const { messages, text, tempAuth } = useSelector(({ chat, auth }) => ({
+    const { socket, messages, text, tempAuth } = useSelector(({ chat, auth }) => ({
+        socket: chat.socket,
         messages: chat.messages,
         text: chat.text,
         tempAuth: auth.tempAuth,
@@ -15,7 +16,7 @@ const ChatContainer = () => {
 
     const onSubmit = useCallback(e => {
         e.preventDefault();
-        dispatch(sendMessageThunk({ message: text }));
+        dispatch(sendMessageThunk({ socket, message: text }));
         dispatch(initializeTextfield());
     }, [dispatch, text]);
 

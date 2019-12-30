@@ -1,154 +1,101 @@
 import React, { useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { IoIosSend } from 'react-icons/io';
+import { IconContext } from 'react-icons';
 
 const ChatSubmitBlock = styled.form`
 `;
 
 const ChatFrameBlock = styled.div`
-    /* margin: 10px 10px 10px 10px; */
-    border : 3px groove gray;
-    border-style: outset;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    /* width: 450px; */
-    /* width: 100%; */
-    box-shadow: 5px 5px 5px;
+    position: relative;
+    background-color: white;
+    box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+`;
+
+const ChatHiddenBlock = styled.div`
+    height: 360px;
+    width: 100%;
+    overflow: hidden;
 `;
 
 const ChatBlock = styled.div`
-    height: 300px;
-    margin: 10px 10px 10px 10px;
-    border : none;
-    overflow-y: scroll;
-    background-image: url('https://previews.123rf.com/images/vilisov/vilisov1502/vilisov150200012/36207194-chess-board-abstract-background.jpg'); 
-    background-size: cover;
-    ::-webkit-scrollbar {
-        width: 20px;
-    }
-    ::-webkit-scrollbar-track {
-        color: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: lightgray;
-        border-radius: 10px;
-    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 360px;
+    width: 100%;
+    padding-right: 20px;
+    overflow-y: overlay;
 `;
 
 const ChatFormBlock = styled.div`
+    position: absolute;
     width: 100%;
     display: flex;
-    padding: 1px;
+    background-color: white;
+    box-shadow: rgba(0,0,0,0.05) 0px -2px 2px 0px, rgba(0,0,0,0.08) 0px -3px 1px -2px, rgba(0,0,0,0.04) 0px -1px 5px 0px;
 `;
 
 const ChatInputBlock = styled.input`
     outline: none;
+    border: none;
     align-items : center;
     color: black;
-    font-size: 15px;
-    margin : 10px 10px 10px 10px;
+    background-color: transparent;
+    font-size: 12px;
     width: 80%;
     height : 30px;
-    border: 3px solid lightgray;
-    transition: all 0.3s ease .1s;
-    &:hover, &:focus {
-        border: 3px solid gray;
-    } 
+    padding-left: 10px;
 `;
 
 const ChatButtonBlock = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 20%;
-    font-size: 15px;
-    margin : 10px 10px 10px 10px;
-    background-color: transparent;
-    border: 3px solid lightgray;
-    transition: all 0.3s ease .1s;
+    font-size: 12px;
+    background-color: rgb(247,246,245);
+    border: none;
+    cursor: pointer;
+
     &:hover, &:focus {
-        border: 3px solid gray;
+        background-color: #D3D3D3;
     } 
 `;
 
 const MessageBlock = styled.div`
-  padding : 5px;
-    min-height : 20px;
-    font-size : 15px;
-    margin : 5px;
-    opacity : 0.7;
-    transition: all 0.1s;
-    :nth-child(even) {
-        color : black ;
-        border : 1px solid darkgray;
-        background-color : lightgray;
-        &:active {
-            border : 3px solid darkblue;
-        }
-    }
-    :nth-child(odd) {
-        color : blue ;
-        border : 1px solid gray;
-        background-color : lightgray;
-        &:active {
-            border : 3px solid darkblue;
-        }
-    }
+    display: flex;
+    align-items: center;
+    width: 90%;
+    height : 30px;
+    min-height : 30px;
+    font-size : 12px;
+    background-color: white;
+
+    ${props => props.owner === 'my' && css`
+        justify-content: flex-end;
+    `};
+
+    ${props => props.owner === 'other' && css`
+        justify-content: flex-start;
+    `};
+
+    ${props => props.owner === 'server' && css`
+        justify-content: center;
+    `};
 `;
 
-// const ChatBubble = styled.div`
-//     color: black;  
-//     background-color: #000000;
-//     border-radius: 5px;
-//     box-shadow: 0 0 6px #B2B2B2;
-//     display: inline-block;
-//     padding: 10px 18px;
-//     position: relative;
-//     vertical-align: top;
-    /* &:before {
-        background-color: #F2F2F2;
-        content:"\00a0";
-        display: block;
-        height: 16px;
-        position: absolute;
-        top: 11px;
-        transform: rotate(29deg) skew(-35deg);
-        -moz-transform: rotate(29deg) skew(-35deg);
-        -ms-transform: rotate(29deg) skew(-35deg);
-        -o-transform: rotate(29deg) skew(-35deg);
-        -webkit-transform: rotate(29deg) skew(-35deg);
-        width: 20px;
-    }
-    &.me {
-        float: left;
-        clear: both;
-        margin: 5px 45px 5px 20px;
-    }
-    &.me::before {
-        box-shadow: -2px 2px 2px 0 rgba(178, 178, 178, .4);
-        left: -9px;
-    }
-    &.you {
-        float: right;
-        clear: both;
-        margin: 5px 20px 5px 45px;
-    }
-    &.you::before {
-        box-shadow: 2px -2px 2px 0 rgba(178, 178, 178, .4);
-        right: -9px;
+const Message = React.memo(({ message, myName, ...rest }) => {
+    const owner = message.nickname ? (message.nickname === myName ? 'my' : 'other') : 'server';
+    const text = owner === 'other' ? message.nickname + ' : ' + message.message : message.message;
 
-    &.broadcast {
-        align-items: center;
-        width : 100%;
-    }  */
-// `;
-
-const Message = React.memo(({ message, nickname, ...rest }) => {
     return (
         <MessageBlock
             {...rest} 
             color={message.color}
-            className={message.nickname 
-                ? message.nickname === nickname 
-                ? 'me' : 'you' : 'broadcast' }
+            owner={owner}
         >
-            {message.message}
+            {text}
         </MessageBlock>
     )
 });
@@ -163,14 +110,16 @@ const Chat = ({ messages, onSubmit, onChange, text, tempAuth }) => {
         <>
             <ChatSubmitBlock onSubmit={onSubmit}>
                 <ChatFrameBlock>
-                    <ChatBlock ref={ref}>
-                        {messages.map(message => (
-                            <Message
-                                nickname={tempAuth.nickname}
-                                message={message}
-                            />
-                        ))}
-                    </ChatBlock>
+                    <ChatHiddenBlock>
+                        <ChatBlock ref={ref}>
+                            {messages.map(message => (
+                                <Message
+                                    myName={tempAuth.nickname}
+                                    message={message}
+                                />
+                            ))}
+                        </ChatBlock>
+                    </ChatHiddenBlock>
                     <ChatFormBlock>
                         <ChatInputBlock
                             onChange={onChange}
@@ -179,7 +128,9 @@ const Chat = ({ messages, onSubmit, onChange, text, tempAuth }) => {
                         <ChatButtonBlock
                             onSubmit={onSubmit}
                         >
-                            Send
+                            <IconContext.Provider value={{style: { width:'40%', height:'40%' }}}>
+                                <IoIosSend />
+                            </IconContext.Provider>
                         </ ChatButtonBlock>
                     </ChatFormBlock>
                 </ChatFrameBlock>

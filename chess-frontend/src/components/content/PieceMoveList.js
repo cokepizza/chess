@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { IconContext } from 'react-icons';
 import { IoIosArrowRoundForward } from 'react-icons/io';
@@ -13,7 +13,7 @@ const PieceMoveListHiddenBlock = styled.div`
 const PieceMoveListBlock = styled.div`
     height: 270px;
     width: 100%;
-    overflow: auto;
+    overflow-y: overlay;
     padding-right: 20px;
 `;
 
@@ -129,10 +129,15 @@ const PieceMove = React.memo(({ move, index, onClickBlock }) => {
 });
 
 
-const PieceMoveList = ({ pieceMove, onClickBlock }) => {    
+const PieceMoveList = ({ pieceMove, onClickBlock }) => {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current.scrollTop = ref.current.scrollHeight;
+    }, [pieceMove]);
+
     return (
         <PieceMoveListHiddenBlock>
-            <PieceMoveListBlock>
+            <PieceMoveListBlock ref={ref}>
                 {pieceMove.map((move, index) => (
                     <PieceMove 
                         onClick={onClickBlock}
