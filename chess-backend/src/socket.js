@@ -44,7 +44,7 @@ const connectRoom = (app, io, socket, key) => {
 
         if(room._white && room._black) {
             if(sessionId === room._white || sessionId === room._black) {
-                if(room._participant.get(room._white) && room._participant.get(room.black)) {
+                if(room._participant.get(room._white) && room._participant.get(room._black)) {
                     const record = app.get('record').get(key);
                     record._start(room.order);
                     room.start = true;
@@ -98,10 +98,12 @@ const disconnectRoom = (app, io, socket, key) => {
             const index = room.participant.findIndex(ele => ele === nickname);
             if(index >= 0) {
                 room.participant.splice(index, 1);
-            }
+            };
             
-            const record = app.get('record').get(key);
-            record._stop();
+            if(room._black === sessionId || room._white === sessionId) {
+                const record = app.get('record').get(key);
+                record._stop();
+            };
 
             io.of('/game').to(key).emit('message', {
                 type: 'initialize',
