@@ -33,7 +33,9 @@ const ChatFormBlock = styled.div`
     width: 100%;
     display: flex;
     background-color: white;
-    box-shadow: rgba(0,0,0,0.05) 0px -2px 2px 0px, rgba(0,0,0,0.08) 0px -3px 1px -2px, rgba(0,0,0,0.04) 0px -1px 5px 0px;
+    top: 365px;
+    /* box-shadow: rgba(0,0,0,0.05) 0px -2px 2px 0px, rgba(0,0,0,0.08) 0px -3px 1px -2px, rgba(0,0,0,0.04) 0px -1px 5px 0px; */
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
 `;
 
 const ChatInputBlock = styled.input`
@@ -67,8 +69,8 @@ const MessageBlock = styled.div`
     display: flex;
     align-items: center;
     width: 90%;
-    height : 30px;
-    min-height : 30px;
+    height : 36px;
+    min-height : 36px;
     font-size : 12px;
     background-color: white;
 
@@ -85,6 +87,76 @@ const MessageBlock = styled.div`
     `};
 `;
 
+const BalloonBlock = styled.div`
+    position: relative;
+    background: #ffff80;
+    padding: 5px;
+
+    &:after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-left-color: #ffff80;
+        border-right: 0;
+        border-top: 0;
+        margin-top: -5px;
+        margin-right: -8px;
+    }
+
+    
+    ${props => props.owner === 'other' && css `
+        background: rgb(247,246,245);
+
+        &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-top: 0;
+            margin-top: -5px;
+            border-right-color: rgb(247,246,245);
+            border-left: 0;
+            margin-left: -8px;
+        }
+    `}
+`;
+
+const Balloon = ({ owner, children }) => {
+    let ballonBlock;
+    if(owner === 'my') {
+        ballonBlock = (
+            <BalloonBlock owner={owner}>
+                {children}
+            </BalloonBlock>
+        )
+    } else if(owner === 'other') {
+        ballonBlock = (
+            <BalloonBlock owner={owner}>
+                {children}
+            </BalloonBlock>
+        )
+    } else if(owner === 'server') {
+        ballonBlock = (
+            <>
+                {children}
+            </>
+        )
+    }
+
+    return (
+        <>
+            {ballonBlock}
+        </>
+    )
+}
+
 const Message = React.memo(({ message, myName, ...rest }) => {
     const owner = message.nickname ? (message.nickname === myName ? 'my' : 'other') : 'server';
     const text = owner === 'other' ? message.nickname + ' : ' + message.message : message.message;
@@ -95,7 +167,9 @@ const Message = React.memo(({ message, myName, ...rest }) => {
             color={message.color}
             owner={owner}
         >
-            {text}
+            <Balloon owner={owner}>
+                {text}
+            </Balloon>
         </MessageBlock>
     )
 });
