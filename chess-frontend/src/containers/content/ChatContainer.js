@@ -18,7 +18,7 @@ const ChatContainer = () => {
         e.preventDefault();
         dispatch(sendMessageThunk({ socket, message: text }));
         dispatch(initializeTextfield());
-    }, [dispatch, text]);
+    }, [dispatch, text, socket]);
 
     const onChange = useCallback(e => {
         dispatch(changeTextfield(e.target.value));

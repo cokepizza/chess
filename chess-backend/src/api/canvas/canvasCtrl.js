@@ -1,4 +1,4 @@
-import { checkSafeMove } from '../../lib/base/validation';
+import { checkSafeMove, checkCheckmate } from '../../lib/base/validation';
 
 export const movePiece = (req, res) => {
     console.dir('----------http(movePiece)---------')
@@ -66,13 +66,34 @@ export const movePiece = (req, res) => {
     if(!checkSafeMove(player, board, prev, next)) {
         console.dir(`validate my safe fail`);
         res.send({ error: `validate my safe fail` });
+        
+        io.of('/chat').to(key).emit('message', {
+            type: 'change',
+            color,
+            message: `You are checked. This move is not possible`,
+        });
         return res.status(403).end();
     };
 
     //  validate enemy's state
     const enemy = player === 'white' ? 'black' : 'white';
     if(!checkSafeMove(enemy, board, prev, next)) {
-        
+        // if(checkCheckmate(enemy, board)) {
+        //     io.of('/chat').to(key).emit('message', {
+        //         type: 'change',
+        //         color,
+        //         message: `CheckMate ${player} win`,
+        //     });
+
+        //     console.dir(`checkMate ${player} win`);
+        //     res.send({ error: `checkMate ${player} win` });
+        //     return;
+        // };
+        // io.of('/chat').to(key).emit('message', {
+        //     type: 'change',
+        //     color,
+        //     message: `Check ${enemy} `,
+        // });
     }
 
     //  set server board object

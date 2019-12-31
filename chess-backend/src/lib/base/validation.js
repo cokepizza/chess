@@ -52,53 +52,22 @@ export const checkSafeMove = (player, board, prev, next) => {
     return true;
 };
 
-export const checkCheckmate = (player, board, prev, next) => {
-    const enemy = player === 'white' ? 'black' : 'white';
+export const checkCheckmate = (player, board) => {
 
-    const afterBoard = _.cloneDeep(board);
-    afterBoard[next.y][next.x] = {
-        ...afterBoard[prev.y][prev.x],
-    };
-    afterBoard[prev.y][prev.x] = {
-        covered: false,
-    };
-
-    let playerKing;
     for(let i=0; i<8; ++i) {
         for(let j=0; j<8; ++j) {
-            if(afterBoard[i][j].owner === player && afterBoard[i][j].piece === 'king') {
-                playerKing = {
-                    y: i,
-                    x: j,
-                };
-            };
-        }
-    }
-
-    let coveredAxisBundle = [];
-    for(let i=0; i<8; ++i) {
-        for(let j=0; j<8; ++j) {
-            if(afterBoard[i][j].owner === player) {
-                const coveredAxis = checkCovered(afterBoard, i, j);
+            if(board[i][j].owner === player) {
+                const coveredAxis = checkCovered(board, i, j);
                 coveredAxis.forEach(axis => {
-                    const prevState = {
-                        ...afterBoard[i][j]
-                    };
-
-                    afterBoard[axis.y][axis.x] = {
-                        ...prevState,
-                    };
-
-                    afterBoard[i][j] = {
-                        
+                    if(checkSafeMove(player, board, { y: i, x: j }, { y: axis.dy, x: axis.dx })) {
+                        return false;
                     };
                 })
-                coveredAxisBundle = [ ...coveredAxisBundle, ...coveredAxis ];
             }
         }
     };
 
-
+    return true;
 }
 
 export const checkCovered = (board, y, x) => {
@@ -125,6 +94,10 @@ export const checkCovered = (board, y, x) => {
             return acc;
         }, []);
     } else {
+        console.dir('------------');
+        console.dir(move);
+        debugger;
+
         coveredAxis = move.flatMap(cur => {
             let counter = 0;
             let coveredArr = [];
