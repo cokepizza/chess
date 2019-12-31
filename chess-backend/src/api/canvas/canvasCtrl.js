@@ -1,4 +1,4 @@
-import validation from '../../lib/base/validation';
+import { checkSafeMove } from '../../lib/base/validation';
 
 export const movePiece = (req, res) => {
     console.dir('----------http(movePiece)---------')
@@ -62,12 +62,18 @@ export const movePiece = (req, res) => {
         return res.status(403).end();
     }
 
-    //  validation check
-    if(!validation(board, prev, next)) {
-        console.dir(`validation check fail`);
-        res.send({ error: `validation check fail` });
+    //  validate my choice
+    if(!checkSafeMove(player, board, prev, next)) {
+        console.dir(`validate my safe fail`);
+        res.send({ error: `validate my safe fail` });
         return res.status(403).end();
     };
+
+    //  validate enemy's state
+    const enemy = player === 'white' ? 'black' : 'white';
+    if(!checkSafeMove(enemy, board, prev, next)) {
+        
+    }
 
     //  set server board object
     const prevPiece = { ...board[prev.y][prev.x] };
