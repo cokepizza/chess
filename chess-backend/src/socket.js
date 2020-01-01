@@ -44,7 +44,7 @@ const connectRoom = (app, io, socket, key) => {
 
         if(room._white && room._black) {
             if(sessionId === room._white || sessionId === room._black) {
-                if(room._participant.get(room._white) && room._participant.get(room._black)) {
+                if(room._participant.has(room._white) && room._participant.has(room._black)) {
                     const record = app.get('record').get(key);
                     record._start(room.order);
                     room.start = true;
