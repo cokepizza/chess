@@ -1,4 +1,5 @@
-import { checkSafeMove, checkCheckmate } from '../../lib/base/validation';
+import { checkSafeMove, checkCheckmate, checkCovered } from '../../lib/base/validation';
+import rules from '../../lib/base/rules';
 
 export const movePiece = (req, res) => {
     console.dir('----------http(movePiece)---------')
@@ -62,8 +63,43 @@ export const movePiece = (req, res) => {
         return res.status(403).end();
     }
 
+    //  check covered move or not (for irregular user)
+    const coveredAxis = checkCovered(board, prev.y, prev.x);
+    const length = coveredAxis.length;
+    let covered = false;
+    for(let i=0; i<length; ++i) {
+        if(coveredAxis[i].dy === next.y && coveredAxis[i].dx === next.x) {
+            covered = true;
+            break;
+        }
+    }
+
+    if(!covered) {
+        console.dir(`This move is not covered`);
+        res.send({ error: `This move is not covered` });
+        return res.status(403).end();
+    }
+
+    //  temporary move for check validation
+    const tempBoard = _.cloneDeep(board);
+    
+    const pieceStore = { ...tempBoard[prev.y][prev.x] };
+    tempBoard[prev.y][prev.x] = {
+        covered: false
+    };
+    tempBoard[next.y][next.x] = pieceStore;
+
+    //  temporary promotion (pawn => queen)
+    const { tempOwner, tempPiece } = tempBoard[next.y][next.x];
+    if((tempOwner === 'white' && tempPiece === 'pawn' && next.y === 0) || (tempOwner === 'black' && tempPiece === 'pawn' && next.y === 7)) {
+        tempBoard[next.y][next.x] = {
+            ...tempBoard[next.y][next.x],
+            piece: 'queen',
+        }
+    };
+
     //  validate my choice
-    if(!checkSafeMove(player, board, prev, next)) {
+    if(!checkSafeMove(player, tempBoard)) {
         console.dir(`validate my safe fail`);
         res.send({ error: `validate my safe fail` });
         
@@ -74,6 +110,22 @@ export const movePiece = (req, res) => {
         return res.status(403).end();
     };
 
+    //  validate enemy's state
+    const enemy = player === 'white' ? 'black' : 'white';
+    if(!checkSafeMove(enemy, tempBoard)) {
+        if(checkCheckmate(enemy, tempBoard)) {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `CheckMate ${player} win`,
+            });
+        } else {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `${enemy} Checked`,
+            });
+        }
+    }
+
     //  set server board object
     const prevPiece = { ...board[prev.y][prev.x] };
     const nextPiece = { ...board[next.y][next.x] };
@@ -81,6 +133,14 @@ export const movePiece = (req, res) => {
         covered: false
     };
     board[next.y][next.x] = prevPiece;
+
+    const { owner, piece } = board[next.y][next.x];
+    if((owner === 'white' && piece === 'pawn' && next.y === 0) || (owner === 'black' && piece === 'pawn' && next.y === 7)) {
+        board[next.y][next.x] = {
+            ...board[next.y][next.x],
+            piece: 'queen',
+        }
+    };
 
     //  set server room object
     room.turn = room.turn + 1;
@@ -105,22 +165,6 @@ export const movePiece = (req, res) => {
         type: 'initialize',
         ...room,
     })
-
-    //  validate enemy's state
-    const enemy = player === 'white' ? 'black' : 'white';
-    if(!checkSafeMove(enemy, board, prev, next)) {
-        if(checkCheckmate(enemy, board, prev, next)) {
-            io.of('/chat').to(key).emit('message', {
-                type: 'change',
-                message: `CheckMate ${player} win`,
-            });
-        } else {
-            io.of('/chat').to(key).emit('message', {
-                type: 'change',
-                message: `Check ${enemy} `,
-            });
-        }
-    }
     
     return res.status(200).end();
 };

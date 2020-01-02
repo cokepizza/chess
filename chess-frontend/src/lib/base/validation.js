@@ -1,22 +1,15 @@
 import rules from './rules';
 import _ from 'lodash';
 
-export const checkSafeMove = (player, board, prev, next) => {
+export const checkSafeMove = (player, board) => {
     const enemy = player === 'white' ? 'black' : 'white';
-
-    const afterBoard = _.cloneDeep(board);
-    afterBoard[next.y][next.x] = {
-        ...afterBoard[prev.y][prev.x],
-    };
-    afterBoard[prev.y][prev.x] = {
-        covered: false,
-    };
+    const clonedBoard = _.cloneDeep(board);
 
     //  check king's location
     let playerKing;
     for(let i=0; i<8; ++i) {
         for(let j=0; j<8; ++j) {
-            if(afterBoard[i][j].owner === player && afterBoard[i][j].piece === 'king') {
+            if(clonedBoard[i][j].owner === player && clonedBoard[i][j].piece === 'king') {
                 playerKing = {
                     y: i,
                     x: j,
@@ -28,45 +21,37 @@ export const checkSafeMove = (player, board, prev, next) => {
     let coveredAxisBundle = [];
     for(let i=0; i<8; ++i) {
         for(let j=0; j<8; ++j) {
-            if(afterBoard[i][j].owner === enemy) {
-                const coveredAxis = checkCovered(afterBoard, i, j);
+            if(clonedBoard[i][j].owner === enemy) {
+                const coveredAxis = checkCovered(clonedBoard, i, j);
                 coveredAxisBundle = [ ...coveredAxisBundle, ...coveredAxis ];
             }
         }
     };
 
     coveredAxisBundle.forEach(axis => {
-        afterBoard[axis.dy][axis.dx] = {
-            ...afterBoard[axis.dy][axis.dx],
+        clonedBoard[axis.dy][axis.dx] = {
+            ...clonedBoard[axis.dy][axis.dx],
             movable: true,
         }
     });
 
     //  is king in danger?
-    if(afterBoard[playerKing.y][playerKing.x].movable) {
+    if(clonedBoard[playerKing.y][playerKing.x].movable) {
         return false;
     }
 
     return true;
 };
 
-export const checkCheckmate = (player, board, prev, next) => {
-    
-    const afterBoard = _.cloneDeep(board);
-    afterBoard[next.y][next.x] = {
-        ...afterBoard[prev.y][prev.x],
-    };
-    afterBoard[prev.y][prev.x] = {
-        covered: false,
-    };
+export const checkCheckmate = (player, board) => {
 
     for(let i=0; i<8; ++i) {
         for(let j=0; j<8; ++j) {
-            if(afterBoard[i][j].owner === player) {
-                const coveredAxis = checkCovered(afterBoard, i, j);
+            if(board[i][j].owner === player) {
+                const coveredAxis = checkCovered(board, i, j);
                 const length = coveredAxis.length;
                 for(let k=0; k<length; ++k) {
-                    if(checkSafeMove(player, afterBoard, { y: i, x: j }, { y: coveredAxis[k].dy, x: coveredAxis[k].dx })) {
+                    if(checkSafeMove(player, board, { y: i, x: j }, { y: coveredAxis[k].dy, x: coveredAxis[k].dx })) {
                         return false;
                     };
                 }
