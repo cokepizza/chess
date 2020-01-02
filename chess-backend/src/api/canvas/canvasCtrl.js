@@ -69,26 +69,10 @@ export const movePiece = (req, res) => {
         
         io.of('/chat').to(key).emit('message', {
             type: 'change',
-            message: `You are checked. This move is not possible`,
+            message: `This move is not possible`,
         });
         return res.status(403).end();
     };
-
-    //  validate enemy's state
-    const enemy = player === 'white' ? 'black' : 'white';
-    if(!checkSafeMove(enemy, board, prev, next)) {
-        if(checkCheckmate(enemy, board)) {
-            io.of('/chat').to(key).emit('message', {
-                type: 'change',
-                message: `CheckMate ${player} win`,
-            });
-        } else {
-            io.of('/chat').to(key).emit('message', {
-                type: 'change',
-                message: `Check ${enemy} `,
-            });
-        }
-    }
 
     //  set server board object
     const prevPiece = { ...board[prev.y][prev.x] };
@@ -98,16 +82,8 @@ export const movePiece = (req, res) => {
     };
     board[next.y][next.x] = prevPiece;
 
-    // //  set server room object
-    // roomMap.set(key, {
-    //     ...room,
-    //     turn: room.turn + 1,
-    // });
-
-    // const newRoom = roomMap.get(key);
-
     //  set server room object
-    room.turn = room.turn + 1,
+    room.turn = room.turn + 1;
     room.order = room.turn % 2 === 0 ? 'white' : 'black';
     const record = req.app.get('record').get(key);
     record.pieceMove.push({
@@ -125,15 +101,26 @@ export const movePiece = (req, res) => {
         move
     });
 
-    // io.of('/game').to(key).emit('message', {
-    //     type: 'initialize',
-    //     status: newRoom,
-    // })
-
     io.of('/game').to(key).emit('message', {
         type: 'initialize',
         ...room,
     })
+
+    //  validate enemy's state
+    const enemy = player === 'white' ? 'black' : 'white';
+    if(!checkSafeMove(enemy, board, prev, next)) {
+        if(checkCheckmate(enemy, board, prev, next)) {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `CheckMate ${player} win`,
+            });
+        } else {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `Check ${enemy} `,
+            });
+        }
+    }
     
     return res.status(200).end();
 };

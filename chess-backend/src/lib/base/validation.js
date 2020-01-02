@@ -38,31 +38,38 @@ export const checkSafeMove = (player, board, prev, next) => {
     coveredAxisBundle.forEach(axis => {
         afterBoard[axis.dy][axis.dx] = {
             ...afterBoard[axis.dy][axis.dx],
-            dirty: true,
+            movable: true,
         }
     });
 
-    console.dir(coveredAxisBundle);
-
     //  is king in danger?
-    if(afterBoard[playerKing.y][playerKing.x].dirty) {
+    if(afterBoard[playerKing.y][playerKing.x].movable) {
         return false;
     }
 
     return true;
 };
 
-export const checkCheckmate = (player, board) => {
+export const checkCheckmate = (player, board, prev, next) => {
+    
+    const afterBoard = _.cloneDeep(board);
+    afterBoard[next.y][next.x] = {
+        ...afterBoard[prev.y][prev.x],
+    };
+    afterBoard[prev.y][prev.x] = {
+        covered: false,
+    };
 
     for(let i=0; i<8; ++i) {
         for(let j=0; j<8; ++j) {
-            if(board[i][j].owner === player) {
-                const coveredAxis = checkCovered(board, i, j);
-                coveredAxis.forEach(axis => {
-                    if(checkSafeMove(player, board, { y: i, x: j }, { y: axis.dy, x: axis.dx })) {
+            if(afterBoard[i][j].owner === player) {
+                const coveredAxis = checkCovered(afterBoard, i, j);
+                const length = coveredAxis.length;
+                for(let k=0; k<length; ++k) {
+                    if(checkSafeMove(player, afterBoard, { y: i, x: j }, { y: coveredAxis[k].dy, x: coveredAxis[k].dx })) {
                         return false;
                     };
-                })
+                }
             }
         }
     };
