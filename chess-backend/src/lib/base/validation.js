@@ -1,5 +1,7 @@
-import rules from './rules';
 import _ from 'lodash';
+
+import rules from './rules';
+import { genBoard } from './genBoard';
 
 export const checkSafeMove = (player, board) => {
     const enemy = player === 'white' ? 'black' : 'white';
@@ -51,7 +53,8 @@ export const checkCheckmate = (player, board) => {
                 const coveredAxis = checkCovered(board, i, j);
                 const length = coveredAxis.length;
                 for(let k=0; k<length; ++k) {
-                    if(checkSafeMove(player, board, { y: i, x: j }, { y: coveredAxis[k].dy, x: coveredAxis[k].dx })) {
+                    const tempBoard = genBoard(board, { y: i, x: j }, { y: coveredAxis[k].dy, x: coveredAxis[k].dx })
+                    if(checkSafeMove(player, tempBoard)) {
                         return false;
                     };
                 }

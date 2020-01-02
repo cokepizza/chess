@@ -1,5 +1,7 @@
-import { checkSafeMove, checkCheckmate, checkCovered } from '../../lib/base/validation';
 import _ from 'lodash';
+
+import { checkSafeMove, checkCheckmate, checkCovered } from '../../lib/base/validation';
+import { genBoard } from '../../lib/base/genBoard';
 
 export const movePiece = (req, res) => {
     console.dir('----------http(movePiece)---------')
@@ -80,23 +82,8 @@ export const movePiece = (req, res) => {
         return res.status(403).end();
     }
 
-    //  temporary move for check validation
-    const tempBoard = _.cloneDeep(board);
-    
-    const pieceStore = { ...tempBoard[prev.y][prev.x] };
-    tempBoard[prev.y][prev.x] = {
-        covered: false
-    };
-    tempBoard[next.y][next.x] = pieceStore;
-
-    //  temporary promotion (pawn => queen)
-    const { owner: tempOwner, piece: tempPiece } = tempBoard[next.y][next.x];
-    if((tempOwner === 'white' && tempPiece === 'pawn' && next.y === 0) || (tempOwner === 'black' && tempPiece === 'pawn' && next.y === 7)) {
-        tempBoard[next.y][next.x] = {
-            ...tempBoard[next.y][next.x],
-            piece: 'queen',
-        }
-    };
+    //  generate temporary board for check validation
+    const tempBoard = genBoard(board, prev, next);
 
     //  validate my choice
     if(!checkSafeMove(player, tempBoard)) {
