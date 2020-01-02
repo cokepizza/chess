@@ -3,6 +3,8 @@ import MainPage from './pages/MainPage';
 import GamePage from './pages/GamePage';
 import RecordPage from './pages/RecordPage';
 import CommunityPage from './pages/CommunityPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -24,6 +26,8 @@ const App = () => {
         <Route component={GamePage} path='/game/:id' exact />
         <Route component={RecordPage} path='/record' exact />
         <Route component={CommunityPage} path='/community' exact />
+        <Route component={LoginPage} path='/login' exact />
+        <Route component={RegisterPage} path='/register' exact />
         <Route 
           render={({ location }) => (
             <ErrorPageDiv>

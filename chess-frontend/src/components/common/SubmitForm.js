@@ -13,7 +13,7 @@ const buttonStyle = css`
     width: 200px;
     height: 30px;
     cursor: pointer;
-    box-shadow: 5px 5px 5px rgb(0,0,0, 0.6);;
+    box-shadow: 5px 5px 5px rgb(0,0,0, 0.6);
 
     &:hover {
         background-color: rgb(0,0,0, 0.8);

@@ -127,7 +127,7 @@ const Header = ({ onToggle, openModal, setOpenModal }) => {
                     }} >
                         <GoSearch />
                     </IconContext.Provider>
-                    <Letter>
+                    <Letter to='/login'>
                         Login
                     </Letter>
                 </AuthBlock>
