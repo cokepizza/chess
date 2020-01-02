@@ -1,5 +1,5 @@
 import { checkSafeMove, checkCheckmate, checkCovered } from '../../lib/base/validation';
-import rules from '../../lib/base/rules';
+import _ from 'lodash';
 
 export const movePiece = (req, res) => {
     console.dir('----------http(movePiece)---------')
@@ -90,7 +90,7 @@ export const movePiece = (req, res) => {
     tempBoard[next.y][next.x] = pieceStore;
 
     //  temporary promotion (pawn => queen)
-    const { tempOwner, tempPiece } = tempBoard[next.y][next.x];
+    const { owner: tempOwner, piece: tempPiece } = tempBoard[next.y][next.x];
     if((tempOwner === 'white' && tempPiece === 'pawn' && next.y === 0) || (tempOwner === 'black' && tempPiece === 'pawn' && next.y === 7)) {
         tempBoard[next.y][next.x] = {
             ...tempBoard[next.y][next.x],
