@@ -69,7 +69,6 @@ export const movePiece = (req, res) => {
         
         io.of('/chat').to(key).emit('message', {
             type: 'change',
-            color,
             message: `You are checked. This move is not possible`,
         });
         return res.status(403).end();
@@ -78,22 +77,17 @@ export const movePiece = (req, res) => {
     //  validate enemy's state
     const enemy = player === 'white' ? 'black' : 'white';
     if(!checkSafeMove(enemy, board, prev, next)) {
-        // if(checkCheckmate(enemy, board)) {
-        //     io.of('/chat').to(key).emit('message', {
-        //         type: 'change',
-        //         color,
-        //         message: `CheckMate ${player} win`,
-        //     });
-
-        //     console.dir(`checkMate ${player} win`);
-        //     res.send({ error: `checkMate ${player} win` });
-        //     return;
-        // };
-        // io.of('/chat').to(key).emit('message', {
-        //     type: 'change',
-        //     color,
-        //     message: `Check ${enemy} `,
-        // });
+        if(checkCheckmate(enemy, board)) {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `CheckMate ${player} win`,
+            });
+        } else {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `Check ${enemy} `,
+            });
+        }
     }
 
     //  set server board object

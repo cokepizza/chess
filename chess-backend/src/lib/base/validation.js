@@ -94,10 +94,6 @@ export const checkCovered = (board, y, x) => {
             return acc;
         }, []);
     } else {
-        console.dir('------------');
-        console.dir(move);
-        debugger;
-
         coveredAxis = move.flatMap(cur => {
             let counter = 0;
             let coveredArr = [];
