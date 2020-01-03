@@ -119,8 +119,12 @@ export const movePiece = (req, res) => {
     board[prev.y][prev.x] = {
         covered: false
     };
-    board[next.y][next.x] = prevPiece;
+    board[next.y][next.x] = {
+        ...prevPiece,
+        dirty: true,
+    };
 
+    //  promotion
     const { owner, piece } = board[next.y][next.x];
     if((owner === 'white' && piece === 'pawn' && next.y === 0) || (owner === 'black' && piece === 'pawn' && next.y === 7)) {
         board[next.y][next.x] = {
@@ -128,6 +132,31 @@ export const movePiece = (req, res) => {
             piece: 'queen',
         }
     };
+
+    //  castling
+    if(board[next.y][next.x].piece === 'king') {
+        if(next.x - prev.x === 2) {
+            const pieceStore = { ...board[prev.y][prev.x+3] };
+            board[prev.y][prev.x+3] = {
+                covered: false
+            };
+            board[prev.y][prev.x+1] = {
+                ...pieceStore,
+                dirty: true,
+            };
+        }
+
+        if(next.x - prev.x === -2) {
+            const pieceStore = { ...board[prev.y][prev.x-4] };
+            board[prev.y][prev.x-4] = {
+                covered: false
+            };
+            board[prev.y][prev.x-1] = {
+                ...pieceStore,
+                dirty: true,
+            };
+        }
+    }
 
     //  set server room object
     room.turn = room.turn + 1;

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _ from 'lodash';
 
 export const genBoard = (board, prev, next) => {
     const tempBoard = _.cloneDeep(board);

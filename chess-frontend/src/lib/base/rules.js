@@ -1,3 +1,5 @@
+import { checkPlayersEveryMove } from './validation';
+
 const rules = {
     pawn: {
         type: 'onetime',
@@ -10,7 +12,6 @@ const rules = {
                     if(board[dy][dx].piece) {
                         return false;
                     }
-
                     return true;
                 }
             },
@@ -121,6 +122,72 @@ const rules = {
                 dy: 1,
                 dx: 1
             },
+            {
+                dy: 0,
+                dx: 2,
+                except: function(props) {
+                    const { board, y, x, owner } = props;
+                    const enemy = (owner === 'white') ? 'black' : 'white';
+
+                   //  king dirty check
+                    if(board[y][x].dirty) {
+                        return false;
+                    }
+
+                    //  rook dirty check
+                    if(board[y][x-4].dirty) {
+                        return false;
+                    }
+
+                    //  check path is empty
+                    if(board[y][x+1].piece || board[y][x+2].piece) {
+                        return false;
+                    }
+
+                    //  is king & path safe?
+                    const coveredAxisBundle = checkPlayersEveryMove(enemy, board);
+                    coveredAxisBundle.forEach(axis => {
+                        if(axis.y === y && (axis.x === x+1 || axis.x === x+2)) {
+                            return false;
+                        }
+                    });
+
+                    return true;
+                },             
+            },
+            {
+                dy: 0,
+                dx: -2,
+                except: function(props) {
+                    const { board, y, x, owner } = props;
+                    const enemy = (owner === 'white') ? 'black' : 'white';
+                    
+                    //  king dirty check
+                    if(board[y][x].dirty) {
+                        return false;
+                    }
+
+                    //  rook dirty check
+                    if(board[y][x-4].dirty) {
+                        return false;
+                    }
+
+                    //  check path is empty
+                    if(board[y][x-1].piece || board[y][x-2].piece || board[y][x-3].piece ) {
+                        return false;
+                    }
+
+                    //  is king & path safe?
+                    const coveredAxisBundle = checkPlayersEveryMove(enemy, board);
+                    coveredAxisBundle.forEach(axis => {
+                        if(axis.y === y && (axis.x === x-1 || axis.x === x-2)) {
+                            return false;
+                        }
+                    });
+
+                    return true;
+                },             
+            }
         ]
     },
     bishop: {

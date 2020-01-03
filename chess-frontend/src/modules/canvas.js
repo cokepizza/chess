@@ -73,6 +73,35 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
             piece: 'queen',
         }
     };
+
+    //  castling
+    if(clearBoard[next.y][next.x].piece === 'king') {
+        if(next.x - prev.x === 2) {
+            clearBoard[prev.y] = [ ...clearBoard[prev.y] ];
+            
+            const pieceStore = { ...clearBoard[prev.y][prev.x+3] };
+            clearBoard[prev.y][prev.x+3] = {
+                covered: false
+            };
+            clearBoard[prev.y][prev.x+1] = {
+                ...pieceStore,
+                dirty: true,
+            };
+        }
+
+        if(next.x - prev.x === -2) {
+            clearBoard[prev.y] = [ ...clearBoard[prev.y] ];
+
+            const pieceStore = { ...clearBoard[prev.y][prev.x-4] };
+            clearBoard[prev.y][prev.x-4] = {
+                covered: false
+            };
+            clearBoard[prev.y][prev.x-1] = {
+                ...pieceStore,
+                dirty: true,
+            };
+        }
+    }
     
     dispatch(changeValue({ board: clearBoard, clicked: null }));
 }
@@ -136,7 +165,6 @@ export function* canvasSaga () {
 export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
     const {
             canvas: { board, clicked },
-            game: { turn }
         } = getState();
 
     if(clicked && board[y][x].covered) {

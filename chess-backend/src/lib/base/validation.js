@@ -3,32 +3,39 @@ import _ from 'lodash';
 import rules from './rules';
 import { genBoard } from './genBoard';
 
-export const checkSafeMove = (player, board) => {
-    const enemy = player === 'white' ? 'black' : 'white';
-    const clonedBoard = _.cloneDeep(board);
-
-    //  check king's location
-    let playerKing;
+export const findKingLocation = (player, board) => {
     for(let i=0; i<8; ++i) {
         for(let j=0; j<8; ++j) {
-            if(clonedBoard[i][j].owner === player && clonedBoard[i][j].piece === 'king') {
-                playerKing = {
+            if(board[i][j].owner === player && board[i][j].piece === 'king') {
+                return {
                     y: i,
                     x: j,
                 };
             };
         }
     }
+}
 
+export const checkPlayersEveryMove = (player, board) => {
     let coveredAxisBundle = [];
     for(let i=0; i<8; ++i) {
         for(let j=0; j<8; ++j) {
-            if(clonedBoard[i][j].owner === enemy) {
-                const coveredAxis = checkCovered(clonedBoard, i, j);
+            if(board[i][j].owner === player) {
+                const coveredAxis = checkCovered(board, i, j);
                 coveredAxisBundle = [ ...coveredAxisBundle, ...coveredAxis ];
             }
         }
     };
+
+    return coveredAxisBundle;
+};
+
+export const checkSafeMove = (player, board) => {
+    const enemy = player === 'white' ? 'black' : 'white';
+    const clonedBoard = _.cloneDeep(board);
+
+    const playerKing = findKingLocation(player, clonedBoard);
+    const coveredAxisBundle = checkPlayersEveryMove(enemy, clonedBoard);
 
     coveredAxisBundle.forEach(axis => {
         clonedBoard[axis.dy][axis.dx] = {
@@ -89,6 +96,7 @@ export const checkCovered = (board, y, x) => {
             return acc;
         }, []);
     } else {
+        console.dir(coveredAxis);
         coveredAxis = move.flatMap(cur => {
             let counter = 0;
             let coveredArr = [];
