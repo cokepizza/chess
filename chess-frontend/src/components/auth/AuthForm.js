@@ -30,6 +30,7 @@ const TitleBlock = styled.div`
     width: 100%;
     font-size: 20px;
     height: 100px;
+    text-shadow: 2px 2px 2px rgba(0,0,0,0.14);
 `;
 
 const InputFrameBlock = styled.div`
@@ -97,12 +98,14 @@ const SaveInputTextBlock = styled.div`
     align-items: center;
     height: 100%;
     font-size: 10px;
+    color: rgb(0, 0, 0, 0.5);
     cursor: pointer;
     margin-left: 5px;
 `;
 
 const ForgetBlock = styled.div`
     font-size: 10px;
+    color: rgb(0, 0, 0, 0.5);
     cursor: pointer;
 `;
 
@@ -150,9 +153,9 @@ const CreateButtonBlock = styled(Link)`
     margin-left: 5px;
 `;
 
-const AuthForm = ({ login, register }) => {
+const AuthForm = ({ login, register, onSubmit }) => {
     return (
-        <AuthFrameBlock>
+        <AuthFrameBlock onSubmit={onSubmit}>
             <AuthFormBlock>
                 <TitleBlock>
                     { login ? 'Sign In' : ( register ? 'Sign Up' : null ) }
@@ -163,6 +166,7 @@ const AuthForm = ({ login, register }) => {
                             <IoMdMail />
                         </IconContext.Provider>
                         <EmailInputBlock
+                            type='email'
                             placeholder='Email'
                         />    
                     </InputFormBlock>
@@ -171,6 +175,7 @@ const AuthForm = ({ login, register }) => {
                             <FaLock />
                         </IconContext.Provider>
                         <PasswordInputBlock
+                            type='password'
                             placeholder='Password'
                         />
                     </InputFormBlock>
@@ -201,7 +206,9 @@ const AuthForm = ({ login, register }) => {
                     ): null}
                 </InputFrameBlock>
                 <SubmitFrameBlock>
-                    <SubmitBlock>
+                    <SubmitBlock
+                        type=''
+                    >
                         Submit
                     </SubmitBlock>
                     {login ? (
