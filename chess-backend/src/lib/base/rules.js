@@ -147,7 +147,7 @@ const rules = {
                     //  is king & path safe?
                     const coveredAxisBundle = checkPlayersEveryMove(enemy, board);
                     coveredAxisBundle.forEach(axis => {
-                        if(axis.y === y && (axis.x === x+1 || axis.x === x+2)) {
+                        if(axis.dy === y && (axis.dx === x+1 || axis.dx === x+2)) {
                             return false;
                         }
                     });
@@ -180,7 +180,7 @@ const rules = {
                     //  is king & path safe?
                     const coveredAxisBundle = checkPlayersEveryMove(enemy, board);
                     coveredAxisBundle.forEach(axis => {
-                        if(axis.y === y && (axis.x === x-1 || axis.x === x-2)) {
+                        if(axis.dy === y && (axis.dx === x-1 || axis.dx === x-2)) {
                             return false;
                         }
                     });
