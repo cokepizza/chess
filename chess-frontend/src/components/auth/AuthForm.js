@@ -166,7 +166,6 @@ const AuthForm = ({ login, register, onSubmit }) => {
                             <IoMdMail />
                         </IconContext.Provider>
                         <EmailInputBlock
-                            type='email'
                             placeholder='Email'
                         />    
                     </InputFormBlock>

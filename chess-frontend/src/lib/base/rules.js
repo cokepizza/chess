@@ -146,8 +146,10 @@ const rules = {
 
                     //  is king & path safe?
                     const coveredAxisBundle = checkPlayersEveryMove(enemy, board);
+                    console.dir(coveredAxisBundle);
                     coveredAxisBundle.forEach(axis => {
                         if(axis.y === y && (axis.x === x+1 || axis.x === x+2)) {
+                            console.dir('covered~~~');
                             return false;
                         }
                     });
