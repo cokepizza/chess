@@ -71,6 +71,11 @@ export const deleteRoom = (req, res, next) => {
         type: 'change',
         room,
     });
+    
+    io.of('/room').emit('message', {
+        type: 'initialize',
+        room: [...roomMap.values()],
+    });
 
     res.send();
     res.status(202).end();

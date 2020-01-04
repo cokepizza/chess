@@ -126,7 +126,7 @@ const SubmitBlock = styled.button`
     cursor: pointer;
     height: 40px;
 
-    &:hover {
+    &:hover, :active {
         background-color: rgb(0, 0, 0, 0.05);
     }
 `;
@@ -143,7 +143,7 @@ const CreateBlock = styled.div`
     font-size: 10px;
 `;
 
-const CreateButtonBlock = styled(Link)`
+const CreateLinkBlock = styled(Link)`
     outline: none;
     border: none;
     font-size: 10px;
@@ -166,6 +166,7 @@ const AuthForm = ({ login, register, onSubmit }) => {
                             <IoMdMail />
                         </IconContext.Provider>
                         <EmailInputBlock
+                            name='email'
                             placeholder='Email'
                         />    
                     </InputFormBlock>
@@ -175,38 +176,40 @@ const AuthForm = ({ login, register, onSubmit }) => {
                         </IconContext.Provider>
                         <PasswordInputBlock
                             type='password'
+                            name='password'
                             placeholder='Password'
                         />
                     </InputFormBlock>
                     {register ? (
                         <InputFormBlock>
-                        <IconContext.Provider value={{ style: { width: '20px', height: '20px' } }}>
-                            <FaLock />
-                        </IconContext.Provider>
-                        <PasswordInputBlock
-                            placeholder='Password Confirm'
-                        />
+                            <IconContext.Provider value={{ style: { width: '20px', height: '20px' } }}>
+                                <FaLock />
+                            </IconContext.Provider>
+                            <PasswordInputBlock
+                                name='passwordConfirm'
+                                placeholder='Password Confirm'
+                            />
                         </InputFormBlock>
                     ): null}
                     {login ? (
                         <OptionFormBlock>
-                        <SaveInputFormBlock>
-                            <SaveInputBlock
-                                type='checkbox'
-                            />
-                            <SaveInputTextBlock>
-                                Remember Me
-                            </SaveInputTextBlock>
-                        </SaveInputFormBlock>
-                        <ForgetBlock>
-                            Forget password?    
-                        </ForgetBlock>
+                            <SaveInputFormBlock>
+                                <SaveInputBlock
+                                    type='checkbox'
+                                />
+                                <SaveInputTextBlock>
+                                    Remember Me
+                                </SaveInputTextBlock>
+                            </SaveInputFormBlock>
+                            <ForgetBlock>
+                                Forget password?    
+                            </ForgetBlock>
                         </OptionFormBlock>
                     ): null}
                 </InputFrameBlock>
                 <SubmitFrameBlock>
                     <SubmitBlock
-                        type=''
+                        type='submit'
                     >
                         Submit
                     </SubmitBlock>
@@ -215,18 +218,18 @@ const AuthForm = ({ login, register, onSubmit }) => {
                             <CreateBlock>
                                 Don't have an account?
                             </CreateBlock>
-                            <CreateButtonBlock to='/register'>
+                            <CreateLinkBlock to='/register'>
                                 Create
-                            </CreateButtonBlock>
+                            </CreateLinkBlock>
                         </CreateFormBlock>
                     ) : (
                         <CreateFormBlock>
                             <CreateBlock>
                                 Don't have an account?
                             </CreateBlock>
-                            <CreateButtonBlock to='/register'>
+                            <CreateLinkBlock to='/register'>
                                 Create
-                            </CreateButtonBlock>
+                            </CreateLinkBlock>
                         </CreateFormBlock>
                     )}
                 </SubmitFrameBlock>
