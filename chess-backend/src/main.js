@@ -7,6 +7,9 @@ import cors from 'cors';
 import path from 'path';
 import api from './api';
 import socket from './socket';
+import passport from 'passport';
+import passportConfig from './passport';
+import dbConfig from './database';
 
 const app = express();
 
@@ -17,7 +20,6 @@ const sessionMiddleware = session({
     cookie: {
         httpOnly: true,
         secure: false,
-        maxAge: 1000 * 60 * 60,     //  1 hour
     },
     name: 'chess',
 });
@@ -30,8 +32,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors({credentials: true, origin: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/api', api);
 app.set('port', process.env.PORT || 4000);
+
+passportConfig();
+dbConfig();
 
 //  라우팅 로직을 제외한 모든 get요청
 app.get("*", (req, res) => {

@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^3.0.7",
     "color-hash": "^1.0.3",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
@@ -14,6 +15,8 @@
     "express-session": "^1.17.0",
     "mongoose": "^5.7.14",
     "morgan": "^1.9.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "socket.io": "^2.3.0",
     "uuid": "^3.3.3"
