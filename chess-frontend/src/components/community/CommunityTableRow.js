@@ -4,6 +4,9 @@ import styled from 'styled-components';
 const CommunityTableRowBlock = styled.tr`
     width: 100%;
     height: 100px;
+    &:nth-child(odd) {
+        background: #F7F6F4;
+    }
 `;
 
 const CommunityTableRow = ( {title, count, comments, time}) => {

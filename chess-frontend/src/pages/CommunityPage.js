@@ -2,7 +2,7 @@ import React from 'react';
 import HeaderContainer from '../containers/common/HeaderContainer';
 import CommunityLayoutContainer from '../containers/community/CommunityLayoutContainer';
 
-const MainPage = () => {
+const CommunityPage = () => {
 
     return (
         <>
@@ -12,4 +12,4 @@ const MainPage = () => {
     )
 };
 
-export default MainPage;
+export default CommunityPage;
