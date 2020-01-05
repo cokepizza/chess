@@ -18,3 +18,15 @@ export const getSession = (req, res, next) => {
     res.send(req.sessionID);
     res.status(202).end();
 }
+
+export const login = (req, res, next) => {
+    
+};
+
+export const logout = (req, res, next) => {
+
+};
+
+export const register = (req, res, next) => {
+
+};

@@ -18,6 +18,13 @@ export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload
 const [ SET_SESSION, SET_SESSION_SUCCESS, SET_SESSION_FAILURE ] = createRequestActionTypes('auth/SET_SESSION');
 export const setSessionThunk = createRequestThunk(SET_SESSION, authAPI.getSession);
 
+const [ LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE ] = createRequestActionTypes('auth/LOGIN');
+const [ REGISTER, REGISTER_SUCCESS, REGISTER_FAILURE ] = createRequestActionTypes('auth/REGISTER');
+const [ LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAILURE ] = createRequestActionTypes('auth/LOGOUT');
+export const loginThunk = createRequestThunk(LOGIN, authAPI.login);
+export const registerThunk = createRequestThunk(REGISTER, authAPI.register);
+export const logoutThunk = createRequestThunk(LOGOUT, authAPI.logout);
+
 function* connectWebsocketSaga (action) {
     const key = action.payload;
         

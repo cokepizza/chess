@@ -17,6 +17,7 @@ const sessionMiddleware = session({
     cookie: {
         httpOnly: true,
         secure: false,
+        maxAge: 1000 * 60 * 60,     //  1 hour
     },
     name: 'chess',
 });
@@ -26,7 +27,7 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, '../../chess-frontend/build')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({credentials: true, origin: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(sessionMiddleware);
 app.use('/api', api);
