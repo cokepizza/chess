@@ -112,7 +112,7 @@ const Header = ({ onToggle, openModal, setOpenModal }) => {
                         <Letter to='/'>
                             Record
                         </Letter>
-                        <Letter to='/'>
+                        <Letter to='/community'>
                             Community
                         </Letter>
                     </GroupBlock>
