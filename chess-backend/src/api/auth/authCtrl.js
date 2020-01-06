@@ -1,6 +1,7 @@
 import ColorHash from 'color-hash';
-import User from '../../models/user';
 import passport from 'passport';
+import Joi from 'joi';
+import User from '../../models/user';
 
 /* SocketIO 연결 전, 첫 세션 생성 시점 */
 export const getSession = (req, res, next) => {
@@ -42,5 +43,37 @@ export const logout = (req, res, next) => {
 };
 
 export const register = async (req, res, next) => {
-    
+    const schema = Joi.object().keys({
+        username: Joi.string().email({ minDomainAtoms: 2 }).required(),
+        password: Joi.string().required(),
+    });
+
+    console.dir(req.body);
+    const result = Joi.validate(req.body, schema);
+    if(result.error) {
+        res.send(result.error);
+        return res.status(400).end();
+    }
+
+    const { username, password }  = req.body;
+    try {
+        const exist = await User.findOne({ username });
+        if(exist) {
+            res.send('the id is already registered');
+            return res.status(409).end();
+        }
+
+        const user = new User({
+            username,
+        });
+        await user.setPassword(password);
+        await user.save();
+        console.dir(req);
+        // req.login();
+
+    } catch(e) {
+        res.send(e);
+        return res.status(400).end();
+    }
+
 };

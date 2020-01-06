@@ -1,6 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import { connectNamespace } from '../lib/websocket/websocket';
 import { takeEvery, fork, take, cancel } from 'redux-saga/effects';
+import produce from 'immer';
 
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as authAPI from '../lib/api/auth';
@@ -24,6 +25,9 @@ const [ LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAILURE ] = createRequestActionTypes('aut
 export const loginThunk = createRequestThunk(LOGIN, authAPI.login);
 export const registerThunk = createRequestThunk(REGISTER, authAPI.register);
 export const logoutThunk = createRequestThunk(LOGOUT, authAPI.logout);
+
+const CHANGE_FIELD = 'auth/CHANGE_FIELD';
+export const changeField = createAction(CHANGE_FIELD, payload => payload);
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;
@@ -52,6 +56,17 @@ const initialState = {
     tempAuth: null,
     session: null,
     error: null,
+    auth: null,
+    authError: null,
+    login: {
+        username: null,
+        password: null,
+    },
+    register: {
+        username: null,
+        password: null,
+        passwordConfirm: null,
+    }
 };
 
 export default handleActions({
@@ -71,5 +86,29 @@ export default handleActions({
         ...state,
         session: null,
         error,
+    }),
+    [CHANGE_FIELD]: (state, { payload: { form, key, value } }) =>
+        produce(state, draft => {
+            draft[form][key] = value;
+        }),
+    [LOGIN_SUCCESS]: (state, { payload : auth }) => ({
+        ...state,
+        auth,
+        authError: null,
+    }),
+    [LOGIN_FAILURE]: (state, { payload: authError }) => ({
+        ...state,
+        user: null,
+        authError,
+    }),
+    [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
+        ...state,
+        auth,
+        authError: null,
+    }),
+    [REGISTER_FAILURE]: (state, { payload: authError }) => ({
+        ...state,
+        user: null,
+        authError,
     }),
 }, initialState);

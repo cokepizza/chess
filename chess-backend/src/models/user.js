@@ -16,7 +16,7 @@ UserSchema.methods.checkPassword = async function(password) {
     return result;
 };
 
-UserSchema.methods.serialize = async function() {
+UserSchema.methods.serialize = function() {
     const data = this.toJSON();
     delete data.hashedPassword;
     return data;

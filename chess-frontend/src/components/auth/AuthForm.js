@@ -153,7 +153,7 @@ const CreateLinkBlock = styled(Link)`
     margin-left: 5px;
 `;
 
-const AuthForm = ({ login, register, onSubmit }) => {
+const AuthForm = ({ login, register, form, onSubmit, onChange }) => {
     return (
         <AuthFrameBlock onSubmit={onSubmit}>
             <AuthFormBlock>
@@ -166,8 +166,10 @@ const AuthForm = ({ login, register, onSubmit }) => {
                             <IoMdMail />
                         </IconContext.Provider>
                         <EmailInputBlock
-                            name='email'
+                            name='username'
                             placeholder='Email'
+                            onChange={onChange}
+                            value={form.username}
                         />    
                     </InputFormBlock>
                     <InputFormBlock>
@@ -178,6 +180,8 @@ const AuthForm = ({ login, register, onSubmit }) => {
                             type='password'
                             name='password'
                             placeholder='Password'
+                            onChange={onChange}
+                            value={form.password}
                         />
                     </InputFormBlock>
                     {register ? (
@@ -188,6 +192,8 @@ const AuthForm = ({ login, register, onSubmit }) => {
                             <PasswordInputBlock
                                 name='passwordConfirm'
                                 placeholder='Password Confirm'
+                                onChange={onChange}
+                                value={form.passwordConfirm}
                             />
                         </InputFormBlock>
                     ): null}
@@ -238,4 +244,4 @@ const AuthForm = ({ login, register, onSubmit }) => {
     )
 };
 
-export default AuthForm;
+export default React.memo(AuthForm);
