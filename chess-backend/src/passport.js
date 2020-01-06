@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import User from './models/user';
 
 const passportConfig = () => {
     passport.serializeUser((user, done) => {
@@ -11,12 +12,19 @@ const passportConfig = () => {
     });
 
     passport.use(new LocalStrategy({
-        usernameField: 'id',
+        usernameField: 'username',
         passwordField: 'password',
         session: true,
         passReqToCallback: true,
-    }, (req, id, password, done) => {
+    }, (req, username, password, done) => {
 
+        console.dir(req);
+        if(!username || !password) {
+            return done(null, false, { message: 'Please fill the form' });
+        }
+        
+        const user = User.findOne({ username });
+        
     }));
 };
 
