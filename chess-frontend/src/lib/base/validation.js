@@ -90,6 +90,8 @@ export const checkCovered = (board, y, x, castling) => {
 
             console.dir(piece);
             console.dir(castling);
+            console.dir(!(piece === 'king' && castling));
+            
             if(!cur.except || (!(piece === 'king' && castling) && cur.except && cur.except(inform))) {
                 if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
                     acc.push({dy, dx});
