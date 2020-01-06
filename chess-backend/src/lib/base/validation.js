@@ -16,12 +16,12 @@ export const findKingLocation = (player, board) => {
     }
 }
 
-export const checkPlayersEveryMove = (player, board) => {
+export const checkPlayersEveryMove = (player, board, castling) => {
     let coveredAxisBundle = [];
     for(let i=0; i<8; ++i) {
         for(let j=0; j<8; ++j) {
             if(board[i][j].owner === player) {
-                const coveredAxis = checkCovered(board, i, j);
+                const coveredAxis = checkCovered(board, i, j, castling);
                 coveredAxisBundle = [ ...coveredAxisBundle, ...coveredAxis ];
             }
         }
@@ -72,7 +72,7 @@ export const checkCheckmate = (player, board) => {
     return true;
 }
 
-export const checkCovered = (board, y, x) => {
+export const checkCovered = (board, y, x, castling) => {
     const { piece, owner } = board[y][x];
     let inform = { board, y, x, owner };
     if(!piece) return;
@@ -87,7 +87,8 @@ export const checkCovered = (board, y, x) => {
             if(dy < 0 || dx < 0 || dy > 7 || dx > 7) return acc;
             
             inform = { ...inform, dy, dx };
-            if(!cur.except || (cur.except && cur.except(inform))) {
+
+            if(!cur.except || (!(type === 'rook' && castling) && cur.except && cur.except(inform))) {
                 if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
                     acc.push({dy, dx});
                 }

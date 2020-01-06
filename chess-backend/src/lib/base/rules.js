@@ -130,12 +130,12 @@ const rules = {
                     const enemy = (owner === 'white') ? 'black' : 'white';
 
                    //  king dirty check
-                    if(board[y][x].dirty) {
+                    if(!board[y][x].piece || board[y][x].dirty) {
                         return false;
                     }
 
                     //  rook dirty check
-                    if(board[y][x-4].dirty) {
+                    if(!board[y][x+3].piece || board[y][x+3].dirty) {
                         return false;
                     }
 
@@ -144,10 +144,11 @@ const rules = {
                         return false;
                     }
 
-                    //  is king & path safe?
-                    const coveredAxisBundle = checkPlayersEveryMove(enemy, board);
+                    //  is king & path safe?, prevent castling loop by flag
+                    const coveredAxisBundle = checkPlayersEveryMove(enemy, board, true);
+                    console.dir(coveredAxisBundle);
                     coveredAxisBundle.forEach(axis => {
-                        if(axis.dy === y && (axis.dx === x+1 || axis.dx === x+2)) {
+                        if(axis.dy === y && (axis.dx === x || axis.dx === x+1 || axis.dx === x+2)) {
                             return false;
                         }
                     });
@@ -163,12 +164,12 @@ const rules = {
                     const enemy = (owner === 'white') ? 'black' : 'white';
                     
                     //  king dirty check
-                    if(board[y][x].dirty) {
+                    if(!board[y][x].piece || board[y][x].dirty) {
                         return false;
                     }
 
                     //  rook dirty check
-                    if(board[y][x-4].dirty) {
+                    if(!board[y][x-4].piece || board[y][x-4].dirty) {
                         return false;
                     }
 
@@ -177,10 +178,11 @@ const rules = {
                         return false;
                     }
 
-                    //  is king & path safe?
-                    const coveredAxisBundle = checkPlayersEveryMove(enemy, board);
+                    //  is king & path safe?, prevent castling loop by flag
+                    const coveredAxisBundle = checkPlayersEveryMove(enemy, board, true);
+                    console.dir(coveredAxisBundle);
                     coveredAxisBundle.forEach(axis => {
-                        if(axis.dy === y && (axis.dx === x-1 || axis.dx === x-2)) {
+                        if(axis.dy === y && (axis.dx === x || axis.dx === x-1 || axis.dx === x-2)) {
                             return false;
                         }
                     });

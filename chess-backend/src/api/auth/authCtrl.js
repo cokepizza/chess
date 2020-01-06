@@ -21,10 +21,10 @@ export const getSession = (req, res, next) => {
     res.status(202).end();
 }
 
-export const login = passport.authenticate('local', (err, user, info) => {
-    console.dir(err);
-    console.dir(user);
-    console.dir(info);
+export const login = passport.authenticate('local', (req, res) => {
+    console.dir(req);
+    console.dir(res);
+    res.send(user);
 })
 
 
@@ -41,6 +41,6 @@ export const logout = (req, res, next) => {
 
 };
 
-export const register = (req, res, next) => {
-
+export const register = async (req, res, next) => {
+    
 };

@@ -6,7 +6,7 @@ import { connectNamespace } from '../lib/websocket/websocket';
 import * as canvasCtrl from '../lib/api/canvas';
 
 // import rules from '../lib/base/rules';
-import board from '../lib/base/board'
+import board from '../lib/base/board';
 import { checkCovered } from '../lib/base/validation';
 
 const CONNECT_WEBSOCKET = 'canvas/CONNECT_WEBSOCKET';
