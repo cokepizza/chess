@@ -7,7 +7,10 @@ export const genBoard = (board, prev, next) => {
     tempBoard[prev.y][prev.x] = {
         covered: false
     };
-    tempBoard[next.y][next.x] = pieceStore;
+    tempBoard[next.y][next.x] = {
+        ...pieceStore,
+        dirty: true,
+    };
 
     //  promotion (pawn => queen)
     const { owner, piece } = tempBoard[next.y][next.x];
@@ -18,5 +21,30 @@ export const genBoard = (board, prev, next) => {
         }
     };
 
+    //  castling
+    if(tempBoard[next.y][next.x].piece === 'king') {
+        if(next.x - prev.x === 2) {
+            const pieceStore = { ...tempBoard[prev.y][prev.x+3] };
+            tempBoard[prev.y][prev.x+3] = {
+                covered: false
+            };
+            tempBoard[prev.y][prev.x+1] = {
+                ...pieceStore,
+                dirty: true,
+            };
+        }
+
+        if(next.x - prev.x === -2) {
+            const pieceStore = { ...tempBoard[prev.y][prev.x-4] };
+            tempBoard[prev.y][prev.x-4] = {
+                covered: false
+            };
+            tempBoard[prev.y][prev.x-1] = {
+                ...pieceStore,
+                dirty: true,
+            };
+        }
+    }
+    
     return tempBoard;
 };

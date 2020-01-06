@@ -87,8 +87,8 @@ export const checkCovered = (board, y, x, castling) => {
             if(dy < 0 || dx < 0 || dy > 7 || dx > 7) return acc;
             
             inform = { ...inform, dy, dx };
-
-            if(!cur.except || (!(type === 'rook' && castling) && cur.except && cur.except(inform))) {
+            
+            if(!cur.except || (!(piece === 'king' && castling) && cur.except && cur.except(inform))) {
                 if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
                     acc.push({dy, dx});
                 }

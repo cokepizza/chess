@@ -146,12 +146,14 @@ const rules = {
 
                     //  is king & path safe?, prevent castling loop by flag
                     const coveredAxisBundle = checkPlayersEveryMove(enemy, board, true);
-                    console.dir(coveredAxisBundle);
-                    coveredAxisBundle.forEach(axis => {
+                    const length = coveredAxisBundle.length;
+                    for(let i=0; i<length; ++i) {
+                        const axis = coveredAxisBundle[i];
                         if(axis.dy === y && (axis.dx === x || axis.dx === x+1 || axis.dx === x+2)) {
                             return false;
                         }
-                    });
+                    }
+
 
                     return true;
                 },             
@@ -180,12 +182,13 @@ const rules = {
 
                     //  is king & path safe?, prevent castling loop by flag
                     const coveredAxisBundle = checkPlayersEveryMove(enemy, board, true);
-                    console.dir(coveredAxisBundle);
-                    coveredAxisBundle.forEach(axis => {
+                    const length = coveredAxisBundle.length;
+                    for(let i=0; i<length; ++i) {
+                        const axis = coveredAxisBundle[i];
                         if(axis.dy === y && (axis.dx === x || axis.dx === x-1 || axis.dx === x-2)) {
                             return false;
                         }
-                    });
+                    }
 
                     return true;
                 },             
