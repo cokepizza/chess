@@ -181,8 +181,11 @@ const rules = {
                     //  is king & path safe?, prevent castling loop by flag
                     const coveredAxisBundle = checkPlayersEveryMove(enemy, board, true);
                     console.dir(coveredAxisBundle);
+                    console.dir(y);
+                    console.dir(x);
                     coveredAxisBundle.forEach(axis => {
                         if(axis.dy === y && (axis.dx === x || axis.dx === x-1 || axis.dx === x-2)) {
+                            console.dir('성공공');
                             return false;
                         }
                     });
