@@ -48,18 +48,11 @@ export const login = (req, res, next) => {
     })(req, res, next);
 };
 
-
-// export const login = (req, res, next) => {
-//     const { username, password } = req.body;
-    
-//     if(!username || !password) {
-//         res.send({ error: 'Please fill the form' });
-//         return res.status(202).end();
-//     }
-// };
-
 export const logout = (req, res, next) => {
     req.logout();
+    console.dir('logout success');
+    
+    // req.session.destroy();
     res.send('logout success');
     res.status(200).end();
 };
