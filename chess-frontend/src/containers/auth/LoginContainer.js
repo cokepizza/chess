@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { loginThunk, changeField } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
 
 const LoginContainer = () => {
@@ -11,15 +12,22 @@ const LoginContainer = () => {
 
     const dispatch = useDispatch();
 
-    const onChange = e => {
-
-    };
+    const onChange = useCallback(e => {
+        const { name, value } = e.target;
+        dispatch(changeField({
+            form: 'login',
+            key: name,
+            value,
+        }));
+    }, [dispatch]);
 
     const onSubmit = useCallback(e => {
         e.preventDefault();
-        alert('jaja');
-    }, []);
 
+        const { username, password } = form;
+        dispatch(loginThunk({ username, password }));
+    }, [dispatch, form]);
+    
     return (
         <AuthForm
             login

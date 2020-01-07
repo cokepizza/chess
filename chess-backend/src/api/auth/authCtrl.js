@@ -22,11 +22,18 @@ export const getSession = (req, res, next) => {
     res.status(202).end();
 }
 
-export const login = passport.authenticate('local', (req, res) => {
-    console.dir(req);
-    console.dir(res);
-    res.send(user);
-})
+export const login = (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+    // console.dir(req);
+    // console.dir(res);
+    
+    console.dir('성공');
+    req.login(user, () => {
+        console.dir('성공22');    
+    });
+    // res.send(user);
+    })(req, res, next);
+};
 
 
 // export const login = (req, res, next) => {
@@ -68,11 +75,12 @@ export const register = async (req, res, next) => {
         });
         await user.setPassword(password);
         await user.save();
-        console.dir(req);
+
         // req.login();
 
     } catch(e) {
         res.send(e);
+        console.dir(e);
         return res.status(400).end();
     }
 
