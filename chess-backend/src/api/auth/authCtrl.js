@@ -18,20 +18,23 @@ export const getSession = (req, res, next) => {
 
     console.dir('----------http(getSession)---------')
     console.dir(req.sessionID);
+    console.dir(req.user);
     res.send(req.sessionID);
     res.status(202).end();
 }
 
 export const login = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
-    // console.dir(req);
-    // console.dir(res);
-    
-    console.dir('성공');
-    req.login(user, () => {
-        console.dir('성공22');    
-    });
-    // res.send(user);
+        if(err) {
+            res.send('');
+            return res.status(400).end();
+        }
+
+        console.dir('login success');
+        return req.login(user, () => {
+            res.send(user);
+            return res.status(200).end();
+        });
     })(req, res, next);
 };
 

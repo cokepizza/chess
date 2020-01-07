@@ -190,6 +190,7 @@ const AuthForm = ({ login, register, form, onSubmit, onChange }) => {
                                 <FaLock />
                             </IconContext.Provider>
                             <PasswordInputBlock
+                                type='password'
                                 name='passwordConfirm'
                                 placeholder='Password Confirm'
                                 onChange={onChange}

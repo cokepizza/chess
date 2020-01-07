@@ -1,5 +1,5 @@
 export const sendMessage = (req, res, next) => {
-    console.dir(req.user);
+    console.dir(req.session);
     const io = req.app.get('io');
     const { socket: socketId, message } = req.body;
     const { nickname, color } = req.session;

@@ -15,7 +15,7 @@ const app = express();
 
 const sessionMiddleware = session({
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,
     cookie: {
         httpOnly: true,
@@ -30,6 +30,7 @@ app.use(express.static(path.join(__dirname, '../../chess-frontend/build')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({credentials: true, origin: true}));
+// app.use(cors({credentials: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(sessionMiddleware);
 app.use(passport.initialize());
