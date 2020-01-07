@@ -122,5 +122,10 @@ export default handleActions({
         ...state,
         auth: null,
         authError: null,
+    }),
+    [LOGOUT_FAILURE]: ( state, { payload: authError }) => ({
+        ...state,
+        auth: null,
+        authError,
     })
 }, initialState);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { loginThunk, changeField, clearField } from '../../modules/auth';
@@ -30,6 +30,13 @@ const LoginContainer = ({ history }) => {
     }, [dispatch, form]);
 
     useEffect(() => {
+        if(authError) {
+            console.dir('Login failed');
+            console.dir(authError);
+            
+            return;
+        };
+
         if(auth) {
             history.push('/');
         }

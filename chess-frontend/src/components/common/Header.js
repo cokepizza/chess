@@ -91,7 +91,6 @@ const AuthBlock = styled.div`
     display: flex;
     align-items: center;
     margin-right: 8%;
-    
 `;
 
 const UserWelcomeBlock = styled.div`
@@ -99,6 +98,7 @@ const UserWelcomeBlock = styled.div`
     justify-content: center;
     align-items: center;
     height: 50px;
+    font-size: 10px;
     color: rgb(0, 0, 0, 0.4);
 `
 
@@ -145,9 +145,6 @@ const Header = ({ onToggle, openModal, setOpenModal, onLogout, session, auth }) 
                         <GoSearch />
                     </IconContext.Provider>
 
-                    <UserWelcomeBlock>
-                        {username}
-                    </UserWelcomeBlock>
                     {auth ? (
                         <Tab onClick={onLogout}>
                             Logout
@@ -155,6 +152,9 @@ const Header = ({ onToggle, openModal, setOpenModal, onLogout, session, auth }) 
                     ):(
                         <Tab to='/login'>
                             Login
+                            <UserWelcomeBlock>
+                                {username}
+                            </UserWelcomeBlock>
                         </Tab>
                     )}
                 </AuthBlock>
