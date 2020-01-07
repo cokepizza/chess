@@ -28,9 +28,9 @@ export const getSession = (req, res, next) => {
 
 export const login = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
-        if(err) {
-            console.dir(err);
-            res.send(err);
+        if(err || info) {
+            console.dir(err || info);
+            res.send(err || info);
             return res.status(400).end();
         }
 

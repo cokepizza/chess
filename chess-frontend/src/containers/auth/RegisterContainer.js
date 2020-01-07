@@ -18,6 +18,7 @@ const RegisterContainer = ({ history }) => {
         username: false,
         password: false,
         passwordConfirm: false,
+        count: 0,
     })
 
     const onChange = useCallback(e => {
@@ -31,37 +32,49 @@ const RegisterContainer = ({ history }) => {
 
     const onSubmit = useCallback(e => {
         e.preventDefault();
-        const { username, password, passwordConfirm } = form;
+        const { username, password } = form;
 
-        const obj = Object.keys(form).filter(key => key === '').reduce((acc, cur) => {
-            return {
-                ...acc,
-                [cur]: true
-            }
-        }, {});
+        //  initialize
+        let invalid = Object.keys(form)
+            .reduce((acc, key) =>
+                ({
+                    ...acc,
+                    [key]: false,
+                }),{});
 
-        console.dir(obj);
-
-            // setBlink(prevState => ({
-            //     ...prevState,
-            //     username: true
-            // }));
-
-        if(password !== passwordConfirm) {
-
-        }
+        //  empty check
+        Object.keys(invalid)
+            .filter(key => form[key] === '')
+            .forEach(key => {
+                console.dir(key);
+                invalid[key] = true;
+            });
 
         const schema = Joi.object().keys({
-            username: Joi.string().email({ minDomainAtoms: 2 }).required(),
-            password: Joi.string().required(),
+            username: Joi.string().max(80).email({ minDomainAtoms: 2 }).required(),
+            password: Joi.string().min(4).max(16).required(),
+            passwordConfirm: Joi.any().valid(Joi.ref('password')).required().error(() => ({ message: 'password mismatch' })),
         });
 
-        const result = Joi.validate(form, schema);
+        const result = Joi.validate(form, schema, { abortEarly: false });
+
         if(result.error) {
-            console.dir(result.error);
-            
-            return;
+            result.error.details.forEach(detail => {
+                invalid = {
+                    ...invalid,
+                    [detail.path[0]]: true,
+                }
+            });
         }
+
+        if(Object.keys(invalid).filter(key => invalid[key]).length > 0) {
+            setBlink(prevState => ({
+                ...prevState,
+                ...invalid,
+                count: prevState.count + 1,
+            }));
+            return;
+        };
 
         dispatch(registerThunk({ username, password }));
     }, [dispatch, form]);
@@ -84,6 +97,7 @@ const RegisterContainer = ({ history }) => {
             onSubmit={onSubmit}
             onChange={onChange}
             form={form}
+            blink={blink}
         />
     )
 };

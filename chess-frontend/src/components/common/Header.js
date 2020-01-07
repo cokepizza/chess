@@ -148,6 +148,9 @@ const Header = ({ onToggle, openModal, setOpenModal, onLogout, session, auth }) 
                     {auth ? (
                         <Tab onClick={onLogout}>
                             Logout
+                            <UserWelcomeBlock>
+                                {username}
+                            </UserWelcomeBlock>
                         </Tab>
                     ):(
                         <Tab to='/login'>

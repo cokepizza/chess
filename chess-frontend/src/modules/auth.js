@@ -61,13 +61,13 @@ const initialState = {
     auth: null,
     authError: null,
     login: {
-        username: null,
-        password: null,
+        username: '',
+        password: '',
     },
     register: {
-        username: null,
-        password: null,
-        passwordConfirm: null,
+        username: '',
+        password: '',
+        passwordConfirm: '',
     }
 };
 

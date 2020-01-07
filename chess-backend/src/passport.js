@@ -26,9 +26,12 @@ const passportConfig = () => {
             return done(null, false, { message: 'Please fill the form' });
         }
         
+        console.dir(username);
+        console.dir(password);
         try {
             const user = await User.findOne({ username });
-            
+            console.dir(user);
+
             if(!user) {
                 return done(null, false, { message: 'No valid user exist' });
             }

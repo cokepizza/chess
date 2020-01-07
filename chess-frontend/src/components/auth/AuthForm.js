@@ -53,6 +53,22 @@ const InputFormBlock = styled.div`
     &+& {
         margin-top: 10px;
     }
+
+    @keyframes blinking {
+        0%{
+            box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+        }
+        50% {
+            box-shadow:0 2px 2px 0 rgba(0,0,0,0.56), 0 3px 1px -2px rgba(0,0,0,0.8), 0 1px 5px 0 rgba(0,0,0,0.48);
+        }
+        100%{
+            box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+        }
+      }
+
+    ${props => props.blink && css`
+        animation: blinking 1s 2;
+    `}
 `
 
 const inputStyle = css`
@@ -153,7 +169,7 @@ const CreateLinkBlock = styled(Link)`
     margin-left: 5px;
 `;
 
-const AuthForm = ({ login, register, form, onSubmit, onChange }) => {
+const AuthForm = ({ login, register, form, blink, onSubmit, onChange }) => {
     return (
         <AuthFrameBlock
             autoComplete='off'
@@ -164,7 +180,10 @@ const AuthForm = ({ login, register, form, onSubmit, onChange }) => {
                     { login ? 'Sign In' : ( register ? 'Sign Up' : null ) }
                 </TitleBlock>
                 <InputFrameBlock>
-                    <InputFormBlock>
+                    <InputFormBlock
+                        blink={blink.username}
+                        key={`username_${blink.count}`}
+                    >
                         <IconContext.Provider value={{ style: { width: '20px', height: '20px' } }}>
                             <IoMdMail />
                         </IconContext.Provider>
@@ -175,7 +194,10 @@ const AuthForm = ({ login, register, form, onSubmit, onChange }) => {
                             value={form.username}
                         />    
                     </InputFormBlock>
-                    <InputFormBlock>
+                    <InputFormBlock
+                        blink={blink.password}
+                        key={`password_${blink.count}`}
+                    >
                         <IconContext.Provider value={{ style: { width: '20px', height: '20px' } }}>
                             <FaLock />
                         </IconContext.Provider>
@@ -188,7 +210,10 @@ const AuthForm = ({ login, register, form, onSubmit, onChange }) => {
                         />
                     </InputFormBlock>
                     {register ? (
-                        <InputFormBlock>
+                        <InputFormBlock
+                            blink={blink.passwordConfirm}
+                            key={`passwordConfirm_${blink.count}`}
+                        >
                             <IconContext.Provider value={{ style: { width: '20px', height: '20px' } }}>
                                 <FaLock />
                             </IconContext.Provider>
