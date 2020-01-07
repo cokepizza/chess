@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import AuthForm from '../../components/auth/AuthForm';
-import { registerThunk, changeField } from '../../modules/auth';
+import { registerThunk, changeField, clearField } from '../../modules/auth';
 
-const RegisterContainer = () => {
+const RegisterContainer = ({ history }) => {
     const { form, auth, authError } = useSelector(({ auth }) => ({
         form: auth.register,
         auth: auth.auth,
@@ -28,6 +29,18 @@ const RegisterContainer = () => {
         dispatch(registerThunk({ username, password }));
     }, [dispatch, form]);
 
+    useEffect(() => {
+        if(auth) {
+            history.push('/');
+        }
+    }, [history, auth])
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearField({ form: 'register' }));
+        };
+    }, [dispatch]);
+
     return (
         <AuthForm 
             register
@@ -38,4 +51,4 @@ const RegisterContainer = () => {
     )
 };
 
-export default RegisterContainer;
+export default withRouter(RegisterContainer);

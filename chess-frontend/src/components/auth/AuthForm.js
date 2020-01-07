@@ -155,7 +155,10 @@ const CreateLinkBlock = styled(Link)`
 
 const AuthForm = ({ login, register, form, onSubmit, onChange }) => {
     return (
-        <AuthFrameBlock onSubmit={onSubmit}>
+        <AuthFrameBlock
+            autoComplete='off'
+            onSubmit={onSubmit}
+        >
             <AuthFormBlock>
                 <TitleBlock>
                     { login ? 'Sign In' : ( register ? 'Sign Up' : null ) }

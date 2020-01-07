@@ -4,8 +4,8 @@ import User from './models/user';
 
 const passportConfig = () => {
     passport.serializeUser((user, done) => {
-        console.dir('serializeUser');
-        console.dir(user);
+        // console.dir('serializeUser');
+        // console.dir(user);
         done(null, user);
     });
 
@@ -39,12 +39,7 @@ const passportConfig = () => {
                 return done(null, false, { message: 'password mismatch' });
             }
 
-            // const serializedUser = user.serialize();
-            // delete serializedUser._id;
-            // console.dir(user.serialize());
-            // return done(null, { user: serializedUser });
             return done(null, { user: user.serialize() });
-
         } catch(e) {
             return done(e);
         }    

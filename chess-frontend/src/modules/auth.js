@@ -27,7 +27,9 @@ export const registerThunk = createRequestThunk(REGISTER, authAPI.register);
 export const logoutThunk = createRequestThunk(LOGOUT, authAPI.logout);
 
 const CHANGE_FIELD = 'auth/CHANGE_FIELD';
+const CLEAR_FIELD = 'auth/CLEAR_FIELD';
 export const changeField = createAction(CHANGE_FIELD, payload => payload);
+export const clearField = createAction(CLEAR_FIELD, payload => payload);
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;
@@ -74,7 +76,7 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { type, ...rest} }) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { type, ...rest } }) => ({
         ...state,
         tempAuth: { ...rest },
     }),
@@ -91,6 +93,11 @@ export default handleActions({
         produce(state, draft => {
             draft[form][key] = value;
         }),
+    [CLEAR_FIELD]: (state, { payload: { form } }) => ({
+        ...state,
+        [form]: initialState[form],
+        authError: initialState.authError,
+    }),
     [LOGIN_SUCCESS]: (state, { payload : auth }) => ({
         ...state,
         auth,
@@ -98,7 +105,7 @@ export default handleActions({
     }),
     [LOGIN_FAILURE]: (state, { payload: authError }) => ({
         ...state,
-        user: null,
+        auth: null,
         authError,
     }),
     [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
@@ -108,7 +115,12 @@ export default handleActions({
     }),
     [REGISTER_FAILURE]: (state, { payload: authError }) => ({
         ...state,
-        user: null,
+        auth: null,
         authError,
     }),
+    [LOGOUT_SUCCESS]: state => ({
+        ...state,
+        auth: null,
+        authError: null,
+    })
 }, initialState);

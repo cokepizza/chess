@@ -19,19 +19,29 @@ export const getSession = (req, res, next) => {
     console.dir('----------http(getSession)---------')
     console.dir(req.sessionID);
     console.dir(req.user);
-    res.send(req.sessionID);
+    res.send({
+        id: req.sessionID,
+        nickname: req.session.nickname,
+    });
     res.status(202).end();
 }
 
 export const login = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err) {
-            res.send('');
+            console.dir(err);
+            res.send(err);
             return res.status(400).end();
         }
 
         console.dir('login success');
-        return req.login(user, () => {
+        return req.login(user, (err) => {
+            if(err) {
+                console.dir(err);
+                res.send(err);
+                return res.status(400).end();
+            };
+
             res.send(user);
             return res.status(200).end();
         });
@@ -49,7 +59,9 @@ export const login = (req, res, next) => {
 // };
 
 export const logout = (req, res, next) => {
-
+    req.logout();
+    res.send('logout success');
+    res.status(200).end();
 };
 
 export const register = async (req, res, next) => {
@@ -58,9 +70,9 @@ export const register = async (req, res, next) => {
         password: Joi.string().required(),
     });
 
-    console.dir(req.body);
     const result = Joi.validate(req.body, schema);
     if(result.error) {
+        console.dir(result.error);
         res.send(result.error);
         return res.status(400).end();
     }
@@ -79,11 +91,21 @@ export const register = async (req, res, next) => {
         await user.setPassword(password);
         await user.save();
 
-        // req.login();
+        const serializedUser = user.serialize();
+        return req.login(serializedUser, (err) => {
+            if(err) {
+                console.dir(err);
+                res.send(err);
+                return res.status(400).end();
+            };
+
+            res.send(serializedUser);
+            return res.status(202).end();
+        });
 
     } catch(e) {
-        res.send(e);
         console.dir(e);
+        res.send(e);
         return res.status(400).end();
     }
 

@@ -48,7 +48,7 @@ const GroupBlock = styled.div`
     display: flex;
 `;
 
-const LetterBlock = styled.div`
+const TabBlock = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,7 +59,7 @@ const LetterBlock = styled.div`
     margin-left: 20px;
 `;
 
-const LetterLinkBlock = styled(Link)`
+const TabLinkBlock = styled(Link)`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -71,18 +71,18 @@ const LetterLinkBlock = styled(Link)`
     text-decoration: none;
 `;
 
-const Letter = props => {
+const Tab = props => {
     if(props.to) {
         return (
-            <LetterLinkBlock to={props.to}>
+            <TabLinkBlock to={props.to}>
                 {props.children}
-            </LetterLinkBlock>
+            </TabLinkBlock>
         )
     } else {
         return (
-            <LetterBlock {...props}>
+            <TabBlock {...props}>
                 {props.children}
-            </LetterBlock>
+            </TabBlock>
         )
     }
 }
@@ -94,7 +94,24 @@ const AuthBlock = styled.div`
     
 `;
 
-const Header = ({ onToggle, openModal, setOpenModal }) => {
+const UserWelcomeBlock = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    color: rgb(0, 0, 0, 0.4);
+`
+
+const Header = ({ onToggle, openModal, setOpenModal, onLogout, session, auth }) => {
+    let username;
+    if(session) {
+        username = session.nickname;
+        if(auth) {
+            console.dir(auth);
+            username = auth.user.username;
+        }
+    };
+
     return (
         <>
             <HeaderBlock>
@@ -106,15 +123,15 @@ const Header = ({ onToggle, openModal, setOpenModal }) => {
                         .com
                     </TitleFadeBlock>
                     <GroupBlock>
-                        <Letter onClick={onToggle}>
+                        <Tab onClick={onToggle}>
                             Play
-                        </Letter>
-                        <Letter to='/'>
+                        </Tab>
+                        <Tab to='/'>
                             Record
-                        </Letter>
-                        <Letter to='/community'>
+                        </Tab>
+                        <Tab to='/community'>
                             Community
-                        </Letter>
+                        </Tab>
                     </GroupBlock>
                 </ControllBlock>
                 <AuthBlock>
@@ -127,9 +144,19 @@ const Header = ({ onToggle, openModal, setOpenModal }) => {
                     }} >
                         <GoSearch />
                     </IconContext.Provider>
-                    <Letter to='/login'>
-                        Login
-                    </Letter>
+
+                    <UserWelcomeBlock>
+                        {username}
+                    </UserWelcomeBlock>
+                    {auth ? (
+                        <Tab onClick={onLogout}>
+                            Logout
+                        </Tab>
+                    ):(
+                        <Tab to='/login'>
+                            Login
+                        </Tab>
+                    )}
                 </AuthBlock>
             </HeaderBlock>
             <RoomModalContainer

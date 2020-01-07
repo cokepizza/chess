@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { loginThunk, changeField } from '../../modules/auth';
+import { withRouter } from 'react-router-dom';
+import { loginThunk, changeField, clearField } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
 
-const LoginContainer = () => {
+const LoginContainer = ({ history }) => {
     const { form, auth, authError } = useSelector(({ auth }) => ({
         form: auth.login,
         auth: auth.auth,
@@ -27,6 +28,18 @@ const LoginContainer = () => {
         const { username, password } = form;
         dispatch(loginThunk({ username, password }));
     }, [dispatch, form]);
+
+    useEffect(() => {
+        if(auth) {
+            history.push('/');
+        }
+    }, [history, auth]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearField({ form: 'login' }));
+        }
+    }, [dispatch]);
     
     return (
         <AuthForm
@@ -38,4 +51,4 @@ const LoginContainer = () => {
     )
 };
 
-export default LoginContainer;
+export default withRouter(LoginContainer);

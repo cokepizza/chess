@@ -186,7 +186,7 @@ export default (server, app, sessionMiddleware) => {
         socket.on('disconnect', () => {
             disconnectRoom(app, io, socket, key);
 
-            console.dir('-------------socket(game)--------------');
+            console.dir('-------------socketDis(game)--------------');
             console.dir(socket.request.sessionID);
         })
     });
