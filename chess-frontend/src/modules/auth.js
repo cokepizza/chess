@@ -28,8 +28,10 @@ export const logoutThunk = createRequestThunk(LOGOUT, authAPI.logout);
 
 const CHANGE_FIELD = 'auth/CHANGE_FIELD';
 const CLEAR_FIELD = 'auth/CLEAR_FIELD';
+const CLEAR_SPECIFIC_FIELD = 'auth/CLEAR_SPECIFIC_FIELD';
 export const changeField = createAction(CHANGE_FIELD, payload => payload);
 export const clearField = createAction(CLEAR_FIELD, payload => payload);
+export const clearSpecificField = createAction(CLEAR_SPECIFIC_FIELD, payload => payload);
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;
@@ -59,10 +61,7 @@ const initialState = {
     session: null,
     error: null,
     auth: null,
-    authError: {
-        username: '',
-        password: '',
-    },
+    authError: null,
     login: {
         username: '',
         password: '',
@@ -99,6 +98,14 @@ export default handleActions({
     [CLEAR_FIELD]: (state, { payload: { form } }) => ({
         ...state,
         [form]: initialState[form],
+        authError: initialState.authError,
+    }),
+    [CLEAR_SPECIFIC_FIELD]: (state, { payload: { form, key } }) => ({
+        ...state,
+        [form]: {
+            ...state[form],
+            [key]: initialState[form][key],
+        },
         authError: initialState.authError,
     }),
     [LOGIN_SUCCESS]: (state, { payload : auth }) => ({

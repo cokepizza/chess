@@ -21,20 +21,26 @@ const RegisterContainer = ({ history }) => {
         count: 0,
     })
 
-    const [ placeholder, setPlaceholder ] = useState({
-        username: 'Email',
+    const [ error, setError ] = useState({
+        username: 'Email is not valid',
         password: 'Password',
         passwordConfirm: 'Confirm Password'
     })
 
     const onChange = useCallback(e => {
         const { name, value } = e.target;
+        if(error[name] !== '') {
+            setError(prevState => ({
+                ...prevState,
+                [name]: '',
+            }));
+        }
         dispatch(changeField({
             form: 'register',
             key: name,
             value,
         }));
-    }, [dispatch]);
+    }, [dispatch, error]);
 
     const onSubmit = useCallback(e => {
         e.preventDefault();
@@ -105,7 +111,7 @@ const RegisterContainer = ({ history }) => {
             onChange={onChange}
             form={form}
             blink={blink}
-            placeholder={placeholder}
+            error={error}
         />
     )
 };

@@ -170,7 +170,7 @@ const CreateLinkBlock = styled(Link)`
     margin-left: 5px;
 `;
 
-const HelpBoxBlock = styled.div`
+const ErrorBlock = styled.div`
     position: absolute;
     top: 0;
     left: 48%;
@@ -178,10 +178,19 @@ const HelpBoxBlock = styled.div`
     display: flex;
     justify-content: flex-end;
     font-size: 12px;
-    color: #ccc;
+    @keyframes fontOpacity {
+        0%{
+            color: rgb(0, 0, 0, 0);
+        }
+        100%{
+            color: rgb(0, 0, 0, 0.4);
+        }
+      }
+    animation: fontOpacity 1s 1;
+    color: rgb(0, 0, 0, 0.4);
 `
 
-const AuthForm = ({ login, register, form, blink, placeholder, onSubmit, onChange }) => {
+const AuthForm = ({ login, register, form, error, onSubmit, onChange }) => {
     const ref = useRef({});
 
     const onClick = useCallback(tag => {
@@ -203,8 +212,8 @@ const AuthForm = ({ login, register, form, blink, placeholder, onSubmit, onChang
                 <InputFrameBlock>
                     <InputFormBlock
                         onClick={onClick.bind(null, 'username')}
-                        blink={blink.username}
-                        key={`username_${blink.count}`}
+                        blink={error.username}
+                        key={`username_${error.count}`}
                     >
                         <IconContext.Provider value={{ style: { width: '20px', height: '20px', cursor: 'pointer'} }}>
                             <IoMdMail />
@@ -212,19 +221,19 @@ const AuthForm = ({ login, register, form, blink, placeholder, onSubmit, onChang
                         <EmailInputBlock
                             type='text'
                             name='username'
-                            placeholder={placeholder.username}
+                            placeholder='Email'
                             onChange={onChange}
                             value={form.username}
                             ref={el => ref.current.username = el}
                         />
-                        <HelpBoxBlock>
-                            Email is not valid
-                        </HelpBoxBlock>
+                        <ErrorBlock>
+                            {error.username}
+                        </ErrorBlock>
                     </InputFormBlock>
                     <InputFormBlock
                         onClick={onClick.bind(null, 'password')}
-                        blink={blink.password}
-                        key={`password_${blink.count}`}
+                        blink={error.password}
+                        key={`password_${error.count}`}
                     >
                         <IconContext.Provider value={{ style: { width: '20px', height: '20px', cursor: 'pointer' } }}>
                             <FaLock />
@@ -232,17 +241,20 @@ const AuthForm = ({ login, register, form, blink, placeholder, onSubmit, onChang
                         <PasswordInputBlock
                             type='password'
                             name='password'
-                            placeholder={placeholder.password}
+                            placeholder='Password'
                             onChange={onChange}
                             value={form.password}
                             ref={el => ref.current.password = el}
                         />
+                        <ErrorBlock>
+                            {error.password}
+                        </ErrorBlock>
                     </InputFormBlock>
                     {register ? (
                         <InputFormBlock
                             onClick={onClick.bind(null, 'passwordConfirm')}
-                            blink={blink.passwordConfirm}
-                            key={`passwordConfirm_${blink.count}`}
+                            blink={error.passwordConfirm}
+                            key={`passwordConfirm_${error.count}`}
                         >
                             <IconContext.Provider value={{ style: { width: '20px', height: '20px', cursor: 'pointer' } }}>
                                 <FaLock />
@@ -250,11 +262,14 @@ const AuthForm = ({ login, register, form, blink, placeholder, onSubmit, onChang
                             <PasswordInputBlock
                                 type='password'
                                 name='passwordConfirm'
-                                placeholder={placeholder.passwordConfirm}
+                                placeholder='Confirm Password'
                                 onChange={onChange}
                                 value={form.passwordConfirm}
                                 ref={el => ref.current.passwordConfirm = el}
                             />
+                            <ErrorBlock>
+                                {error.passwordConfirm}
+                            </ErrorBlock>
                         </InputFormBlock>
                     ): null}
                     {login ? (

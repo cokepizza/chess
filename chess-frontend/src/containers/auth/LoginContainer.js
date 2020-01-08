@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Joi from 'joi';
-import { loginThunk, changeField, clearField } from '../../modules/auth';
+import { loginThunk, changeField, clearField, clearSpecificField } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
 
 const LoginContainer = ({ history }) => {
@@ -14,32 +14,32 @@ const LoginContainer = ({ history }) => {
 
     const dispatch = useDispatch();
 
-    const [ blink, setBlink ] = useState({
-        username: false,
-        password: false,
-        count: 0,
-    });
-
-    const [ placeholder, setPlaceholder ] = useState({
-        username: 'Email',
-        password: 'Password'
+    const [ error, setError ] = useState({
+        username: '',
+        password: ''
     });
 
     const onChange = useCallback(e => {
         const { name, value } = e.target;
+        if(error[name] !== '') {
+            setError(prevState => ({
+                ...prevState,
+                [name]: '',
+            }));
+        }
         dispatch(changeField({
             form: 'login',
             key: name,
             value,
         }));
-    }, [dispatch]);
+    }, [dispatch, error]);
 
     const onSubmit = useCallback(e => {
         e.preventDefault();
         const { username, password } = form;
 
         //  initialize
-        let invalid = Object.keys(form)
+        let nextError = Object.keys(form)
             .reduce((acc, key) =>
                 ({
                     ...acc,
@@ -47,35 +47,45 @@ const LoginContainer = ({ history }) => {
                 }),{});
 
         //  empty check
-        Object.keys(invalid)
+        Object.keys(nextError)
             .filter(key => form[key] === '')
             .forEach(key => {
-                console.dir(key);
-                invalid[key] = true;
+                nextError = {
+                    ...nextError,
+                    [key]: 'Required field'
+                }
             });
 
         const schema = Joi.object().keys({
-            username: Joi.string().max(80).email({ minDomainAtoms: 2 }).required(),
-            password: Joi.string().min(4).max(16).required(),
+            username: Joi.string().max(80).email({ minDomainAtoms: 2 }).required().error(() => ({ message: 'Wrong format' })),
+            password: Joi.string().min(4).max(16).required().error(() => ({ message: '4 ~ 16 digits' })),
         });
 
         const result = Joi.validate(form, schema, { abortEarly: false });
 
         if(result.error) {
             result.error.details.forEach(detail => {
-                invalid = {
-                    ...invalid,
-                    [detail.path[0]]: true,
+                if(!nextError[detail.path[0]]) {
+                    nextError = {
+                        ...nextError,
+                        [detail.path[0]]: detail.message,
+                    }
                 }
             });
         }
 
-        if(Object.keys(invalid).filter(key => invalid[key]).length > 0) {
-            setBlink(prevState => ({
-                ...prevState,
-                ...invalid,
+        if(Object.keys(nextError).filter(key => nextError[key]).length > 0) {
+            setError(prevState => ({
+                ...nextError,
                 count: prevState.count + 1,
             }));
+            Object.keys(nextError).forEach(key => {
+                console.dir(nextError[key]);
+                if(nextError[key]) {
+                    dispatch(clearSpecificField({ form: 'login', key }))
+                }
+            });
+
             return;
         };
 
@@ -87,6 +97,17 @@ const LoginContainer = ({ history }) => {
         if(authError) {
             console.dir('Login failed');
             console.dir(authError);
+            let nextError = {};
+            const errorMention = authError.response.data;
+            Object.keys(errorMention).forEach(key => {
+                nextError = {
+                    ...nextError,
+                    [key]: errorMention[key],
+                }
+                // dispatch(clearSpecificField({ form: 'login', key }))
+            });
+
+            setError(nextError);
             
             return;
         };
@@ -108,8 +129,7 @@ const LoginContainer = ({ history }) => {
             onSubmit={onSubmit}
             onChange={onChange}
             form={form}
-            blink={blink}
-            placeholder={placeholder}
+            error={error}
         />
     )
 };
