@@ -19,11 +19,10 @@ export const getSession = (req, res, next) => {
     console.dir('----------http(getSession)---------')
     console.dir(req.sessionID);
     console.dir(req.user);
-    res.send({
+    return res.status(202).send({
         id: req.sessionID,
         nickname: req.session.nickname,
     });
-    res.status(202).end();
 }
 
 export const login = (req, res, next) => {
@@ -39,12 +38,10 @@ export const login = (req, res, next) => {
         return req.login(user, err => {
             if(err) {
                 console.dir(err);
-                res.send(err);
-                return res.status(400).end();
+                return res.status(400).send(err);
             };
 
-            res.send(user);
-            return res.status(200).end();
+            return res.status(200).send(user);
         });
     })(req, res, next);
 };
@@ -54,29 +51,35 @@ export const logout = (req, res, next) => {
     console.dir('logout success');
     
     // req.session.destroy();
-    res.send('logout success');
-    res.status(200).end();
+    return res.status(200).send('logout success');
 };
 
 export const register = async (req, res, next) => {
     const schema = Joi.object().keys({
-        username: Joi.string().email({ minDomainAtoms: 2 }).required(),
-        password: Joi.string().required(),
+        username: Joi.string().max(80).email({ minDomainAtoms: 2 }).required().error(() => ({ message: 'Wrong format' })),
+        password: Joi.string().min(4).max(16).required().error(() => ({ message: '4 ~ 16 digits' })),
     });
 
-    const result = Joi.validate(req.body, schema);
+    const result = Joi.validate(req.body, schema, { abortEarly: false });
     if(result.error) {
+        let nextError = {};
+        result.error.details.forEach(detail => {
+            if(!nextError[detail.path[0]]) {
+                nextError = {
+                    ...nextError,
+                    [detail.path[0]]: detail.message,
+                }
+            }
+        });
         console.dir(result.error);
-        res.send(result.error);
-        return res.status(400).end();
+        return res.status(400).send({ ...nextError });
     }
 
     const { username, password }  = req.body;
     try {
         const exist = await User.findOne({ username });
         if(exist) {
-            res.send('the id is already registered');
-            return res.status(409).end();
+            return res.status(409).send({ username: 'Registered user' });
         }
 
         const user = new User({
@@ -89,18 +92,15 @@ export const register = async (req, res, next) => {
         return req.login(serializedUser, err => {
             if(err) {
                 console.dir(err);
-                res.send(err);
-                return res.status(400).end();
+                return res.status(400).send(err);
             };
 
-            res.send(serializedUser);
-            return res.status(200).end();
+            return res.status(200).send(serializedUser);
         });
 
     } catch(e) {
         console.dir(e);
-        res.send(e);
-        return res.status(400).end();
+        return res.status(400).send(e);
     }
 
 };

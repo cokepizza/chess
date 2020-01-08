@@ -57,8 +57,7 @@ export const createRoom = (req, res, next) => {
         room: [...roomMap.values()],
     });
 
-    res.send(genRoom.key);
-    res.status(202).end();
+    return res.status(202).send(genRoom.key);
 }
 
 export const deleteRoom = (req, res, next) => {
@@ -77,6 +76,5 @@ export const deleteRoom = (req, res, next) => {
         room: [...roomMap.values()],
     });
 
-    res.send();
-    res.status(202).end();
+    return res.status(202).end();
 }

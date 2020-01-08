@@ -21,12 +21,17 @@ const HeaderContainer = () => {
     const onLogout = useCallback(() => {
         dispatch(logoutThunk());
     }, [dispatch]);
+    
+    const onRecord = useCallback(() => {
+        alert('onRecord');
+    }, []);
 
     return (
         <Header
             onToggle={onToggle}
             openModal={openModal}
             setOpenModal={setOpenModal}
+            onRecord={onRecord}
             onLogout={onLogout}
             session={session}
             auth={auth}

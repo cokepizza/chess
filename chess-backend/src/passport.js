@@ -52,13 +52,13 @@ const passportConfig = () => {
             const pwCheck = await user.checkPassword(password);
             
             if(!pwCheck) {
-                return done(null, false, { password: 'Password mismatch' });
+                return done(null, false, { password: 'Invalid password' });
             }
 
             return done(null, user.serialize());
         } catch(e) {
             return done(e);
-        }    
+        }
     }));
 };
 

@@ -49,6 +49,7 @@ const GroupBlock = styled.div`
 `;
 
 const TabBlock = styled.div`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,6 +61,7 @@ const TabBlock = styled.div`
 `;
 
 const TabLinkBlock = styled(Link)`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -69,12 +71,17 @@ const TabLinkBlock = styled(Link)`
     color: rgb(0, 0, 0, 0.4);
     margin-left: 20px;
     text-decoration: none;
+    
+    ${props => props.hidden && css`
+        display: none;
+        visibility: hidden;
+    `};
 `;
 
 const Tab = props => {
     if(props.to) {
         return (
-            <TabLinkBlock to={props.to}>
+            <TabLinkBlock {...props}>
                 {props.children}
             </TabLinkBlock>
         )
@@ -94,20 +101,22 @@ const AuthBlock = styled.div`
 `;
 
 const UserWelcomeBlock = styled.div`
+    position: absolute;
+    top: 10%;
+    left: 0%;
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
-    height: 50px;
     font-size: 10px;
     color: rgb(0, 0, 0, 0.4);
 `
 
-const Header = ({ onToggle, openModal, setOpenModal, onLogout, session, auth }) => {
+const Header = ({ onToggle, openModal, setOpenModal, onRecord, onLogout, session, auth }) => {
     let username;
     if(session) {
         username = session.nickname;
         if(auth) {
-            console.dir(auth);
             username = auth.username;
         }
     };
@@ -124,10 +133,10 @@ const Header = ({ onToggle, openModal, setOpenModal, onLogout, session, auth }) 
                     </TitleFadeBlock>
                     <GroupBlock>
                         <Tab onClick={onToggle}>
-                            Play
+                            QuickPlay
                         </Tab>
                         <Tab to='/'>
-                            Record
+                            Play
                         </Tab>
                         <Tab to='/community'>
                             Community
@@ -135,23 +144,24 @@ const Header = ({ onToggle, openModal, setOpenModal, onLogout, session, auth }) 
                     </GroupBlock>
                 </ControllBlock>
                 <AuthBlock>
-                    <IconContext.Provider value={{
-                        style:{
-                            cursor: 'pointer',
-                            width: '15px',
-                            height: '15px'
-                        }
-                    }} >
-                        <GoSearch />
-                    </IconContext.Provider>
-
+                    <Tab onClick={onRecord}>
+                        Search
+                    </Tab>
                     {auth ? (
-                        <Tab onClick={onLogout}>
-                            Logout
-                            <UserWelcomeBlock>
-                                {username}
-                            </UserWelcomeBlock>
-                        </Tab>
+                        <>
+                            <Tab onClick={onRecord}>
+                                Setting
+                            </Tab>
+                            <Tab onClick={onRecord}>
+                                Record
+                            </Tab>
+                            <Tab onClick={onLogout}>
+                                Logout
+                                <UserWelcomeBlock>
+                                    {username}
+                                </UserWelcomeBlock>
+                            </Tab>
+                        </>
                     ):(
                         <Tab to='/login'>
                             Login

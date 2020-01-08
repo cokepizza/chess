@@ -17,5 +17,5 @@ export const sendMessage = (req, res, next) => {
 
     console.dir('----------http(sendMessage)---------')
     console.dir(req.sessionID);
-    res.status(202).end();
+    return res.status(202).end();
 };
