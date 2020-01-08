@@ -30,8 +30,9 @@ export const login = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err || info) {
             console.dir(err || info);
-            res.status(400).send(err || info);
-            return res.status(400).end();
+            console.dir(err);
+            console.dir(info);
+            return res.status(400).send(err || info);
         }
 
         console.dir('login success');
@@ -93,7 +94,7 @@ export const register = async (req, res, next) => {
             };
 
             res.send(serializedUser);
-            return res.status(202).end();
+            return res.status(200).end();
         });
 
     } catch(e) {

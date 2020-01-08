@@ -20,6 +20,11 @@ const LoginContainer = ({ history }) => {
         count: 0,
     });
 
+    const [ placeholder, setPlaceholder ] = useState({
+        username: 'Email',
+        password: 'Password'
+    });
+
     const onChange = useCallback(e => {
         const { name, value } = e.target;
         dispatch(changeField({
@@ -75,6 +80,7 @@ const LoginContainer = ({ history }) => {
         };
 
         dispatch(loginThunk({ username, password }));
+        dispatch(clearField({ form: 'login' }));
     }, [dispatch, form]);
 
     useEffect(() => {
@@ -103,6 +109,7 @@ const LoginContainer = ({ history }) => {
             onChange={onChange}
             form={form}
             blink={blink}
+            placeholder={placeholder}
         />
     )
 };

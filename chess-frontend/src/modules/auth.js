@@ -59,7 +59,10 @@ const initialState = {
     session: null,
     error: null,
     auth: null,
-    authError: null,
+    authError: {
+        username: '',
+        password: '',
+    },
     login: {
         username: '',
         password: '',

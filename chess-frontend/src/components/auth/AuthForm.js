@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { IoMdMail } from 'react-icons/io';
 import { FaLock } from 'react-icons/fa';
@@ -43,6 +43,7 @@ const InputFrameBlock = styled.div`
 `;
 
 const InputFormBlock = styled.div`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -169,10 +170,30 @@ const CreateLinkBlock = styled(Link)`
     margin-left: 5px;
 `;
 
-const AuthForm = ({ login, register, form, blink, onSubmit, onChange }) => {
+const HelpBoxBlock = styled.div`
+    position: absolute;
+    top: 0;
+    left: 48%;
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 12px;
+    color: #ccc;
+`
+
+const AuthForm = ({ login, register, form, blink, placeholder, onSubmit, onChange }) => {
+    const ref = useRef({});
+
+    const onClick = useCallback(tag => {
+        ref.current[tag].focus();
+    }, []);
+
     return (
         <AuthFrameBlock
             autoComplete='off'
+            autoCorrect='off'
+            autoCapitalize='off'
+            spellCheck='false'
             onSubmit={onSubmit}
         >
             <AuthFormBlock>
@@ -181,48 +202,58 @@ const AuthForm = ({ login, register, form, blink, onSubmit, onChange }) => {
                 </TitleBlock>
                 <InputFrameBlock>
                     <InputFormBlock
+                        onClick={onClick.bind(null, 'username')}
                         blink={blink.username}
                         key={`username_${blink.count}`}
                     >
-                        <IconContext.Provider value={{ style: { width: '20px', height: '20px' } }}>
+                        <IconContext.Provider value={{ style: { width: '20px', height: '20px', cursor: 'pointer'} }}>
                             <IoMdMail />
                         </IconContext.Provider>
                         <EmailInputBlock
+                            type='text'
                             name='username'
-                            placeholder='Email'
+                            placeholder={placeholder.username}
                             onChange={onChange}
                             value={form.username}
-                        />    
+                            ref={el => ref.current.username = el}
+                        />
+                        <HelpBoxBlock>
+                            Email is not valid
+                        </HelpBoxBlock>
                     </InputFormBlock>
                     <InputFormBlock
+                        onClick={onClick.bind(null, 'password')}
                         blink={blink.password}
                         key={`password_${blink.count}`}
                     >
-                        <IconContext.Provider value={{ style: { width: '20px', height: '20px' } }}>
+                        <IconContext.Provider value={{ style: { width: '20px', height: '20px', cursor: 'pointer' } }}>
                             <FaLock />
                         </IconContext.Provider>
                         <PasswordInputBlock
                             type='password'
                             name='password'
-                            placeholder='Password'
+                            placeholder={placeholder.password}
                             onChange={onChange}
                             value={form.password}
+                            ref={el => ref.current.password = el}
                         />
                     </InputFormBlock>
                     {register ? (
                         <InputFormBlock
+                            onClick={onClick.bind(null, 'passwordConfirm')}
                             blink={blink.passwordConfirm}
                             key={`passwordConfirm_${blink.count}`}
                         >
-                            <IconContext.Provider value={{ style: { width: '20px', height: '20px' } }}>
+                            <IconContext.Provider value={{ style: { width: '20px', height: '20px', cursor: 'pointer' } }}>
                                 <FaLock />
                             </IconContext.Provider>
                             <PasswordInputBlock
                                 type='password'
                                 name='passwordConfirm'
-                                placeholder='Password Confirm'
+                                placeholder={placeholder.passwordConfirm}
                                 onChange={onChange}
                                 value={form.passwordConfirm}
+                                ref={el => ref.current.passwordConfirm = el}
                             />
                         </InputFormBlock>
                     ): null}

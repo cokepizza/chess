@@ -21,6 +21,12 @@ const RegisterContainer = ({ history }) => {
         count: 0,
     })
 
+    const [ placeholder, setPlaceholder ] = useState({
+        username: 'Email',
+        password: 'Password',
+        passwordConfirm: 'Confirm Password'
+    })
+
     const onChange = useCallback(e => {
         const { name, value } = e.target;
         dispatch(changeField({
@@ -99,6 +105,7 @@ const RegisterContainer = ({ history }) => {
             onChange={onChange}
             form={form}
             blink={blink}
+            placeholder={placeholder}
         />
     )
 };

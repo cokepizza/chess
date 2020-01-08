@@ -23,20 +23,36 @@ const passportConfig = () => {
     }, async (req, username, password, done) => {
 
         if(!username || !password) {
-            return done(null, false, { message: 'Please fill the form' });
+            let message = {};
+            const mention = 'Please fill in the fields';
+
+            if(!username) {
+                message = {
+                    ...message,
+                    username: mention
+                }
+            }
+            if(!password) {
+                message = {
+                    ...message,
+                    password: mention
+                }
+            }
+
+            return done(null, false, { ...message });
         }
         
         try {
             const user = await User.findOne({ username });
 
             if(!user) {
-                return done(null, false, { message: 'No valid user exist' });
+                return done(null, false, { username: 'The user you sent does not exist' });
             }
 
             const pwCheck = await user.checkPassword(password);
             
             if(!pwCheck) {
-                return done(null, false, { message: 'password mismatch' });
+                return done(null, false, { password: 'Username and password do not match' });
             }
 
             return done(null, user.serialize());
