@@ -30,7 +30,7 @@ export const login = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err || info) {
             console.dir(err || info);
-            res.send(err || info);
+            res.status(400).send(err || info);
             return res.status(400).end();
         }
 
