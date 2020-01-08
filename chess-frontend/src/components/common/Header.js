@@ -133,7 +133,7 @@ const Header = ({ onToggle, openModal, setOpenModal, onRecord, onLogout, session
                     </TitleFadeBlock>
                     <GroupBlock>
                         <Tab onClick={onToggle}>
-                            QuickPlay
+                            Quickplay
                         </Tab>
                         <Tab to='/'>
                             Play
