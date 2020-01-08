@@ -10,8 +10,6 @@ export default function createRequestThunk (type, request) {
     return params => async dispatch => {
         try {
             const response = await request(params);
-            console.dir(response);
-            console.dir(response.status);
             dispatch({
                 type: SUCCESS,
                 payload: response.data,

@@ -108,7 +108,7 @@ const Header = ({ onToggle, openModal, setOpenModal, onLogout, session, auth }) 
         username = session.nickname;
         if(auth) {
             console.dir(auth);
-            username = auth.user.username;
+            username = auth.username;
         }
     };
 

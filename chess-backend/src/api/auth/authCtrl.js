@@ -35,7 +35,7 @@ export const login = (req, res, next) => {
         }
 
         console.dir('login success');
-        return req.login(user, (err) => {
+        return req.login(user, err => {
             if(err) {
                 console.dir(err);
                 res.send(err);
@@ -85,7 +85,7 @@ export const register = async (req, res, next) => {
         await user.save();
 
         const serializedUser = user.serialize();
-        return req.login(serializedUser, (err) => {
+        return req.login(serializedUser, err => {
             if(err) {
                 console.dir(err);
                 res.send(err);

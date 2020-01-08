@@ -81,6 +81,7 @@ const RegisterContainer = ({ history }) => {
 
     useEffect(() => {
         if(auth) {
+            console.dir(auth);
             history.push('/');
         }
     }, [history, auth])
