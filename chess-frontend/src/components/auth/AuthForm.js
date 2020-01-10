@@ -190,7 +190,7 @@ const ErrorBlock = styled.div`
     color: rgb(0, 0, 0, 0.4);
 `
 
-const AuthForm = ({ login, register, form, error, onSubmit, onChange }) => {
+const AuthForm = ({ login, register, form, error, onSubmit, onChange, onRegister }) => {
     const ref = useRef({});
 
     const onClick = useCallback(tag => {
@@ -299,7 +299,7 @@ const AuthForm = ({ login, register, form, error, onSubmit, onChange }) => {
                             <CreateBlock>
                                 Don't have an account?
                             </CreateBlock>
-                            <CreateLinkBlock to='/register'>
+                            <CreateLinkBlock onClick = {onRegister}>
                                 Create
                             </CreateLinkBlock>
                         </CreateFormBlock>

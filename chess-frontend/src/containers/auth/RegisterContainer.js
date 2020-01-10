@@ -82,7 +82,6 @@ const RegisterContainer = ({ history }) => {
                 count: prevState.count + 1,
             }));
             Object.keys(nextError).forEach(key => {
-                console.dir(nextError[key]);
                 if(nextError[key]) {
                     dispatch(clearSpecificField({ form: 'register', key }))
                 }
@@ -97,9 +96,6 @@ const RegisterContainer = ({ history }) => {
 
     useEffect(() => {
         if(authError) {
-            console.dir(authError);
-            console.dir('Register failed');
-            console.dir(authError);
             let nextError = {};
             const errorMention = authError.response.data;
             Object.keys(errorMention).forEach(key => {

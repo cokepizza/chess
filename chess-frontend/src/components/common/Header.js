@@ -112,7 +112,16 @@ const UserWelcomeBlock = styled.div`
     color: rgb(0, 0, 0, 0.4);
 `
 
-const Header = ({ onToggle, openModal, setOpenModal, onRecord, onLogout, session, auth }) => {
+const Header = ({
+    onToggle,
+    openModal,
+    setOpenModal,
+    onRecord,
+    onLogout,
+    onLogin,
+    session,
+    auth
+}) => {
     let username;
     if(session) {
         username = session.nickname;
@@ -163,7 +172,7 @@ const Header = ({ onToggle, openModal, setOpenModal, onRecord, onLogout, session
                             </Tab>
                         </>
                     ):(
-                        <Tab to='/login'>
+                        <Tab onClick={onLogin}>
                             Login
                             <UserWelcomeBlock>
                                 {username}

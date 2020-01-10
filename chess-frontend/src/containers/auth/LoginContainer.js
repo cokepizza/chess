@@ -80,7 +80,7 @@ const LoginContainer = ({ history }) => {
                 count: prevState.count + 1,
             }));
             Object.keys(nextError).forEach(key => {
-                console.dir(nextError[key]);
+
                 if(nextError[key]) {
                     dispatch(clearSpecificField({ form: 'login', key }))
                 }
@@ -95,8 +95,6 @@ const LoginContainer = ({ history }) => {
 
     useEffect(() => {
         if(authError) {
-            console.dir('Login failed');
-            console.dir(authError);
             let nextError = {};
             const errorMention = authError.response.data;
             Object.keys(errorMention).forEach(key => {
@@ -122,6 +120,11 @@ const LoginContainer = ({ history }) => {
             dispatch(clearField({ form: 'login' }));
         }
     }, [dispatch]);
+
+    const onRegister = useCallback(() => {
+        dispatch(clearField({ form: 'register' }));
+        history.push('/register');
+    }, [dispatch, history]);
     
     return (
         <AuthForm
@@ -130,6 +133,7 @@ const LoginContainer = ({ history }) => {
             onChange={onChange}
             form={form}
             error={error}
+            onRegister={onRegister}
         />
     )
 };
