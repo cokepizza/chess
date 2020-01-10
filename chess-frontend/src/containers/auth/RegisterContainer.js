@@ -97,6 +97,7 @@ const RegisterContainer = ({ history }) => {
 
     useEffect(() => {
         if(authError) {
+            console.dir(authError);
             console.dir('Register failed');
             console.dir(authError);
             let nextError = {};
