@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 import { IoMdMail } from 'react-icons/io';
 import { FaLock } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
-import { Link } from 'react-router-dom';
 
 const AuthFrameBlock = styled.form`
     display: flex;
@@ -160,7 +159,7 @@ const CreateBlock = styled.div`
     font-size: 10px;
 `;
 
-const CreateLinkBlock = styled(Link)`
+const CreateButtonBlock = styled.button`
     outline: none;
     border: none;
     font-size: 10px;
@@ -299,18 +298,18 @@ const AuthForm = ({ login, register, form, error, onSubmit, onChange, onRegister
                             <CreateBlock>
                                 Don't have an account?
                             </CreateBlock>
-                            <CreateLinkBlock onClick = {onRegister}>
+                            <CreateButtonBlock onClick = {onRegister}>
                                 Create
-                            </CreateLinkBlock>
+                            </CreateButtonBlock>
                         </CreateFormBlock>
                     ) : (
                         <CreateFormBlock>
                             <CreateBlock>
                                 Don't have an account?
                             </CreateBlock>
-                            <CreateLinkBlock to='/register'>
+                            <CreateButtonBlock to='/register'>
                                 Create
-                            </CreateLinkBlock>
+                            </CreateButtonBlock>
                         </CreateFormBlock>
                     )}
                 </SubmitFrameBlock>

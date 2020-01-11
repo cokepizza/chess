@@ -5,6 +5,7 @@ import produce from 'immer';
 
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as authAPI from '../lib/api/auth';
+import { setLocalStorage, clearLocalStorage } from '../lib/storage/storage';
 
 const CONNECT_WEBSOCKET = 'auth/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'auth/DISCONNECT_WEBSOCKET';
@@ -22,9 +23,11 @@ export const setSessionThunk = createRequestThunk(SET_SESSION, authAPI.getSessio
 const [ LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE ] = createRequestActionTypes('auth/LOGIN');
 const [ REGISTER, REGISTER_SUCCESS, REGISTER_FAILURE ] = createRequestActionTypes('auth/REGISTER');
 const [ LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAILURE ] = createRequestActionTypes('auth/LOGOUT');
+const [ CHECK, CHECK_SUCCESS, CHECK_FAILURE ] = createRequestActionTypes('auth/CHECK');
 export const loginThunk = createRequestThunk(LOGIN, authAPI.login);
 export const registerThunk = createRequestThunk(REGISTER, authAPI.register);
 export const logoutThunk = createRequestThunk(LOGOUT, authAPI.logout);
+export const checkThunk = createRequestThunk(CHECK, authAPI.check);
 
 const CHANGE_FIELD = 'auth/CHANGE_FIELD';
 const CLEAR_FIELD = 'auth/CLEAR_FIELD';
@@ -32,6 +35,39 @@ const CLEAR_SPECIFIC_FIELD = 'auth/CLEAR_SPECIFIC_FIELD';
 export const changeField = createAction(CHANGE_FIELD, payload => payload);
 export const clearField = createAction(CLEAR_FIELD, payload => payload);
 export const clearSpecificField = createAction(CLEAR_SPECIFIC_FIELD, payload => payload);
+
+export const loginProcessThunk = param => async ( dispatch, getState ) => {
+    try {
+        const auth = await dispatch(loginThunk(param));
+        if(auth) {
+            setLocalStorage({ auth });
+        }
+    } catch(e) {
+        console.dir('Login failed');
+    }
+    
+}
+
+export const registerProcessThunk = param => async ( dispatch, getState ) => {
+    try {
+        const auth = await dispatch(registerThunk(param));
+        if(auth) {
+            setLocalStorage({ auth });
+        }
+    } catch(e) {
+        console.dir('Register failed');
+    }
+    
+}
+
+export const logoutProcessThunk = () => async( dispatch, getState ) => {
+    try {
+        await dispatch(logoutThunk());
+        clearLocalStorage('auth');
+    } catch(e) {
+        console.dir('Logout failed');
+    }
+}
 
 function* connectWebsocketSaga (action) {
     const key = action.payload;
@@ -134,6 +170,16 @@ export default handleActions({
         authError: null,
     }),
     [LOGOUT_FAILURE]: ( state, { payload: authError }) => ({
+        ...state,
+        auth: null,
+        authError,
+    }),
+    [CHECK_SUCCESS]: ( state, { payload: auth }) => ({
+        ...state,
+        auth,
+        authError: null,
+    }),
+    [CHECK_FAILURE]: ( state, { payload: authError }) => ({
         ...state,
         auth: null,
         authError,

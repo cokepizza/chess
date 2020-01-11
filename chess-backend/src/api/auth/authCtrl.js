@@ -104,3 +104,7 @@ export const register = async (req, res, next) => {
     }
 
 };
+
+export const check = (req, res, next) => {
+    return res.status(200).send(req.user);
+};

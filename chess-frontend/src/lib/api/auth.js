@@ -11,3 +11,6 @@ export const logout = () =>
 
 export const register = ({ username, password }) =>
     axios.post('/api/auth/register', ({ username, password }));
+
+export const check = () =>
+    axios.get('/api/auth/check');

@@ -10,6 +10,8 @@ import ReduxThunk from 'redux-thunk';
 import rootReducer, { rootSaga } from './modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
+import { getLocalStorage } from './lib/storage/storage';
+import { checkThunk } from './modules/auth';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -18,6 +20,22 @@ const store = createStore(
 )
 
 sagaMiddleware.run(rootSaga);
+
+(async() => {
+    const auth = getLocalStorage('auth');
+    if(!auth) {
+        return;
+    }
+
+    try {
+        const checkedAuth = await store.dispatch(checkThunk());
+        if(checkedAuth.username !== auth.username) {
+            throw 'Auth mismatch';
+        }
+    } catch(e) {
+        console.dir('Check auth failed');
+    }
+})();
 
 ReactDOM.render(
     <Provider store={store}>
