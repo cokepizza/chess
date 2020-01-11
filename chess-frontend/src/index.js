@@ -10,7 +10,7 @@ import ReduxThunk from 'redux-thunk';
 import rootReducer, { rootSaga } from './modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
-import { getLocalStorage } from './lib/storage/storage';
+import { getLocalStorage, clearLocalStorage } from './lib/storage/storage';
 import { checkThunk } from './modules/auth';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -30,6 +30,8 @@ sagaMiddleware.run(rootSaga);
     try {
         const checkedAuth = await store.dispatch(checkThunk());
         if(checkedAuth.username !== auth.username) {
+            clearLocalStorage();
+            //  eslint-disable-next-line
             throw 'Auth mismatch';
         }
     } catch(e) {

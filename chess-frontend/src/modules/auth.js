@@ -5,7 +5,7 @@ import produce from 'immer';
 
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import * as authAPI from '../lib/api/auth';
-import { setLocalStorage, clearLocalStorage } from '../lib/storage/storage';
+import { setLocalStorage, removeLocalStorage } from '../lib/storage/storage';
 
 const CONNECT_WEBSOCKET = 'auth/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'auth/DISCONNECT_WEBSOCKET';
@@ -63,7 +63,7 @@ export const registerProcessThunk = param => async ( dispatch, getState ) => {
 export const logoutProcessThunk = () => async( dispatch, getState ) => {
     try {
         await dispatch(logoutThunk());
-        clearLocalStorage('auth');
+        removeLocalStorage('auth');
     } catch(e) {
         console.dir('Logout failed');
     }

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Joi from 'joi';
 import AuthForm from '../../components/auth/AuthForm';
-import { registerThunk, changeField, clearField, clearSpecificField } from '../../modules/auth';
+import { registerProcessThunk, changeField, clearField, clearSpecificField } from '../../modules/auth';
 
 const RegisterContainer = ({ history }) => {
     const { form, auth, authError } = useSelector(({ auth }) => ({
@@ -90,7 +90,7 @@ const RegisterContainer = ({ history }) => {
             return;
         };
 
-        dispatch(registerThunk({ username, password }));
+        dispatch(registerProcessThunk({ username, password }));
         dispatch(clearField({ form: 'register' }));
     }, [dispatch, form]);
 

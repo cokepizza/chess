@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from '../../components/common/Header';
 import { connectWebsocket } from '../../modules/room';
-import { logoutThunk, clearField } from '../../modules/auth';
+import { logoutProcessThunk, clearField } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
 
 const HeaderContainer = ({ history }) => {
@@ -20,7 +20,7 @@ const HeaderContainer = ({ history }) => {
     }, [dispatch]);
 
     const onLogout = useCallback(() => {
-        dispatch(logoutThunk());
+        dispatch(logoutProcessThunk());
     }, [dispatch]);
     
     const onRecord = useCallback(() => {

@@ -18,12 +18,20 @@ export const getLocalStorage = key => {
     }   
 }
 
-export const clearLocalStorage = key => {
+export const removeLocalStorage = key => {
     try {
         localStorage.removeItem(key);
     } catch(e) {
-        console.dir('Clear localStorage failed');
+        console.dir('Remove localStorage failed');
         console.dir(e);
     }
-    
 }
+
+export const clearLocalStorage = () => {
+    try {
+        localStorage.clear();
+    } catch(e) {
+        console.dir('Clear localStorage failed');
+        console.dir(e);
+    }   
+};
