@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import Status from '../../components/content/Status';
+import Status from '../../components/gameplay/Status';
 
 const StatusContainer = ({ black, white }) => {
     const { blackNick, whiteNick, participant } = useSelector(({ game }) => ({

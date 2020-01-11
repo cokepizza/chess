@@ -1,5 +1,5 @@
 import React from 'react';
-import UndoRedo from '../../components/content/UndoRedo';
+import UndoRedo from '../../components/gameplay/UndoRedo';
 
 const UndoRedoContainer = () => {
     

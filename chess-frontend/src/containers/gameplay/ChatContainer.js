@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeTextfield, initializeTextfield } from '../../modules/chat';
 import { sendMessageThunk } from '../../modules/chat';
-import Chat from '../../components/content/Chat';
+import Chat from '../../components/gameplay/Chat';
 
 const ChatContainer = () => {
     const dispatch = useDispatch();

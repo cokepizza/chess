@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import HeaderContainer from '../containers/common/HeaderContainer';
-import GameLayoutContainer from '../containers/common/GameLayoutContainer';
+import GamePlayLayoutContainer from '../containers/gameplay/GamePlayLayoutContainer';
 
-const GamePage = ({ history, match }) => {
+const GamePlayPage = ({ history, match }) => {
     useEffect(() => {
         if(!match.params.id) {
             history.push('/');
@@ -17,9 +17,9 @@ const GamePage = ({ history, match }) => {
     return (
         <>
             <HeaderContainer />
-            <GameLayoutContainer gameId={id}/>
+            <GamePlayLayoutContainer gameId={id}/>
         </>
     )
 };
 
-export default withRouter(GamePage);
+export default withRouter(GamePlayPage);

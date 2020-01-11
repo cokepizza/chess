@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import TimerContainer from '../../containers/content/TimerContainer';
-import StatusContainer from '../../containers/content/StatusContainer';
-import PieceMoveListContainer from '../../containers/content/PieceMoveListContainer';
-import TimeLineContainer from '../../containers/content/TimeLineContainer';
-import UndoRedoContainer from '../../containers/content/UndoRedoContainer';
-import UtilContainer from '../../containers/content/UtilContainer';
+import TimerContainer from '../../containers/gameplay/TimerContainer';
+import StatusContainer from '../../containers/gameplay/StatusContainer';
+import PieceMoveListContainer from '../../containers/gameplay/PieceMoveListContainer';
+import TimeLineContainer from '../../containers/gameplay/TimeLineContainer';
+import UndoRedoContainer from '../../containers/gameplay/UndoRedoContainer';
+import UtilContainer from '../../containers/gameplay/UtilContainer';
 
 const RecordBlock = styled.div`
     position: relative;

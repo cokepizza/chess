@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import GameLayout from '../../components/common/GameLayout';
+import GamePlayLayout from '../../components/gameplay/GamePlayLayout';
 import { setSessionThunk } from '../../modules/auth';
 import { connectWebsocket as connectAuthWebsocket } from '../../modules/auth';
 import { connectWebsocket as connectGameWebsocket } from '../../modules/game';
@@ -16,7 +16,7 @@ import { disconnectWebsocket as disconnectRecordWebsocket } from '../../modules/
 
 import useAsync from '../../lib/hook/useAsync';
 
-const GameLayoutContainer = ({ gameId }) => {
+const GamePlayLayoutContainer = ({ gameId }) => {
     const dispatch = useDispatch();
 
     const connection = async () => {
@@ -55,10 +55,10 @@ const GameLayoutContainer = ({ gameId }) => {
     if(error) return null;
     if(data) {
         return (
-            <GameLayout />
+            <GamePlayLayout />
         )
     }
     return null;
 };
 
-export default GameLayoutContainer;
+export default GamePlayLayoutContainer;

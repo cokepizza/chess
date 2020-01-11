@@ -1,5 +1,5 @@
 import React from 'react';
-import Record from '../../components/content/Record';
+import Record from '../../components/gameplay/Record';
 
 const RecordContainer = () => {
 

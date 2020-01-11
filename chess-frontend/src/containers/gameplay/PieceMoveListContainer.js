@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import PieceMoveList from '../../components/content/PieceMoveList';
+import PieceMoveList from '../../components/gameplay/PieceMoveList';
 
 const PieceMoveListContainer = () => {
     

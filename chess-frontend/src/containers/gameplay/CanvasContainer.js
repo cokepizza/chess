@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Canvas from '../../components/content/Canvas';
+import Canvas from '../../components/gameplay/Canvas';
 import { clickPieceThunk, initializeBlocked } from '../../modules/canvas';
 import { clearValue } from '../../modules/canvas';
 

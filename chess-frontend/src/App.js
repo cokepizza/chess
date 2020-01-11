@@ -1,7 +1,6 @@
 import React from 'react';
 import MainPage from './pages/MainPage';
-import GamePage from './pages/GamePage';
-import RecordPage from './pages/RecordPage';
+import GamePlayPage from './pages/GamePlayPage';
 import CommunityPage from './pages/CommunityPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -23,11 +22,10 @@ const App = () => {
     <>
       <Switch>
         <Route component={MainPage} path='/' exact />
-        <Route component={GamePage} path='/game/:id' exact />
-        <Route component={RecordPage} path='/record' exact />
-        <Route component={CommunityPage} path='/community' exact />
         <Route component={LoginPage} path='/login' exact />
         <Route component={RegisterPage} path='/register' exact />
+        <Route component={GamePlayPage} path='/game/:id' exact />
+        <Route component={CommunityPage} path='/community' exact />
         <Route 
           render={({ location }) => (
             <ErrorPageDiv>

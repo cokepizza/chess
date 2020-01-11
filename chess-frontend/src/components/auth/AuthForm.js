@@ -298,7 +298,10 @@ const AuthForm = ({ login, register, form, error, onSubmit, onChange, onRegister
                             <CreateBlock>
                                 Don't have an account?
                             </CreateBlock>
-                            <CreateButtonBlock onClick = {onRegister}>
+                            <CreateButtonBlock
+                                type='button'
+                                onClick={onRegister}
+                            >
                                 Create
                             </CreateButtonBlock>
                         </CreateFormBlock>
@@ -307,7 +310,9 @@ const AuthForm = ({ login, register, form, error, onSubmit, onChange, onRegister
                             <CreateBlock>
                                 Don't have an account?
                             </CreateBlock>
-                            <CreateButtonBlock to='/register'>
+                            <CreateButtonBlock
+                                type='button'
+                            >
                                 Create
                             </CreateButtonBlock>
                         </CreateFormBlock>

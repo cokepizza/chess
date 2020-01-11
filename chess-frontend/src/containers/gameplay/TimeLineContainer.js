@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import TimeLine from '../../components/content/TimeLine';
+import TimeLine from '../../components/gameplay/TimeLine';
 import { clearValue } from '../../modules/record';
 
 const TimeLineContainer = ({ white, black }) => {

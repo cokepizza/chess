@@ -1,10 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import CanvasContainer from '../../containers/content/CanvasContainer';
-import ChatContainer from '../../containers/content/ChatContainer';
-import RecordContainer from '../../containers/content/RecordContainer';
+import CanvasContainer from '../../containers/gameplay/CanvasContainer';
+import ChatContainer from '../../containers/gameplay/ChatContainer';
+import RecordContainer from '../../containers/gameplay/RecordContainer';
 
-const GameLayoutBlock = styled.div`
+const GamePlayLayoutBlock = styled.div`
     height: 800px;
     width: 100%;
     background-color: rgb(237, 235, 233);
@@ -31,9 +31,9 @@ const RightSideBlock = styled.div`
     margin-left: 1%;
 `
 
-const GameLayout = props => {
+const GamePlayLayout = props => {
     return (
-        <GameLayoutBlock>          
+        <GamePlayLayoutBlock>          
             <LeftSideBlock>
                 <ChatContainer />
             </LeftSideBlock>
@@ -41,8 +41,8 @@ const GameLayout = props => {
             <RightSideBlock>
                 <RecordContainer />
             </RightSideBlock>
-        </GameLayoutBlock>
+        </GamePlayLayoutBlock>
     )
 };
 
-export default React.memo(GameLayout);
+export default React.memo(GamePlayLayout);

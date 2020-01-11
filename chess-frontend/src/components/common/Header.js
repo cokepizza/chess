@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { GoSearch } from 'react-icons/go';
-import { IconContext } from 'react-icons';
+// import { GoSearch } from 'react-icons/go';
+// import { IconContext } from 'react-icons';
 
 import RoomModalContainer from '../../containers/modal/RoomModalContainer';
 
