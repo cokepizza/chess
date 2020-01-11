@@ -66,7 +66,7 @@ export const deleteGame = (req, res, next) => {
         //  지우려는 방의 기존과 동일한 uuid,
     }
 
-    io.of('/games').emit('message', {
+    io.of('/game').emit('message', {
         type: 'change',
         game,
     });

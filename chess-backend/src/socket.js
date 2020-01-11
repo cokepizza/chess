@@ -57,9 +57,9 @@ const connectGame = (app, io, socket, key) => {
             ...instanceSanitizer(game),
         });
 
-        io.of('/game').emit('message', {
+        io.of('/games').emit('message', {
             type: 'initialize',
-            game: [...gameMap.values()],
+            games: [...gameMap.values()],
         });
     }
     console.dir(game);
@@ -110,9 +110,9 @@ const disconnectGame = (app, io, socket, key) => {
                 ...instanceSanitizer(game),
             });
 
-            io.of('/game').emit('message', {
+            io.of('/games').emit('message', {
                 type: 'initialize',
-                game: [...gameMap.values()],
+                games: [...gameMap.values()],
             });
             
             //  나가는 선택권은 프론트에 주어져야 할 듯
