@@ -1,11 +1,14 @@
 import React from 'react';
-import MainPage from './pages/MainPage';
-import GamePlayPage from './pages/GamePlayPage';
-import CommunityPage from './pages/CommunityPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
+import { Helmet } from 'react-helmet-async';
+
+import MainPage from './pages/MainPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import GamePage from './pages/GamePage';
+import GamePlayPage from './pages/GamePlayPage';
+import CommunityPage from './pages/CommunityPage';
 
 const ErrorPageDiv = styled.div`
   display: flex;
@@ -20,10 +23,14 @@ const ErrorPageDiv = styled.div`
 const App = () => {
   return (
     <>
+      <Helmet>
+        <title>Chesssup.com</title>
+      </Helmet>
       <Switch>
         <Route component={MainPage} path='/' exact />
         <Route component={LoginPage} path='/login' exact />
         <Route component={RegisterPage} path='/register' exact />
+        <Route component={GamePage} path='/game' exact />
         <Route component={GamePlayPage} path='/game/:id' exact />
         <Route component={CommunityPage} path='/community' exact />
         <Route 

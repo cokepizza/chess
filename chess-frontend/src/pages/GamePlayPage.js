@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+
 import HeaderContainer from '../containers/common/HeaderContainer';
 import GamePlayLayoutContainer from '../containers/gameplay/GamePlayLayoutContainer';
 
@@ -16,6 +18,9 @@ const GamePlayPage = ({ history, match }) => {
     
     return (
         <>
+            <Helmet>
+                <title>GamePlay • Chesssup.com</title>
+            </Helmet>
             <HeaderContainer />
             <GamePlayLayoutContainer gameId={id}/>
         </>

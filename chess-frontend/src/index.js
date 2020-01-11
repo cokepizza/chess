@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk';
-import rootReducer, { rootSaga } from './modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
+import { HelmetProvider } from 'react-helmet-async';
+
+import './index.css';
+import App from './App';
+import rootReducer, { rootSaga } from './modules';
+import * as serviceWorker from './serviceWorker';
 import { getLocalStorage, clearLocalStorage } from './lib/storage/storage';
 import { checkThunk } from './modules/auth';
 
@@ -42,7 +44,9 @@ sagaMiddleware.run(rootSaga);
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
-            <App />
+            <HelmetProvider>
+                <App />
+            </HelmetProvider>
         </BrowserRouter>
     </Provider>
     ,document.getElementById('root')
