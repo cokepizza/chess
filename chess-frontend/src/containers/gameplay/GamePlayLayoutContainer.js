@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+
+import useAsync from '../../lib/hook/useAsync';
 import GamePlayLayout from '../../components/gameplay/GamePlayLayout';
 import { setSessionThunk } from '../../modules/auth';
+
 import { connectWebsocket as connectAuthWebsocket } from '../../modules/auth';
 import { connectWebsocket as connectGameWebsocket } from '../../modules/game';
 import { connectWebsocket as connectChatWebsocket } from '../../modules/chat';
@@ -14,8 +17,6 @@ import { disconnectWebsocket as disconnectChatWebsocket } from '../../modules/ch
 import { disconnectWebsocket as disconnectCanvasWebsocket } from '../../modules/canvas';
 import { disconnectWebsocket as disconnectRecordWebsocket } from '../../modules/record';
 
-import useAsync from '../../lib/hook/useAsync';
-
 const GamePlayLayoutContainer = ({ gameId }) => {
     const dispatch = useDispatch();
 
@@ -27,13 +28,13 @@ const GamePlayLayoutContainer = ({ gameId }) => {
         dispatch(disconnectChatWebsocket());
         dispatch(disconnectCanvasWebsocket());
         dispatch(disconnectRecordWebsocket());
-        setTimeout(() => {
+        await Promise.resolve().then(() => {
             dispatch(connectAuthWebsocket(gameId));
             dispatch(connectGameWebsocket(gameId));
             dispatch(connectChatWebsocket(gameId));
             dispatch(connectCanvasWebsocket(gameId));
             dispatch(connectRecordWebsocket(gameId));
-        }, 0);
+        })
         return true;
     };
 

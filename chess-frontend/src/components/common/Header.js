@@ -183,12 +183,14 @@ const Header = ({
                     )}
                 </AuthBlock>
             </HeaderBlock>
-            <GamesModalContainer
-                openModal={openModal}
-                setOpenModal={setOpenModal}
-            />
+           
         </>
     )
 };
+
+//  <GamesModalContainer
+//  openModal={openModal}
+//  setOpenModal={setOpenModal}
+//  />
 
 export default React.memo(Header);
