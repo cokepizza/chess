@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import GridLayoutContainer from '../../containers/common/GridLayoutContainer';
 import SubmitFormContainer from '../../containers/common/SubmitFormContainer';
 
-const RoomModalBackgroundBlock = styled.div`
+const GamesModalBackgroundBlock = styled.div`
     position: fixed;
     top: 0;
     left: 0;
@@ -21,7 +21,7 @@ const RoomModalBackgroundBlock = styled.div`
     `}
 `;
 
-const RoomModalBlock = styled.div`
+const GamesModalBlock = styled.div`
     position: fixed;
     top: 20%;
     left: 20%;
@@ -37,26 +37,26 @@ const RoomModalBlock = styled.div`
     z-index: 1000;
 `;
 
-const RoomModal = ({ onBackgroundClick, onContentClick, onRoomClick, room, ...rest }) => {
-    console.dir('room mooooodal')
+const GamesModal = ({ onBackgroundClick, onContentClick, onGameClick, games, ...rest }) => {
+    console.dir('game mooooodal')
     return (
-        <RoomModalBackgroundBlock
+        <GamesModalBackgroundBlock
             {...rest}
             onClick={onBackgroundClick}
         >
-            <RoomModalBlock
+            <GamesModalBlock
                 onClick={onContentClick}
             >
                 <GridLayoutContainer
-                    room={room}
-                    onRoomClick={onRoomClick}
+                    games={games}
+                    onGameClick={onGameClick}
                 />
                 <SubmitFormContainer
                     onCancelClick={onBackgroundClick}
                 />
-            </RoomModalBlock>
-        </RoomModalBackgroundBlock>
+            </GamesModalBlock>
+        </GamesModalBackgroundBlock>
     )
 };
 
-export default React.memo(RoomModal);
+export default React.memo(GamesModal);

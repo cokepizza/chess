@@ -10,36 +10,36 @@ export const movePiece = (req, res) => {
     const { socket: socketId, move } = req.body;
 
     const io = req.app.get('io');
-    const roomMap = req.app.get('room');
+    const gameMap = req.app.get('game');
     const canvasMap = req.app.get('canvas');
-    const socketToRoomMap = req.app.get('socketToRoom');
-    const key = socketToRoomMap.get(socketId);
+    const socketToGameMap = req.app.get('socketToGame');
+    const key = socketToGameMap.get(socketId);
 
     const { prev, next } = move;
 
     console.dir(req.session);
     
     //  defensive code
-    if(!roomMap.has(key)) {
-        console.dir(`There's no available Room #${key}`);
-        return res.status(403).send({ error: `There's no available Room #${key}` });
+    if(!gameMap.has(key)) {
+        console.dir(`There's no available Game #${key}`);
+        return res.status(403).send({ error: `There's no available Game #${key}` });
     }
 
-    const room = roomMap.get(key);
-    if(!room._participant.has(req.sessionID)) {
+    const game = gameMap.get(key);
+    if(!game._participant.has(req.sessionID)) {
         console.dir(`Not Authorized`);
         return res.status(403).send({ error: `Not Authorized` });
     }
-    console.dir(room);
+    console.dir(game);
 
-    //  check if the room is ready to start
-    if(!room._black || !room._white) {
-        console.dir(`The room is not yet ready to start`);
-        return res.status(403).send({ error: `The room is not yet ready to start` });
+    //  check if the game is ready to start
+    if(!game._black || !game._white) {
+        console.dir(`The game is not yet ready to start`);
+        return res.status(403).send({ error: `The game is not yet ready to start` });
     }
 
     //  check if it's a player
-    const player = room._black === req.sessionID ? 'black': (room._white === req.sessionID ? 'white' : 'spectator');
+    const player = game._black === req.sessionID ? 'black': (game._white === req.sessionID ? 'white' : 'spectator');
     console.dir(`player: ${player} (${req.sessionID})`);
     if(player === 'spectator') {
         console.dir(`You're just a spectator`);
@@ -47,7 +47,7 @@ export const movePiece = (req, res) => {
     }
     
     //  check if it's your turn
-    if((room.turn % 2 === 0 && player !== 'white') || (room.turn % 2 === 1 && player !== 'black')) {
+    if((game.turn % 2 === 0 && player !== 'white') || (game.turn % 2 === 1 && player !== 'black')) {
         console.dir(`It's not your turn`);
         return res.status(403).send({ error: `It's not your turn` });
     }
@@ -151,9 +151,9 @@ export const movePiece = (req, res) => {
         }
     }
 
-    //  set server room object
-    room.turn = room.turn + 1;
-    room.order = room.turn % 2 === 0 ? 'white' : 'black';
+    //  set server game object
+    game.turn = game.turn + 1;
+    game.order = game.turn % 2 === 0 ? 'white' : 'black';
     const record = req.app.get('record').get(key);
     record.pieceMove.push({
         prevPiece,
@@ -164,7 +164,7 @@ export const movePiece = (req, res) => {
     
     console.dir('complete');
     
-    //  broadcast canvas change to everyone in the room
+    //  broadcast canvas change to everyone in the game
     io.of('/canvas').to(key).emit('message', {
         type: 'change',
         move
@@ -172,7 +172,7 @@ export const movePiece = (req, res) => {
 
     io.of('/game').to(key).emit('message', {
         type: 'initialize',
-        ...room,
+        ...game,
     })
     
     return res.status(200).end();

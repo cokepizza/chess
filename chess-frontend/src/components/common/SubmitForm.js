@@ -35,7 +35,7 @@ const SubmitForm = ({ onConfirmClick, onCancelClick }) => {
     return (
         <SubmitFormBlock onSubmit={onConfirmClick}>
             <ConfirmButtonBlock type='submit'>
-                Create Room
+                Create Game
             </ConfirmButtonBlock>
             <CancelButtonBlock
                 type='button'

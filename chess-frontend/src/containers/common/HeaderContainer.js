@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from '../../components/common/Header';
-import { connectWebsocket } from '../../modules/room';
+import { connectWebsocket } from '../../modules/games';
 import { logoutProcessThunk, clearField } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
 

@@ -29,15 +29,15 @@ const LeftSideBlock = styled.div`
 const RightSideBlock = styled.div`
     ${sideBlockStyle}
     margin-left: 1%;
-`
+`;
 
-const GamePlayLayout = props => {
+const GamePlayLayout = () => {
     return (
-        <GamePlayLayoutBlock>          
+        <GamePlayLayoutBlock>
             <LeftSideBlock>
                 <ChatContainer />
             </LeftSideBlock>
-            <CanvasContainer {...props} />
+            <CanvasContainer />
             <RightSideBlock>
                 <RecordContainer />
             </RightSideBlock>

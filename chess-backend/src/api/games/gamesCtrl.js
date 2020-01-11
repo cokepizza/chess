@@ -4,14 +4,14 @@
 
 import uuid from 'uuid/v1';
 
-export const createRoom = (req, res, next) => {
+export const createGame = (req, res, next) => {
     const io = req.app.get('io');
-    const roomMap = req.app.get('room');
-    const size = roomMap.size;
+    const gameMap = req.app.get('game');
+    const size = gameMap.size;
 
-    const genRoom = {
+    const genGame = {
         key: uuid(),
-        name: `room${size}`,
+        name: `game${size}`,
         turn: 0,
         order: 'white',
         participant: [],
@@ -44,36 +44,36 @@ export const createRoom = (req, res, next) => {
         _black: null,
         _white: null,
         _destroy: function() {
-            roomMap.delete(this.key);
+            gameMap.delete(this.key);
         },
     }
 
-    roomMap.set(genRoom.key, genRoom);
+    gameMap.set(genGame.key, genGame);
 
     //  change 이벤트로 바꿔야 함
-    //  change에서는 room 객체 정보만 전달하자
-    io.of('/room').emit('message', {
+    //  change에서는 game 객체 정보만 전달하자
+    io.of('/games').emit('message', {
         type: 'initialize',
-        room: [...roomMap.values()],
+        games: [...gameMap.values()],
     });
 
-    return res.status(202).send(genRoom.key);
+    return res.status(202).send(genGame.key);
 }
 
-export const deleteRoom = (req, res, next) => {
+export const deleteGame = (req, res, next) => {
     
-    const room = {
+    const game = {
         //  지우려는 방의 기존과 동일한 uuid,
     }
 
-    io.of('/room').emit('message', {
+    io.of('/games').emit('message', {
         type: 'change',
-        room,
+        game,
     });
     
-    io.of('/room').emit('message', {
+    io.of('/games').emit('message', {
         type: 'initialize',
-        room: [...roomMap.values()],
+        games: [...gameMap.values()],
     });
 
     return res.status(202).end();

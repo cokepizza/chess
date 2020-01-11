@@ -49,16 +49,16 @@ const BoxContentBlock = styled.div`
     
 `;
 
-const GridBox = React.memo(({ room, ...rest }) => {
-    console.dir('room~');
+const GridBox = React.memo(({ game, ...rest }) => {
+    console.dir('game~');
     
     return (
         <GridBoxBlock {...rest}>
             <BoxTitleBlock>
-                {room.name}
+                {game.name}
             </BoxTitleBlock>
             <BoxContentBlock>
-                {room.participant}
+                {game.participant}
             </BoxContentBlock>
         </GridBoxBlock>
     )
@@ -75,11 +75,11 @@ const GridLayoutBlock = styled.div`
     box-shadow: 5px 5px 5px rgb(0,0,0,0.4);
 `;
 
-const GridLayout = ({ room, onRoomClick }) => {
+const GridLayout = ({ games, onGameClick }) => {
 
-    if(!room) return <GridLayoutBlock />;
+    if(!games) return <GridLayoutBlock />;
 
-    const list = [ ...room ];
+    const list = [ ...games ];
     
     const gridArr = [];
     const rowSize = Math.floor(list.length / gridSize);
@@ -89,11 +89,11 @@ const GridLayout = ({ room, onRoomClick }) => {
                 key={`GridRowBlock_${i}`}
             >
                 {
-                    list.splice(0, gridSize).map(room => (
+                    list.splice(0, gridSize).map(game => (
                         <GridBox
-                            key={`GridBox${room.name}`}
-                            room={room}
-                            onClick={e => onRoomClick(e, room.key)}
+                            key={`GridBox${game.name}`}
+                            game={game}
+                            onClick={e => onGameClick(e, game.key)}
                         />
                     ))
                 }

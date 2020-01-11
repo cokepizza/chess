@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 // import { GoSearch } from 'react-icons/go';
 // import { IconContext } from 'react-icons';
 
-import RoomModalContainer from '../../containers/modal/RoomModalContainer';
+import GamesModalContainer from '../../containers/modal/GamesModalContainer';
 
 const HeaderBlock = styled.div`
     display: flex;
@@ -123,11 +123,13 @@ const Header = ({
     auth
 }) => {
     let username;
+    
     if(session) {
         username = session.nickname;
-        if(auth) {
-            username = auth.username;
-        }
+    };
+
+    if(auth) {
+        username = auth.username;
     };
 
     return (
@@ -144,7 +146,7 @@ const Header = ({
                         <Tab onClick={onToggle}>
                             Quickplay
                         </Tab>
-                        <Tab to='/'>
+                        <Tab to='/game'>
                             Play
                         </Tab>
                         <Tab to='/community'>
@@ -181,7 +183,7 @@ const Header = ({
                     )}
                 </AuthBlock>
             </HeaderBlock>
-            <RoomModalContainer
+            <GamesModalContainer
                 openModal={openModal}
                 setOpenModal={setOpenModal}
             />

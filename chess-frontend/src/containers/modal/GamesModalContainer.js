@@ -1,30 +1,30 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import RoomModal from '../../components/modal/RoomModal';
-import { disconnectWebsocket as disconnectRoomWebsocket } from '../../modules/room';
+import GamesModal from '../../components/modal/GamesModal';
+import { disconnectWebsocket as disconnectGamesWebsocket } from '../../modules/games';
     
-const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
+const GamesModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
     const [ modal, setModal ] = useState(false);
-    const { room } = useSelector(({ room }) => ({
-        room: room.room,
+    const { games } = useSelector(({ games }) => ({
+        games: games.games,
     }));
     const dispatch = useDispatch();
 
     const onBackgroundClick = useCallback(e => {
         setModal(false);
         setOpenModal(false);
-        dispatch(disconnectRoomWebsocket());
+        dispatch(disconnectGamesWebsocket());
     }, [dispatch, setOpenModal])
 
     const onContentClick = useCallback(e => {
         e.stopPropagation();
     }, [])
 
-    const onRoomClick = useCallback((e, key) => {
+    const onGameClick = useCallback((e, key) => {
         setModal(false);
         setOpenModal(false);
-        dispatch(disconnectRoomWebsocket());
+        dispatch(disconnectGamesWebsocket());
         history.push(`/game/${key}`);
     }, [dispatch, history, setOpenModal]);
 
@@ -32,26 +32,26 @@ const RoomModalContainer = ({ history, openModal, setOpenModal, ...rest }) => {
         setModal(openModal);
     }, [openModal]);
 
-    console.dir('roommodal');
+    console.dir('gamesmodal~~');
     useEffect(() => {
         return () => {
-            dispatch(disconnectRoomWebsocket());
+            dispatch(disconnectGamesWebsocket());
         }
     }, [dispatch]);
 
     return (
         <>
-            <RoomModal
+            <GamesModal
                 {...rest}
-                room={room}
+                games={games}
                 open={modal}
                 onBackgroundClick={onBackgroundClick}
                 onContentClick={onContentClick}
-                onRoomClick={onRoomClick}
+                onGameClick={onGameClick}
             >
-            </RoomModal>
+            </GamesModal>
         </>
     )
 };
 
-export default withRouter(RoomModalContainer);
+export default withRouter(GamesModalContainer);
