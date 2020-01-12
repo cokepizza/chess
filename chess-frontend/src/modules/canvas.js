@@ -210,7 +210,7 @@ const initialState = {
     error: null,
     board,
     clicked: null,
-    blocked: false,
+    blocked: true,
 };
 
 export default handleActions({

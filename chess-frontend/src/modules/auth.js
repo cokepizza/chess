@@ -14,8 +14,10 @@ export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 
 const INITIALIZE_SOCKET = 'auth/INITIALIZE_SOCKET';
 const INITIALIZE_VALUE = 'auth/INITIALIZE_VALUE';
+const CLEAR_VALUE = 'auth/CLEAR_VALUE';
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
+export const clearValue = createAction(CLEAR_VALUE);
 
 const [ SET_SESSION, SET_SESSION_SUCCESS, SET_SESSION_FAILURE ] = createRequestActionTypes('auth/SET_SESSION');
 export const setSessionThunk = createRequestThunk(SET_SESSION, authAPI.getSession);
@@ -117,6 +119,10 @@ export default handleActions({
     [INITIALIZE_VALUE]: (state, { payload: { type, ...rest } }) => ({
         ...state,
         tempAuth: { ...rest },
+    }),
+    [CLEAR_VALUE]: state => ({
+        ...state,
+        tempAuth: initialState.tempAuth,
     }),
     [SET_SESSION_SUCCESS]: (state, { payload: session }) => ({
         ...state,

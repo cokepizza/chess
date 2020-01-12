@@ -5,6 +5,9 @@ import useAsync from '../../lib/hook/useAsync';
 import GamePlayLayout from '../../components/gameplay/GamePlayLayout';
 import { setSessionThunk } from '../../modules/auth';
 
+import { clearValue as clearAuthValue } from '../../modules/auth';
+import { clearValue as clearGameValue } from '../../modules/game';
+
 import { connectWebsocket as connectAuthWebsocket } from '../../modules/auth';
 import { connectWebsocket as connectGameWebsocket } from '../../modules/game';
 import { connectWebsocket as connectChatWebsocket } from '../../modules/chat';
@@ -45,6 +48,13 @@ const GamePlayLayoutContainer = ({ gameId }) => {
             dispatch(disconnectChatWebsocket());
             dispatch(disconnectCanvasWebsocket());
             dispatch(disconnectRecordWebsocket());
+        }
+    }, [dispatch]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearAuthValue());
+            dispatch(clearGameValue());
         }
     }, [dispatch]);
 

@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import TimeLine from '../../components/gameplay/TimeLine';
-import { clearValue } from '../../modules/record';
 
 const TimeLineContainer = ({ white, black }) => {
     const { whiteRatio, blackRatio, whiteNick, blackNick, participant } = useSelector(({ record, game }) => ({
@@ -11,14 +10,6 @@ const TimeLineContainer = ({ white, black }) => {
         blackNick: game.black,
         participant: game.participant,
     }));
-    
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        return () => {
-            dispatch(clearValue());
-        }
-    }, [dispatch]);
 
     const participantSet = new Set(participant);
     let time = 0;

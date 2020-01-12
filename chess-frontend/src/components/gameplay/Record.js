@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import TimerContainer from '../../containers/gameplay/TimerContainer';
 import StatusContainer from '../../containers/gameplay/StatusContainer';
 import PieceMoveListContainer from '../../containers/gameplay/PieceMoveListContainer';

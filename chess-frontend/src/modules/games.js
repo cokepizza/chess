@@ -12,8 +12,10 @@ export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 
 const INITIALIZE_VALUE = 'games/INITIALIZE_VALUE';
 const INITIALIZE_SOCKET = 'games/INITIALIZE_SOCKET';
+const CLEAR_VALUE = 'games/CLEAR_VALUE';
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
+export const clearValue = createAction(CLEAR_VALUE);
 
 const [ CREATE_GAME, CREATE_GAME_SUCCESS, CREATE_GAME_FAILURE ] = createRequestActionTypes('games/CREATE_GAME');
 export const createGameThunk = createRequestThunk(CREATE_GAME, gamesCtrl.createGame);
@@ -48,6 +50,7 @@ export default handleActions({
         ...state,
         games,
     }),
+    [CLEAR_VALUE]: state => initialState,
     [CREATE_GAME_SUCCESS]: state => state,
     [CREATE_GAME_FAILURE]: (state, { payload: error }) => ({
         ...state,

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import useAsync from '../../lib/hook/useAsync';
 import { setSessionThunk } from '../../modules/auth';
 import GameLayout from '../../components/game/GameLayout';
 
-import { connectWebsocket, disconnectWebsocket } from '../../modules/games';
+import { connectWebsocket, disconnectWebsocket, clearValue } from '../../modules/games';
 
 const GameLayoutContainer = () => {
     const dispatch = useDispatch();
@@ -19,6 +19,12 @@ const GameLayoutContainer = () => {
         });
         return true;
     };
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearValue());
+        }
+    }, [dispatch])
 
     const [state] = useAsync(connection, [ dispatch ]);
 

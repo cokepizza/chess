@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { changeTextfield, initializeTextfield } from '../../modules/chat';
-import { sendMessageThunk } from '../../modules/chat';
+import { sendMessageThunk, clearValue } from '../../modules/chat';
 import Chat from '../../components/gameplay/Chat';
 
 const ChatContainer = () => {
@@ -23,6 +24,12 @@ const ChatContainer = () => {
     const onChange = useCallback(e => {
         dispatch(changeTextfield(e.target.value));
     },[dispatch]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearValue());
+        }
+    }, [dispatch]);
 
     return (
         <Chat

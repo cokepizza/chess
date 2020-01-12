@@ -13,9 +13,11 @@ export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 const INITIALIZE_SOCKET = 'chat/INITIALIZE_SOCKET';
 const INITIALIZE_VALUE = 'chat/INITIALIZE_VALUE';
 const CHANGE_VALUE = 'chat/CHANGE_VALUE';
+const CLEAR_VALUE = 'chat/CLEAR_VALUE'
 export const initializeSocket = createAction(INITIALIZE_SOCKET, payload => payload);
 export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload);
 export const changeValue = createAction(CHANGE_VALUE, payload => payload);
+export const clearValue = createAction(CLEAR_VALUE);
 
 const CHANGE_TEXTFIELD = 'chat/CHANGE_TEXTFIELD';
 const INITIALIZE_TEXTFIELD = 'chat/INITIALIZE_TEXTFIELD';
@@ -75,5 +77,5 @@ export default handleActions({
         ...state,
         text,
     }),
-}
-, initialState);
+    [CLEAR_VALUE]: state => initialState,
+}, initialState);
