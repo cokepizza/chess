@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import GridLayoutContainer from '../../containers/game/GridLayoutContainer';
 import SummaryContainer from '../../containers/game/SummaryContainer';
@@ -13,13 +13,35 @@ const GameLayoutBlock = styled.div`
     align-items: center;
 `;
 
+const sideBlockStyle = css`
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 20%;
+`;
+
+const LeftSideBlock = styled.div`
+    ${sideBlockStyle}
+    margin-right: 1%;
+`;
+
+const RightSideBlock = styled.div`
+    ${sideBlockStyle}
+    margin-left: 1%;
+`;
+
 const GameLayout = () => {
     return (
         <>
             <GameLayoutBlock>
-                <SummaryContainer />
+                <LeftSideBlock>
+                    <SummaryContainer />
+                </LeftSideBlock>
                 <GridLayoutContainer />
-                <CreationContainer />
+                <RightSideBlock>
+                    <CreationContainer />
+                </RightSideBlock>
             </GameLayoutBlock>          
         </>
     )

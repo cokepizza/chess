@@ -3,54 +3,22 @@ import styled from 'styled-components';
 import { FaChessBoard } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 
+import GridBoxContainer from '../../containers/game/GridBoxContainer';
+
 const gridSize = 3;
 
 const GridRowBlock = styled.div`
     display: flex;
-    justify-content: space-between;
     width: 100%;
-`;
 
-const GridBoxBlock = styled.div`
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    width: 216px;
-    height: 216px;
-    background-color: rgb(255,255,255, 0.6);
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
-    cursor: pointer;
-    transition: 1s;
-
-    &:hover {
-        background-color: rgb(255,255,255, 0.1);
+    & + & {
+        margin-top: 18px;
     }
-`
-
-const BoxTitleBlock = styled.div`
-    
 `;
 
-const BoxContentBlock = styled.div`
-    
+const GridLayoutFrameBlock = styled.div`
+    position: relative;
 `;
-
-const GridBox = React.memo(({ game, ...rest }) => {
-    console.dir('game~');
-    
-    return (
-        <GridBoxBlock {...rest}>
-            <BoxTitleBlock>
-                {game.name}
-            </BoxTitleBlock>
-            <BoxContentBlock>
-                {game.participant}
-            </BoxContentBlock>
-        </GridBoxBlock>
-    )
-});
 
 const GridLayoutBlock = styled.div`
     width: 720px;
@@ -61,7 +29,6 @@ const GridLayoutBlock = styled.div`
     flex-direction: column;
     align-items: center;
     overflow-y: scroll;
-    position: relative;
     
     background-color: white;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
@@ -77,8 +44,8 @@ const GridLayout = ({ games, onGameClick }) => {
         position: 'absolute',
         top: '0',
         left: '0',
-        width: '100%',
-        height: '100%',
+        width: '720px',
+        height: '720px',
         opacity: '0.05',
     }
     const gridArr = [];
@@ -90,7 +57,7 @@ const GridLayout = ({ games, onGameClick }) => {
             >
                 {
                     list.splice(0, gridSize).map(game => (
-                        <GridBox
+                        <GridBoxContainer
                             key={`GridBox${game.name}`}
                             game={game}
                             onClick={e => onGameClick(e, game.key)}
@@ -102,12 +69,14 @@ const GridLayout = ({ games, onGameClick }) => {
     }
 
     return (
-        <GridLayoutBlock>
-            {gridArr}
+        <GridLayoutFrameBlock>
+            <GridLayoutBlock>
+                {gridArr}
+            </GridLayoutBlock>
             <IconContext.Provider value={{ style: backgroundStyle }}>
                 <FaChessBoard />
             </IconContext.Provider>
-        </GridLayoutBlock>
+        </ GridLayoutFrameBlock>
     )
 };
 

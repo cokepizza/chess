@@ -51,7 +51,7 @@ const connectGame = (app, io, socket, key) => {
                 };
             }
         }
-
+        
         io.of('/game').to(key).emit('message', {
             type: 'initialize',
             ...instanceSanitizer(game),
@@ -63,7 +63,6 @@ const connectGame = (app, io, socket, key) => {
         });
     }
     console.dir(game);
-
 }
 
 const disconnectGame = (app, io, socket, key) => {
