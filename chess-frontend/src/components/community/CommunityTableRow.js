@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { history } from 'use-react-router';
+import { withRouter } from 'react-router-dom';
 
 const CommunityTableRowBlock = styled.div`
     display:flex;
@@ -32,7 +32,7 @@ const CellTextBlock = styled.div`
     width : 100%;
 `;
 
-const CommunityTableRow = ({ title, count, comments, time }) => {
+const CommunityTableRow = ({ history, title, count, comments, time }) => {
     return (
         <CommunityTableRowBlock onClick={() => {
             history.push('/Contents')
@@ -45,4 +45,4 @@ const CommunityTableRow = ({ title, count, comments, time }) => {
     );
 };
 
-export default CommunityTableRow;
+export default withRouter(CommunityTableRow);
