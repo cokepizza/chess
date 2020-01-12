@@ -1,21 +1,46 @@
 import React from 'react';
 import styled from 'styled-components';
+import { history } from 'use-react-router';
 
-const CommunityTableRowBlock = styled.tr`
+const CommunityTableRowBlock = styled.div`
+    display:flex;
+    flex-direction: row;
+    justify-content:center;
     width: 100%;
-    height: 100px;
+    transition-duration:0.1s;
     &:nth-child(odd) {
         background: #F7F6F4;
     }
+    &:hover {
+            background: #add8e6;
+            cursor:pointer;
+        }
 `;
 
-const CommunityTableRow = ( {title, count, comments, time}) => {
+const CellBlock = styled.div`
+    width: ${props => props.width ? props.width : "20%"};
+    height: 50px; 
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size: 15px;
+`;
+
+const CellTextBlock = styled.div`
+    text-align: center;
+    height : 1em;
+    width : 100%;
+`;
+
+const CommunityTableRow = ({ title, count, comments, time }) => {
     return (
-        <CommunityTableRowBlock>
-            <td>{title}</td>
-            <td>{count}</td>
-            <td>{comments}</td>
-            <td>{time}</td>
+        <CommunityTableRowBlock onClick={() => {
+            history.push('/Contents')
+        }}>
+            <CellBlock width={"70%"}><CellTextBlock>{title}</CellTextBlock></CellBlock>
+            <CellBlock width={"10%"}><CellTextBlock>{count}</CellTextBlock></CellBlock>
+            <CellBlock width={"10%"}><CellTextBlock>{comments}</CellTextBlock></CellBlock>
+            <CellBlock width={"10%"}><CellTextBlock>{time}</CellTextBlock></CellBlock>
         </CommunityTableRowBlock>
     );
 };
