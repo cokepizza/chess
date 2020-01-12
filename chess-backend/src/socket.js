@@ -29,13 +29,8 @@ const connectGame = (app, io, socket, key) => {
     if(game._participant.has(sessionId)) {
         const socketSet = game._participant.get(sessionId);
         socketSet.add(socket.id);
-    } else {
-        //  first socket only serve
-        game.participant.push(nickname);
-        game._participant.set(sessionId, new Set([socket.id]));
-        const socketSize = game._participant.get(sessionId).size;
-
-        if(socketSize === 5) {
+        
+        if(socketSet.size === 5) {
             if(!game._white) {
                 game.white = nickname;
                 game._white = sessionId;
@@ -53,17 +48,21 @@ const connectGame = (app, io, socket, key) => {
                     };
                 }
             }
+            
+            io.of('/game').to(key).emit('message', {
+                type: 'initialize',
+                ...instanceSanitizer(game),
+            });
+    
+            io.of('/games').emit('message', {
+                type: 'initialize',
+                games: [...gameMap.values()],
+            });
         }
-
-        io.of('/game').to(key).emit('message', {
-            type: 'initialize',
-            ...instanceSanitizer(game),
-        });
-
-        io.of('/games').emit('message', {
-            type: 'initialize',
-            games: [...gameMap.values()],
-        });
+    } else {
+        //  first socket only serve
+        game.participant.push(nickname);
+        game._participant.set(sessionId, new Set([socket.id]));
     }
     console.dir(game);
 
