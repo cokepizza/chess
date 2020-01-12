@@ -180,6 +180,11 @@ const Chat = ({ messages, onSubmit, onChange, text, tempAuth }) => {
         ref.current.scrollTop = ref.current.scrollHeight;
     }, [messages]);
 
+    let myName = '';
+    if(tempAuth) {
+        myName = tempAuth.nickname;
+    }
+
     return (
         <>
             <ChatSubmitBlock onSubmit={onSubmit}>
@@ -188,7 +193,7 @@ const Chat = ({ messages, onSubmit, onChange, text, tempAuth }) => {
                         <ChatBlock ref={ref}>
                             {messages.map(message => (
                                 <Message
-                                    myName={tempAuth.nickname}
+                                    myName={myName}
                                     message={message}
                                 />
                             ))}
