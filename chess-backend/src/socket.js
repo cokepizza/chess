@@ -5,6 +5,8 @@ import defaultBoard from './lib/base/board';
 import instanceSanitizer from './lib/util/instanceSanitizer';
 
 const connectGame = (app, io, socket, key) => {
+    const channel = socket.id.split('#')[0];
+    
     //  mapping socket => gameId
     const socketToGameMap = app.get('socketToGame');
     socketToGameMap.set(socket.id, key);
@@ -34,33 +36,35 @@ const connectGame = (app, io, socket, key) => {
         game.participant.push(nickname);
         game._participant.set(sessionId, new Set([socket.id]));
 
-        if(!game._white) {
-            game.white = nickname;
-            game._white = sessionId;
-        } else if(game._white !== sessionId && !game._black) {
-            game.black = nickname;
-            game._black = sessionId;
-        }
-
-        if(game._white && game._black) {
-            if(sessionId === game._white || sessionId === game._black) {
-                if(game._participant.has(game._white) && game._participant.has(game._black)) {
-                    const record = app.get('record').get(key);
-                    record._start(game.order);
-                    game.start = true;
-                };
+        if(channel === '/auth') {
+            if(!game._white) {
+                game.white = nickname;
+                game._white = sessionId;
+            } else if(game._white !== sessionId && !game._black) {
+                game.black = nickname;
+                game._black = sessionId;
             }
+    
+            if(game._white && game._black) {
+                if(sessionId === game._white || sessionId === game._black) {
+                    if(game._participant.has(game._white) && game._participant.has(game._black)) {
+                        const record = app.get('record').get(key);
+                        record._start(game.order);
+                        game.start = true;
+                    };
+                }
+            }
+            
+            io.of('/game').to(key).emit('message', {
+                type: 'initialize',
+                ...instanceSanitizer(game),
+            });
+    
+            io.of('/games').emit('message', {
+                type: 'initialize',
+                games: [...gameMap.values()],
+            });
         }
-        
-        io.of('/game').to(key).emit('message', {
-            type: 'initialize',
-            ...instanceSanitizer(game),
-        });
-
-        io.of('/games').emit('message', {
-            type: 'initialize',
-            games: [...gameMap.values()],
-        });
     }
     console.dir(game);
 }
