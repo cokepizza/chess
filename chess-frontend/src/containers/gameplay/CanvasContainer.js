@@ -4,7 +4,7 @@ import Canvas from '../../components/gameplay/Canvas';
 import { clickPieceThunk, initializeBlocked } from '../../modules/canvas';
 import { clearValue } from '../../modules/canvas';
 
-const CanvasContainer = () => {
+const CanvasContainer = ({ cellSize }) => {
     const { board, blocked, turn, tempAuth } = useSelector(({ canvas, auth, game }) => ({
         board: canvas.board,
         blocked: canvas.blocked,
@@ -44,6 +44,7 @@ const CanvasContainer = () => {
             board={board}
             blocked={blocked}
             onClick={onClick}
+            cellSize={cellSize}
         />
     )
 };

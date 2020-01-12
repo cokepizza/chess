@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import GamePage from './pages/GamePage';
 import GamePlayPage from './pages/GamePlayPage';
+import GamePlayCanvasPage from './pages/GamePlayCanvasPage';
 import CommunityPage from './pages/CommunityPage';
 
 const ErrorPageDiv = styled.div`
@@ -32,6 +33,7 @@ const App = () => {
         <Route component={RegisterPage} path='/register' exact />
         <Route component={GamePage} path='/game' exact />
         <Route component={GamePlayPage} path='/game/:id' exact />
+        <Route component={GamePlayCanvasPage} path='/game/canvas/:id' exact />
         <Route component={CommunityPage} path='/community' exact />
         <Route 
           render={({ location }) => (

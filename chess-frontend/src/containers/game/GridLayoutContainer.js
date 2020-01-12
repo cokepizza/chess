@@ -9,9 +9,7 @@ const GridLayoutContainer = () => {
     }));
 
     return (
-        <GridLayout
-            games={games}
-        />
+        <GridLayout games={games} />
     )
 };
 

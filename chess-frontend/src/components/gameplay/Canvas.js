@@ -54,8 +54,22 @@ const CanvasCellBlock = styled.div`
     cursor: pointer;
     justify-content: center;
     align-items: center;
-    width: 90px;
-    height: 90px;
+    /* width: 90px;
+    height: 90px; */
+    
+    width: ${props => {
+        if(props.cellSize) {
+            return props.cellSize;
+        }
+        return '90px';
+    }};
+
+    height: ${props => {
+        if(props.cellSize) {
+            return props.cellSize;
+        }
+        return '90px';
+    }};
 
     ${props => props.cellNum === 0 && css`
         background-color: rgb(240, 217, 181);
@@ -92,7 +106,7 @@ const CanvasCellBlock = styled.div`
     }
 `
 
-const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
+const CanvasRow = React.memo(({ row, y, cellSize, onClickCell, pieceConverter }) => {
     // console.dir('Canvas Row');
     return (
         <CanvasRowBlock>
@@ -102,6 +116,7 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
                     onClick={onClickCell.bind(null, {y, x})}
                     pieceConverter={pieceConverter}
                     cellNum={(x + y) % 2}
+                    cellSize={cellSize}
                     cell={cell}
                 />
             ))}
@@ -111,12 +126,14 @@ const CanvasRow = React.memo(({ row, y, onClickCell, pieceConverter }) => {
     return prevProps.row === nextProps.row;
 });
 
-const CanvasCell = React.memo(({ cell, onClick, cellNum, pieceConverter }) => {
+const CanvasCell = React.memo(({ cell, cellSize, cellNum, onClick, pieceConverter }) => {
     // console.dir('Canvas Cell')
+    console.dir(cellSize);
     return (
         <CanvasCellBlock
             onClick={onClick}
             cellNum={cellNum}
+            cellSize={cellSize}
             {...cell}
         >
             {pieceConverter({
@@ -137,7 +154,7 @@ const CanvasContentBlock = styled.div`
     `}
 `;
 
-const CanvasContent = ({ board, blocked, onClick }) => {
+const CanvasContent = ({ board, blocked, cellSize, onClick }) => {
     //  can't memoization
     const onClickCell = useCallback(({y, x}) => {
         onClick(y, x);
@@ -150,6 +167,7 @@ const CanvasContent = ({ board, blocked, onClick }) => {
                     key={`row_${y}`}
                     row={row}
                     y={y}
+                    cellSize={cellSize}
                     onClickCell={onClickCell}
                     pieceConverter={pieceConverter}
                 />

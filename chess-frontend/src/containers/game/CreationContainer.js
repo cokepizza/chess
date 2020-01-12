@@ -1,10 +1,23 @@
 import React from 'react';
-import Creation from '../../components/game/Creation';
+import { useDispatch } from 'react-redux';
+import { withRouter } from 'react-router';
 
-const CreationContainer = () => {
+import Creation from '../../components/game/Creation';
+import { createGameThunk } from '../../modules/games';
+
+const CreationContainer = ({ history }) => {
+    const dispatch = useDispatch();
+
+    const onSubmit = () => {
+        (async() => {
+            const key = await dispatch(createGameThunk());
+            history.push(`/game/${key}`);
+        })();
+    }
+
     return (
-        <Creation />
+        <Creation onSubmit={onSubmit}/>
     )
 };
 
-export default CreationContainer;
+export default withRouter(CreationContainer);
