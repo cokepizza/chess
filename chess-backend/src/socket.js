@@ -106,6 +106,7 @@ const disconnectGame = (app, io, socket, key) => {
             if(game._black === sessionId || game._white === sessionId) {
                 const record = app.get('record').get(key);
                 record._stop();
+                game.start = false;
             };
 
             io.of('/game').to(key).emit('message', {

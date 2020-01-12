@@ -32,10 +32,16 @@ export const movePiece = (req, res) => {
     }
     console.dir(game);
 
-    //  check if the game is ready to start
+    //  check if the game is ready to running
+    if(!game.start) {
+        console.dir(`The game is not running now`);
+        return res.status(403).send({ error: `The game is not running now` });
+    }
+
+    //  check if the game meets the requirements
     if(!game._black || !game._white) {
-        console.dir(`The game is not yet ready to start`);
-        return res.status(403).send({ error: `The game is not yet ready to start` });
+        console.dir(`The game has not yet met the requirements`);
+        return res.status(403).send({ error: `The game has not yet met the requirements` });
     }
 
     //  check if it's a player
