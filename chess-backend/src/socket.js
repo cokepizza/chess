@@ -26,17 +26,17 @@ const connectGame = (app, io, socket, key) => {
     if(!game) return;
 
     const { nickname } = socket.request.session;
-
     const sessionId = socket.request.sessionID;
-    if(game._participant.has(sessionId)) {
-        const socketSet = game._participant.get(sessionId);
-        socketSet.add(socket.id);
-    } else {
-        //  first socket only serve
-        game.participant.push(nickname);
-        game._participant.set(sessionId, new Set([socket.id]));
 
-        if(channel === '/auth') {
+    if(channel === '/auth') {
+        if(game._participant.has(sessionId)) {
+            const socketSet = game._participant.get(sessionId);
+            socketSet.add(socket.id);
+        } else {
+            //  first socket only serve
+            game.participant.push(nickname);
+            game._participant.set(sessionId, new Set([socket.id]));
+
             if(!game._white) {
                 game.white = nickname;
                 game._white = sessionId;
@@ -70,6 +70,8 @@ const connectGame = (app, io, socket, key) => {
 }
 
 const disconnectGame = (app, io, socket, key) => {
+    const channel = socket.id.split('#')[0];
+
     //  delete mapping socket => gameId;
     const socketToGameMap = app.get('socketToGame');
     socketToGameMap.delete(socket.id);
@@ -89,43 +91,45 @@ const disconnectGame = (app, io, socket, key) => {
     if(!game) return;
 
     const { nickname } = socket.request.session;
-
     const sessionId = socket.request.sessionID;
-    if(game._participant.has(sessionId)) {
-        const socketSet = game._participant.get(sessionId);
-        socketSet.delete(socket.id);
 
-        if(socketSet.size === 0) {
-            game._participant.delete(sessionId);
+    if(channel === '/auth') {
+        if(game._participant.has(sessionId)) {
+            const socketSet = game._participant.get(sessionId);
+            socketSet.delete(socket.id);
 
-            const index = game.participant.findIndex(ele => ele === nickname);
-            if(index >= 0) {
-                game.participant.splice(index, 1);
-            };
+            if(socketSet.size === 0) {
+                game._participant.delete(sessionId);
+
+                const index = game.participant.findIndex(ele => ele === nickname);
+                if(index >= 0) {
+                    game.participant.splice(index, 1);
+                };
+                
+                if(game._black === sessionId || game._white === sessionId) {
+                    const record = app.get('record').get(key);
+                    record._stop();
+                    game.start = false;
+                };
+
+                io.of('/game').to(key).emit('message', {
+                    type: 'initialize',
+                    ...instanceSanitizer(game),
+                });
+
+                io.of('/games').emit('message', {
+                    type: 'initialize',
+                    games: [...gameMap.values()],
+                });
+                
+                //  나가는 선택권은 프론트에 주어져야 할 듯
+                // if(game._start && (game._black === null || game._white === null)) {
+                //     game._destory();
+                // }
+            }
+        } else {
             
-            if(game._black === sessionId || game._white === sessionId) {
-                const record = app.get('record').get(key);
-                record._stop();
-                game.start = false;
-            };
-
-            io.of('/game').to(key).emit('message', {
-                type: 'initialize',
-                ...instanceSanitizer(game),
-            });
-
-            io.of('/games').emit('message', {
-                type: 'initialize',
-                games: [...gameMap.values()],
-            });
-            
-            //  나가는 선택권은 프론트에 주어져야 할 듯
-            // if(game._start && (game._black === null || game._white === null)) {
-            //     game._destory();
-            // }
         }
-    } else {
-        
     }
 }
 
