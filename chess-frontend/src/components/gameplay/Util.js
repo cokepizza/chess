@@ -37,12 +37,12 @@ const buttonStyle = {
     }
 };
 
-const Util = () => {
+const Util = ({ onReverse }) => {
     return (
         <UtilBlock>
             <ButtonBlock>
                 <IconContext.Provider value={{ style: { ...buttonStyle.style, width: '60%', height:'60%' }} }>
-                    <FaExchangeAlt />
+                    <FaExchangeAlt onClick={onReverse} />
                 </IconContext.Provider>
             </ButtonBlock>
             <ButtonBlock>

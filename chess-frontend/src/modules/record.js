@@ -18,6 +18,9 @@ export const changeValue = createAction(CHANGE_VALUE, payload => payload);
 export const updateValue = createAction(UPDATE_VALUE, payload => payload);
 export const clearValue = createAction(CLEAR_VALUE);
 
+const CHANGE_REVERSE = 'record/CHANGE_REVERSE';
+export const changeReverse = createAction(CHANGE_REVERSE, payload => payload);
+
 export const updateValueThunk = params => ( dispatch, getState ) => {
     const { record } = getState();
     let newRecord = { ...record };
@@ -90,4 +93,8 @@ export default handleActions({
         ...record,
     }),
     [CLEAR_VALUE]: state => initialState,
+    [CHANGE_REVERSE]: (state, { payload: { reversed } }) => ({
+        ...state,
+        reversed,
+    })
 }, initialState);
