@@ -5,8 +5,10 @@ import { clickPieceThunk, initializeBlocked } from '../../modules/canvas';
 import { clearValue } from '../../modules/canvas';
 
 const CanvasContainer = ({ cellSize }) => {
-    const { board, blocked, turn, tempAuth } = useSelector(({ canvas, auth, game }) => ({
+    const { board, reverseBoard, reversed, blocked, turn, tempAuth } = useSelector(({ canvas, auth, game, record }) => ({
         board: canvas.board,
+        reverseBoard: canvas.reverseBoard,
+        reversed: record.reversed,
         blocked: canvas.blocked,
         turn: game.turn,
         tempAuth: auth.tempAuth,
@@ -39,9 +41,21 @@ const CanvasContainer = ({ cellSize }) => {
         dispatch(clickPieceThunk({ y, x }));
     }, [dispatch]);
 
+    let reversal = false;
+    if(tempAuth) {
+        if((tempAuth.role === 'white' && reversed) || (tempAuth.role === 'black' && !reversed)) {
+            reversal = true;
+        }
+    }
+
+    let servedBoard = board;
+    if(reversal) {
+        servedBoard = reverseBoard;
+    };
+
     return (
         <Canvas
-            board={board}
+            board={servedBoard}
             blocked={blocked}
             onClick={onClick}
             cellSize={cellSize}

@@ -159,6 +159,17 @@ const CanvasContent = ({ board, blocked, cellSize, onClick }) => {
     const onClickCell = useCallback(({y, x}) => {
         onClick(y, x);
     }, [onClick]);
+
+    // const rev = board.reverse().map((row, y) => (
+    //     <CanvasRow
+    //         key={`row_${y}`}
+    //         row={row.reverse()}
+    //         y={y}
+    //         cellSize={cellSize}
+    //         onClickCell={onClickCell}
+    //         pieceConverter={pieceConverter}
+    //     />
+    // ));
     
     return  (
         <CanvasContentBlock blocked={blocked}>

@@ -14,9 +14,9 @@ const GridBoxContainer = ({ history, ...rest }) => {
         setCanvas(false);
     }, []);
 
-    const onClick = (gameId) => {
+    const onClick = useCallback((gameId) => {
         history.push(`/game/${gameId}`);
-    }
+    }, [history]);
 
     return (
         <GridBox

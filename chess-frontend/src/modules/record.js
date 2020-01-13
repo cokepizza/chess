@@ -70,6 +70,7 @@ const initialState = {
     whiteRatio: 0,
     blackRatio: 0,
     pieceMove: [],
+    reversed: false,
 }
 
 export default handleActions({

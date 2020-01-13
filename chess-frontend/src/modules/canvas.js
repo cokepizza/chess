@@ -1,5 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
 import { takeEvery, fork, take, cancel } from 'redux-saga/effects';
+import _ from 'lodash';
 
 import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 import { connectNamespace } from '../lib/websocket/websocket';
@@ -30,9 +31,44 @@ export const changeBlocked = createAction(CHANGE_BLOCKED, payload => payload);
 const [ SET_MOVE_PIECE, SET_MOVE_PIECE_SUCCESS, SET_MOVE_PIECE_FAILURE ] = createRequestActionTypes('canvas/SET_MOVE_PIECE');
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
 
+const makeReverseBoard = board => {
+    const reverseBoard = _.cloneDeep(board);
+    reverseBoard.reverse();
+    reverseBoard.forEach(row => {
+        row.reverse();
+    })
+    
+    return reverseBoard;
+}
+
+const updateReverseBoard = (prevReverseBoard, nextOriginBoard) => {
+    const nextReverseBoard = makeReverseBoard(nextOriginBoard);
+    prevReverseBoard = [ ...prevReverseBoard ];
+
+    for(let i=0; i<8; ++i) {
+        for(let j=0; j<8; ++j) {
+            const nextPiece = nextReverseBoard[i][j];
+            const prevPiece = prevReverseBoard[i][j];
+            
+            Object.keys(nextPiece).every(key => {
+                if(!prevPiece[key] || prevPiece[key] !== nextPiece[key]) {
+                    prevReverseBoard[i] = [ ...prevReverseBoard[i] ];
+                    prevReverseBoard[i][j] = {
+                        ...nextPiece,
+                    };
+                    return false;
+                }
+                return true;
+            });
+        }
+    }
+
+    return prevReverseBoard;
+};
+
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
-    const { canvas: { board },
+    const { canvas: { board, reverseBoard },
             auth: { tempAuth },
             game: { turn }
         } = getState();
@@ -101,9 +137,15 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
                 dirty: true,
             };
         }
-    }
+    };
+
+    const nextReverseBoard = updateReverseBoard(reverseBoard, clearBoard);
     
-    dispatch(changeValue({ board: clearBoard, clicked: null }));
+    dispatch(changeValue({
+        board: clearBoard,
+        reverseBoard: nextReverseBoard,
+        clicked: null
+    }));
 }
 
 const genClearBoard = (board, params) => {
@@ -162,10 +204,26 @@ export function* canvasSaga () {
     yield takeEvery(CONNECT_WEBSOCKET, connectWebsocketSaga);
 }
 
-export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
+export const clickPieceThunk = ({ y: cy, x: cx }) => (dispatch, getState) => {
     const {
-            canvas: { board, clicked },
-        } = getState();
+            canvas: { board, reverseBoard, clicked },
+            record: { reversed },
+            auth: { tempAuth },
+    } = getState();
+    
+    let reversal = false;
+    if(tempAuth) {
+        if((tempAuth.role === 'white' && reversed) || (tempAuth.role === 'black' && !reversed)) {
+            reversal = true;
+        }
+    }
+    
+    let y = cy;
+    let x = cx;
+    if(reversal) {
+        y = 7 - cy;
+        x = 7 - cx;
+    };
 
     if(clicked && board[y][x].covered) {
         const { canvas: { socket } } = getState();
@@ -202,15 +260,30 @@ export const clickPieceThunk = ({ y, x }) => (dispatch, getState) => {
         clicked: true,
     }
 
-    dispatch(changeValue({ board: clearBoard, clicked: { y, x } }));
+    const nextReverseBoard = updateReverseBoard(reverseBoard, clearBoard);
+
+    dispatch(changeValue({
+        board: clearBoard,
+        reverseBoard: nextReverseBoard,
+        clicked: { y, x }
+    }));
 };
+
+
+const reverseBoard = _.cloneDeep(board);
+reverseBoard.reverse();
+reverseBoard.forEach(row => {
+    row.reverse();
+});
 
 const initialState = {
     socket: null,
     error: null,
     board,
+    reverseBoard,
     clicked: null,
     blocked: true,
+    reversed: false,
 };
 
 export default handleActions({
@@ -221,10 +294,12 @@ export default handleActions({
     [INITIALIZE_VALUE]: (state, { payload: { board } }) => ({
         ...state,
         board,
+        reverseBoard: updateReverseBoard(state.reverseBoard, board),
     }),
-    [CHANGE_VALUE]: (state, { payload : { board, clicked } }) => ({
+    [CHANGE_VALUE]: (state, { payload : { board, reverseBoard, clicked } }) => ({
         ...state,
         board,
+        reverseBoard,
         clicked,
     }),
     [CLEAR_VALUE]: state => initialState,
