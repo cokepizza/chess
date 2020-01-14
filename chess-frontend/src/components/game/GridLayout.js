@@ -11,6 +11,14 @@ const GridRowBlock = styled.div`
     display: flex;
     width: 100%;
 
+    &:first-child {
+        margin-top: 18px;
+    }
+
+    &:last-child {
+        margin-bottom: 18px;
+    }
+
     & + & {
         margin-top: 18px;
     }
@@ -20,19 +28,32 @@ const GridLayoutFrameBlock = styled.div`
     position: relative;
 `;
 
+const GridLayoutHiddenBlock = styled.div`
+    width: 720px;
+    height: 720px;
+    overflow: hidden;
+`;
+
 const GridLayoutBlock = styled.div`
     width: 720px;
     height: 720px;
-    padding: 18px;
-    box-sizing: border-box;
+    /* padding: 18px; */
+    /* box-sizing: border-box; */
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: scroll;
-    
-    background-color: white;
+    overflow-y: overlay;
+    padding-right: 20px;
+    background-color: transparent;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
+
+// const PieceMoveListBlock = styled.div`
+//     height: 270px;
+//     width: 100%;
+//     overflow-y: overlay;
+//     padding-right: 20px;
+// `;
 
 const GridLayout = ({ games, onGameClick }) => {
    
@@ -47,6 +68,7 @@ const GridLayout = ({ games, onGameClick }) => {
         width: '720px',
         height: '720px',
         opacity: '0.05',
+        zIndex: -1,
     }
     const gridArr = [];
     const rowSize = Math.floor(list.length / gridSize);
@@ -70,9 +92,11 @@ const GridLayout = ({ games, onGameClick }) => {
 
     return (
         <GridLayoutFrameBlock>
-            <GridLayoutBlock>
-                {gridArr}
-            </GridLayoutBlock>
+            <GridLayoutHiddenBlock>
+                <GridLayoutBlock>
+                    {gridArr}
+                </GridLayoutBlock>
+            </GridLayoutHiddenBlock>
             <IconContext.Provider value={{ style: backgroundStyle }}>
                 <FaChessBoard />
             </IconContext.Provider>

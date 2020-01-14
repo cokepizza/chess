@@ -21,6 +21,10 @@ const GridBoxBlock = styled.div`
         background-color: rgb(255,255,255, 0.1);
     }
 
+    &:first-child {
+        margin-left: 18px;
+    }
+
     & + & {
         margin-left: 18px;
     }
