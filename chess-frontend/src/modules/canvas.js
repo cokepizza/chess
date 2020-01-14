@@ -50,8 +50,14 @@ const updateReverseBoard = (prevReverseBoard, nextOriginBoard) => {
             const nextPiece = nextReverseBoard[i][j];
             const prevPiece = prevReverseBoard[i][j];
             
+            console.dir(nextPiece);
+            console.dir(prevPiece);
+    
             Object.keys(nextPiece).every(key => {
-                if(!prevPiece[key] || prevPiece[key] !== nextPiece[key]) {   
+                console.dir(key);
+                if(!prevPiece[key] || prevPiece[key] !== nextPiece[key]) {
+                    console.dir(prevPiece[key]);
+                    console.dir(nextPiece[key]);
                     prevReverseBoard[i] = [ ...prevReverseBoard[i] ];
                     prevReverseBoard[i][j] = {
                         ...nextPiece,
@@ -74,7 +80,7 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
         } = getState();
     
     if(tempAuth) {
-        if((tempAuth.role === 'white' && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
+        if(((tempAuth.role === 'white' || tempAuth.role === 'spectator') && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
             dispatch(changeBlocked({ blocked: false }));
         } else {
             dispatch(changeBlocked({ blocked: true }));

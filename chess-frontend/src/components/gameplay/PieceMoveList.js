@@ -8,7 +8,7 @@ const PieceMoveListHiddenBlock = styled.div`
     height: 270px;
     width: 100%;
     overflow: hidden;
-`
+`;
 
 const PieceMoveListBlock = styled.div`
     height: 270px;

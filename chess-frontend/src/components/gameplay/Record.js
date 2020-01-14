@@ -16,20 +16,55 @@ const RecordBlock = styled.div`
     box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
-const Record = () => {
+const Record = ({ reversal }) => {
     return (
         <>
-            <TimerContainer black />
+            {reversal ? (
+                <>
+                    <TimerContainer white />
+                </>
+            ) : (
+                <>
+                    <TimerContainer black />
+                </>
+            )}
             <RecordBlock>
-                <TimeLineContainer black />
-                <StatusContainer black />
+                {reversal ? (
+                    <>
+                        <TimeLineContainer white />
+                        <StatusContainer white />
+                    </>
+                ) : (
+                    <>
+                        <TimeLineContainer black />
+                        <StatusContainer black />
+                    </>
+                )}
                 <UtilContainer />
                 <PieceMoveListContainer />
                 <UndoRedoContainer />
-                <StatusContainer white />
-                <TimeLineContainer white />
+                {reversal ? (
+                    <>
+                        <StatusContainer black beneath/>
+                        <TimeLineContainer black />
+                    </>
+                ) : (
+                    <>
+                        <StatusContainer white beneath/>
+                        <TimeLineContainer white />
+                    </>
+                )}
+                
             </RecordBlock>
-            <TimerContainer white />
+            {reversal ? (
+                <>
+                    <TimerContainer black />
+                </>
+            ) : (
+                <>
+                    <TimerContainer white />
+                </>
+            )}
         </>
     )
 };

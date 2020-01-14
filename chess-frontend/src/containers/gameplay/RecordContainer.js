@@ -1,10 +1,15 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Record from '../../components/gameplay/Record';
 import { clearValue } from '../../modules/record';
 
 const RecordContainer = () => {
+    const { tempAuth, reversed } = useSelector(({ auth, record }) => ({
+        tempAuth: auth.tempAuth,
+        reversed: record.reversed,
+    }));
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -13,8 +18,17 @@ const RecordContainer = () => {
         }
     }, [dispatch]);
 
+    let reversal = false;
+    if(tempAuth) {
+        if(((tempAuth.role === 'white' || tempAuth.role === 'spectator') && reversed) || (tempAuth.role === 'black' && !reversed)) {
+            reversal = true;
+        }
+    }
+
     return (
-        <Record />
+        <Record
+            reversal={reversal}
+        />
     );
 };
 

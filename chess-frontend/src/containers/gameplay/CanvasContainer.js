@@ -43,7 +43,7 @@ const CanvasContainer = ({ cellSize }) => {
 
     let reversal = false;
     if(tempAuth) {
-        if((tempAuth.role === 'white' && reversed) || (tempAuth.role === 'black' && !reversed)) {
+        if(((tempAuth.role === 'white' || tempAuth.role === 'spectator') && reversed) || (tempAuth.role === 'black' && !reversed)) {
             reversal = true;
         }
     }
