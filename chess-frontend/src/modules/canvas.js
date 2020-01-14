@@ -51,7 +51,7 @@ const updateReverseBoard = (prevReverseBoard, nextOriginBoard) => {
             const prevPiece = prevReverseBoard[i][j];
             
             Object.keys(nextPiece).every(key => {
-                if(!prevPiece[key] || prevPiece[key] !== nextPiece[key]) {
+                if(!prevPiece[key] || prevPiece[key] !== nextPiece[key]) {   
                     prevReverseBoard[i] = [ ...prevReverseBoard[i] ];
                     prevReverseBoard[i][j] = {
                         ...nextPiece,
