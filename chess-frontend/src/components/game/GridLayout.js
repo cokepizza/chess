@@ -26,12 +26,14 @@ const GridRowBlock = styled.div`
 
 const GridLayoutFrameBlock = styled.div`
     position: relative;
+    background-color: rgba(255, 255, 255, 0.5);
 `;
 
 const GridLayoutHiddenBlock = styled.div`
     width: 720px;
     height: 720px;
     overflow: hidden;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
 const GridLayoutBlock = styled.div`
@@ -44,8 +46,8 @@ const GridLayoutBlock = styled.div`
     align-items: center;
     overflow-y: overlay;
     padding-right: 20px;
-    background-color: transparent;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    /* background-color: transparent; */
+    
 `;
 
 // const PieceMoveListBlock = styled.div`
@@ -67,7 +69,7 @@ const GridLayout = ({ games, onGameClick }) => {
         left: '0',
         width: '720px',
         height: '720px',
-        opacity: '0.05',
+        opacity: '0.2',
         zIndex: -1,
     }
     const gridArr = [];
