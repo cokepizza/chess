@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Status from '../../components/gameplay/Status';
 
-const StatusContainer = ({ black, white }) => {
+const StatusContainer = ({ black, white, beneath }) => {
     const { blackNick, whiteNick, participant } = useSelector(({ game }) => ({
         blackNick: game.black,
         whiteNick: game.white,
@@ -17,7 +17,7 @@ const StatusContainer = ({ black, white }) => {
         <Status
             light={light}
             name={name}
-            white={white}
+            beneath={beneath}
         />
     )
 };

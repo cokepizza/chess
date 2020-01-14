@@ -11,7 +11,7 @@ const StatusBlock = styled.div`
     height: 30px;
     background-color: white;
 
-    ${props => props.white && css`
+    ${props => props.beneath && css`
         margin-top: 30px;
     `}
 `;
@@ -23,7 +23,7 @@ const NameBlock = styled.div`
     align-items: center;
 `
 
-const Status = ({ light, name, white }) => {
+const Status = ({ light, name, beneath }) => {
     const iconStyle = {
         style: {
             height: '15px',
@@ -36,7 +36,7 @@ const Status = ({ light, name, white }) => {
     };
 
     return (
-        <StatusBlock white={white ? 1 : 0}>
+        <StatusBlock beneath={beneath ? 1 : 0}>
             {light
                 ? (
                     <IconContext.Provider value={iconStyle}>

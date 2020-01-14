@@ -80,7 +80,7 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
         } = getState();
     
     if(tempAuth) {
-        if((tempAuth.role === 'white' && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
+        if(((tempAuth.role === 'white' || tempAuth.role === 'spectator') && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
             dispatch(changeBlocked({ blocked: false }));
         } else {
             dispatch(changeBlocked({ blocked: true }));
