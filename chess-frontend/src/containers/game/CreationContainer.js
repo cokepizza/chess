@@ -8,7 +8,8 @@ import { createGameThunk } from '../../modules/games';
 const CreationContainer = ({ history }) => {
     const dispatch = useDispatch();
 
-    const onSubmit = useCallback(() => {
+    const onSubmit = useCallback(e => {
+        e.preventDefault();
         (async() => {
             const key = await dispatch(createGameThunk());
             history.push(`/game/${key}`);

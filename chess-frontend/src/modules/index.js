@@ -6,6 +6,7 @@ import auth, { authSaga } from './auth';
 import canvas, { canvasSaga } from './canvas';
 import chat, { chatSaga } from './chat';
 import record, { recordSaga }  from './record';
+import create from './create';
 
 
 const rootReducer = combineReducers({
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
     canvas,
     chat,
     record,
+    create,
 })
 
 
