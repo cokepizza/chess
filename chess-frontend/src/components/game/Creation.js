@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import SelectionContainer from '../../containers/game/SelectionContainer';
+import SliderContainer from '../../containers/game/SliderContainer';
 
 const CreationBlock = styled.form`
     padding: 30px;
@@ -34,7 +36,9 @@ const ContentBlock = styled.div`
 `;
 
 const SelectionBundleBlock = styled.div`
+    margin-top: 20px;
     display: flex;
+    justify-content: space-between;
 `;
 
 const Creation = ({ onSubmit }) => {
@@ -47,6 +51,8 @@ const Creation = ({ onSubmit }) => {
                 <SelectionContainer kind='map' />
                 <SelectionContainer kind='type' />
             </SelectionBundleBlock>
+            <SliderContainer defaultTime/>
+            <SliderContainer extraTime/>
             <ContentBlock>
                 map
                 

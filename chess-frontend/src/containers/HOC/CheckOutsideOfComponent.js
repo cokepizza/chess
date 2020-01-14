@@ -16,7 +16,7 @@ const CheckOutsideOfComponent = (initialState) => {
         return () => {
             document.removeEventListener('click', checkClickOutside);
         }
-    }, []);
+    }, [checkClickOutside]);
 
     return { ref, componentState, setComponentState };
 }

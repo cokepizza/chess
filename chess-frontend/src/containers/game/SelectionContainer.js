@@ -28,6 +28,7 @@ const SelecitonContainer = ({ kind }) => {
 
     return (
         <Selection
+            kind={kind}
             name={name}
             list={list}
             reference={reference}

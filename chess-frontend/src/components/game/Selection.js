@@ -5,6 +5,18 @@ const SelectionFrameBlock = styled.div`
     position: relative;
 `
 
+const NameBlock = styled.div`
+    position: absolute;
+    top: -10px;
+    left: 70%;
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    font-weight: 500;
+    font-size: 15px;
+    color: rgba(0,0,0,0.3);
+`
+
 const SelectionBlock = styled.div`
     width: 130px;
     height: 30px;
@@ -14,10 +26,11 @@ const SelectionBlock = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    font-size: 13px;
     
     cursor: pointer;
     &:active {
-        background-color: #ccc;
+        background-color: rgba(0,0,0,0.1);
     }
 `
 
@@ -42,13 +55,15 @@ const SelectionToolTipBlock = styled.div`
     cursor: pointer;
     display: flex;
     align-items: center;
+    font-size: 13px;
 
     &:hover {
-        background-color: #ccc;
+        background-color: rgba(0,0,0,0.1);
     }
 `;
 
 const Selection = ({
+    kind,
     name,
     list,
     reference,
@@ -58,6 +73,9 @@ const Selection = ({
 }) => {    
     return (
         <SelectionFrameBlock>
+            <NameBlock>
+                {kind}
+            </NameBlock>
             <SelectionBlock
                 ref={reference}
                 onClick={onClickSelection}
