@@ -1,7 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from '../../components/common/Header';
-import { connectWebsocket } from '../../modules/games';
 import { logoutProcessThunk, clearField } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
 
@@ -11,13 +10,6 @@ const HeaderContainer = ({ history }) => {
         auth: auth.auth,
     }));
     const dispatch = useDispatch();
-
-    const [ openModal, setOpenModal ] = useState(false);
-
-    const onToggle = useCallback(() => {
-        setOpenModal(true);
-        dispatch(connectWebsocket());
-    }, [dispatch]);
 
     const onLogout = useCallback(() => {
         dispatch(logoutProcessThunk());
@@ -36,9 +28,6 @@ const HeaderContainer = ({ history }) => {
 
     return (
         <Header
-            onToggle={onToggle}
-            openModal={openModal}
-            setOpenModal={setOpenModal}
             onRecord={onRecord}
             onLogout={onLogout}
             onLogin={onLogin}

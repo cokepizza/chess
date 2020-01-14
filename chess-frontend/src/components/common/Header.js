@@ -113,9 +113,6 @@ const UserWelcomeBlock = styled.div`
 `
 
 const Header = ({
-    onToggle,
-    openModal,
-    setOpenModal,
     onRecord,
     onLogout,
     onLogin,
@@ -137,15 +134,12 @@ const Header = ({
             <HeaderBlock>
                 <ControllBlock>
                     <TitleBlock to='/'>
-                        chessup
+                        chesssup
                     </TitleBlock>
                     <TitleFadeBlock to='/'>
                         .com
                     </TitleFadeBlock>
                     <GroupBlock>
-                        <Tab onClick={onToggle}>
-                            Quickplay
-                        </Tab>
                         <Tab to='/game'>
                             Play
                         </Tab>

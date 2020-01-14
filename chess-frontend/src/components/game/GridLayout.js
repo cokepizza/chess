@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaChessBoard } from 'react-icons/fa';
+import { FaApple } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 
 import GridBoxContainer from '../../containers/game/GridBoxContainer';
@@ -39,23 +39,12 @@ const GridLayoutHiddenBlock = styled.div`
 const GridLayoutBlock = styled.div`
     width: 720px;
     height: 720px;
-    /* padding: 18px; */
-    /* box-sizing: border-box; */
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow-y: overlay;
     padding-right: 20px;
-    /* background-color: transparent; */
-    
 `;
-
-// const PieceMoveListBlock = styled.div`
-//     height: 270px;
-//     width: 100%;
-//     overflow-y: overlay;
-//     padding-right: 20px;
-// `;
 
 const GridLayout = ({ games, onGameClick }) => {
    
@@ -100,7 +89,7 @@ const GridLayout = ({ games, onGameClick }) => {
                 </GridLayoutBlock>
             </GridLayoutHiddenBlock>
             <IconContext.Provider value={{ style: backgroundStyle }}>
-                <FaChessBoard />
+                <FaApple />
             </IconContext.Provider>
         </ GridLayoutFrameBlock>
     )
