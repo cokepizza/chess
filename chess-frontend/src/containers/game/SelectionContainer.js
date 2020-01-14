@@ -13,7 +13,6 @@ const SelecitonContainer = ({ kind }) => {
 
     const dispatch = useDispatch();
 
-
     const { ref: reference, componentState, setComponentState } = CheckOutsideOfComponent(false);
 
     const onClickSelection = useCallback(() => {
@@ -21,12 +20,11 @@ const SelecitonContainer = ({ kind }) => {
     }, [setComponentState]);
 
     const onClickOption = useCallback(name => {
-        console.dir(reference.current);
         dispatch(changeField({
             key: kind,
             value: name,
         }));
-    }, [dispatch, kind, reference]);
+    }, [dispatch, kind]);
 
     return (
         <Selection
