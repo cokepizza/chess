@@ -51,8 +51,8 @@ const Creation = ({ onSubmit }) => {
                 <SelectionContainer kind='map' />
                 <SelectionContainer kind='type' />
             </SelectionBundleBlock>
-            <SliderContainer defaultTime/>
-            <SliderContainer extraTime/>
+            <SliderContainer kind='defaultTime'/>
+            <SliderContainer kind='extraTime'/>
             <ContentBlock>
                 map
                 
