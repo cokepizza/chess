@@ -7,6 +7,7 @@ const SliderBlock = styled.input`
     height: 30px;
     margin: 10px 50px;
     background: linear-gradient(to right, #16a085 0%, black 100%);
+    /* background: linear-gradient(to right, rgb(22,160,133, 0.5) 0%, rgba(0,0,0,0.14) 100%); */
     background-size: 150px 10px;
     background-position: center;
     background-repeat: no-repeat;
@@ -41,13 +42,14 @@ const SliderBlock = styled.input`
 
 `;
 
-const Slider = ({ onChange }) => {
+const Slider = ({ onChange, kind, time }) => {
     return (
         <SliderBlock
             type='range'
             onChange={onChange}
-            defaultValue={100}
-            value={50}
+            defaultValue={0}
+            kind={kind}
+            value={time}
         />
     )
 };
