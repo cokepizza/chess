@@ -5,8 +5,8 @@ import Slider from '../../components/game/Slider';
 import { changeField } from '../../modules/create';
 
 const SliderContainer = ({ kind }) => {
-    const { time, config } = useSelector(({ create }) => ({
-        time: create[kind],
+    const { value, config } = useSelector(({ create }) => ({
+        value: create[kind],
         config: create.config[kind],
     }));
     const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const SliderContainer = ({ kind }) => {
         <Slider
             onChange={onChange}
             kind={kind}
-            time={time}
+            value={value}
             config={config}
         />
     )

@@ -13,7 +13,7 @@ const NameBlock = styled.div`
     display: flex;
     justify-content: flex-end;
     font-weight: 500;
-    font-size: 15px;
+    font-size: 12px;
     color: rgba(0,0,0,0.3);
 `
 

@@ -1,64 +1,99 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const SliderFrameBlock = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    & + & {
+        margin-top: 15px;
+    }
+`;
+
+const SliderBoxBlock = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+`;
+
 const SliderBlock = styled.input`
     -webkit-appearance: none;
-    width: 160px;
+    width: 150px;
     height: 30px;
-    margin: 10px 50px;
-    /* background: linear-gradient(to right, #16a085 0%, black 100%); */
+    cursor: pointer;
     background: ${props => {
         if(props.kind === 'defaultTime') {
-            return `linear-gradient(to right, #16a085 0%, black 100%)`;
+            // return `linear-gradient(to right, #16a085 0%, black 100%)`;
+            return `linear-gradient(to right, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.6) 100%)`;
         } else {
-            return `linear-gradient(to right, red 0%, black 100%)`;
+            // return `linear-gradient(to right, red 0%, black 100%)`;
+            return `linear-gradient(to right, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.6) 100%)`;
         }
     }};
-    /* background: linear-gradient(to right, rgb(22,160,133, 0.5) 0%, rgba(0,0,0,0.14) 100%); */
-    background-size: 150px 10px;
+    background-size: 140px 5px;
     background-position: center;
     background-repeat: no-repeat;
     overflow: hidden;
     outline: none;
     /* zoom: 100%; */
     display: block;
-    margin: auto;
-    /* margin-bottom: 30px; */
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 20px;
-        height: 20px;
-        box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+        width: 10px;
+        height: 10px;
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,0.36), 0 3px 1px -2px rgba(0,0,0,0.6), 0 1px 5px 0 rgba(0,0,0,0.36);
         position: relative;
         background-color: rgba(255,255,255, 0.8);
         z-index: 3;
-    }
-
-    /* &::-webkit-slider-thumb:after {
-        content: " ";
-        width: 160px;
-        height: 10px;
-        position: absolute;
-        box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
-        z-index: 1;
-        right: 20px;
-        top: 5px;
-        background: #2ecc71;
-    } */
-
+    };
 `;
 
-const Slider = ({ onChange, kind, time, config }) => {
+const NameBlock = styled.div`
+    position: absolute;
+    top: -10px;
+    left: 70%;
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    font-weight: 500;
+    font-size: 12px;
+    color: rgba(0,0,0,0.3);
+`
+
+const ValueBlock = styled.div`
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    width: 60px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+`;
+
+const Slider = ({ onChange, kind, value, config }) => {
+    const name = kind.substring(0, kind.length - 4);
+
     return (
-        <SliderBlock
-            type='range'
-            onChange={onChange}
-            {...config}
-            kind={kind}
-            value={time}
-        />
+        <SliderFrameBlock>
+            <SliderBoxBlock>
+                <SliderBlock
+                    type='range'
+                    onChange={onChange}
+                    {...config}
+                    kind={kind}
+                    value={value}
+                />
+            </SliderBoxBlock>
+            <ValueBlock>
+                <NameBlock>
+                    {name}
+                </NameBlock>
+                {value}
+            </ValueBlock>
+        </SliderFrameBlock>
     )
 };
 

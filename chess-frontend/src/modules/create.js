@@ -8,23 +8,23 @@ const initialState = {
     mapList: ['Classical', 'Crazy House', 'Racing Kings'],
     type: 'Normal',
     typeList: ['Normal', 'Rank'],
-    defaultTime: 5,
-    extraTime: 10,
+    defaultTime: 15,
+    extraTime: 30,
     config: {
         defaultTime: {
             min: 1,
             max: 30,
             step: 1,
-            defaultValue: 5,
+            defaultValue: 15,
         },
         extraTime: {
             min: 0,
             max: 60,
             step: 5,
-            defaultValue: 10,
+            defaultValue: 30,
         }
     },
-    piece: null,
+    piece: 'white',
 };
 
 export default handleActions({

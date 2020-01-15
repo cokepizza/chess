@@ -167,6 +167,7 @@ const CreateButtonBlock = styled.button`
     text-decoration: none;
     cursor: pointer;
     margin-left: 5px;
+    background-color: transparent;
 `;
 
 const ErrorBlock = styled.div`

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 
@@ -15,6 +15,12 @@ const CreationContainer = ({ history }) => {
             history.push(`/game/${key}`);
         })();
     }, [dispatch, history]);
+
+    useEffect(() => {
+        return () => {
+
+        }
+    }, []);
 
     return (
         <Creation onSubmit={onSubmit}/>
