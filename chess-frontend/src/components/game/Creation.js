@@ -53,16 +53,6 @@ const Creation = ({ onSubmit }) => {
             </SelectionBundleBlock>
             <SliderContainer kind='defaultTime'/>
             <SliderContainer kind='extraTime'/>
-            <ContentBlock>
-                map
-                
-            </ContentBlock>
-            <ContentBlock>
-                content
-            </ContentBlock>
-            <ContentBlock>
-                content
-            </ContentBlock>
         	<ConfirmBlock type ='submit' >
                 Create
             </ConfirmBlock>
