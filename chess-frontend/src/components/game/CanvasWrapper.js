@@ -32,4 +32,4 @@ const CanvasWrapper = ({ cellSize }) => {
     )
 };
 
-export default CanvasWrapper;
+export default React.memo(CanvasWrapper);

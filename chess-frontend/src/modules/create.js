@@ -1,7 +1,9 @@
 import { createAction, handleActions } from 'redux-actions';
 
 const CHANGE_FIELD = 'create/CHANGE_FIELD';
+const CLEAR_FIELD = 'create/CLEAR_FIELD';
 export const changeField = createAction(CHANGE_FIELD, payload => payload);
+export const clearField = createAction(CLEAR_FIELD, payload => payload);
 
 const initialState = {
     map: 'Classical',
@@ -32,4 +34,5 @@ export default handleActions({
         ...state,
         [key]: value,
     }),
+    [CLEAR_FIELD]: state => initialState,
 }, initialState);
