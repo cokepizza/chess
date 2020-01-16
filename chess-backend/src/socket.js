@@ -6,7 +6,11 @@ import instanceSanitizer from './lib/util/instanceSanitizer';
 
 const connectGame = (app, io, socket, key) => {
     const channel = socket.id.split('#')[0];
-    
+    const { nickname, passport } = socket.request.session;
+    const sessionId = socket.request.sessionID;
+    const passportUser = passport ? passport.user : null;
+    const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+
     //  mapping socket => gameId
     const socketToGameMap = app.get('socketToGame');
     socketToGameMap.set(socket.id, key);
@@ -25,34 +29,33 @@ const connectGame = (app, io, socket, key) => {
     //  프론트쪽에 game 없는 접근 redirect하는 코드 넣어둘 것
     if(!game) return;
 
-    const { nickname } = socket.request.session;
-    const sessionId = socket.request.sessionID;
-
     if(channel === '/auth') {
         if(game._participant.has(sessionId)) {
             const socketSet = game._participant.get(sessionId);
             socketSet.add(socket.id);
         } else {
             //  first socket only serve
-            game.participant.push(nickname);
+            if(!new Set(game.participant).has(username)) {
+                game.participant.push(username);
+            }
             game._participant.set(sessionId, new Set([socket.id]));
 
             //  Grab the opposite piece when the second player arrives
             if(!game._white && game._black !== sessionId) {
-                game.white = nickname;
+                game.white = username;
                 game._white = sessionId;
             }
             if(!game._black && game._white !== sessionId) {
-                game.black = nickname;
+                game.black = username;
                 game._black = sessionId;
             }
 
-            //  Set game creator's nickname
+            //  Set game creator's username
             if(game._white && game._white === sessionId) {
-                game.white = nickname;
+                game.white = username;
             }
             if(game._black && game._black === sessionId) {
-                game.black = nickname;
+                game.black = username;
             }
     
             if(game._white && game._black) {
@@ -81,6 +84,10 @@ const connectGame = (app, io, socket, key) => {
 
 const disconnectGame = (app, io, socket, key) => {
     const channel = socket.id.split('#')[0];
+    const { nickname, passport } = socket.request.session;
+    const sessionId = socket.request.sessionID;
+    const passportUser = passport ? passport.user : null;
+    const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
 
     //  delete mapping socket => gameId;
     const socketToGameMap = app.get('socketToGame');
@@ -100,9 +107,6 @@ const disconnectGame = (app, io, socket, key) => {
     //  프론트쪽에 game 없는 접근 redirect하는 코드 넣어둘 것
     if(!game) return;
 
-    const { nickname } = socket.request.session;
-    const sessionId = socket.request.sessionID;
-
     if(channel === '/auth') {
         if(game._participant.has(sessionId)) {
             const socketSet = game._participant.get(sessionId);
@@ -111,7 +115,7 @@ const disconnectGame = (app, io, socket, key) => {
             if(socketSet.size === 0) {
                 game._participant.delete(sessionId);
 
-                const index = game.participant.findIndex(ele => ele === nickname);
+                const index = game.participant.findIndex(ele => ele === username);
                 if(index >= 0) {
                     game.participant.splice(index, 1);
                 };
