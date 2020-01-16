@@ -13,7 +13,7 @@ import App from './App';
 import rootReducer, { rootSaga } from './modules';
 import * as serviceWorker from './serviceWorker';
 import { getLocalStorage, clearLocalStorage } from './lib/storage/storage';
-import { checkThunk } from './modules/auth';
+import { checkThunk } from './modules/sessionAuth';
 import FixSize from './components/common/FixSize';
 
 const sagaMiddleware = createSagaMiddleware();

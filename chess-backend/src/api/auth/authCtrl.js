@@ -41,6 +41,14 @@ export const login = (req, res, next) => {
                 return res.status(400).send(err);
             };
 
+            const io = req.app.get('io');
+            const sessionID = req.sessionID;
+
+            io.of('/sessionAuth').to(sessionID).emit('message', {
+                type: 'initialize',
+                ...user,
+            });
+
             return res.status(200).send(user);
         });
     })(req, res, next);
@@ -49,6 +57,13 @@ export const login = (req, res, next) => {
 export const logout = (req, res, next) => {
     req.logout();
     console.dir('logout success');
+
+    const io = req.app.get('io');
+    const sessionID = req.sessionID;
+
+    io.of('/sessionAuth').to(sessionID).emit('message', {
+        type: 'clear',
+    });
     
     // req.session.destroy();
     return res.status(200).send('logout success');
@@ -94,6 +109,14 @@ export const register = async (req, res, next) => {
                 console.dir(err);
                 return res.status(400).send(err);
             };
+
+            const io = req.app.get('io');
+            const sessionID = req.sessionID;
+
+            io.of('/sessionAuth').to(sessionID).emit('message', {
+                type: 'initialize',
+                ...serializedUser,
+            });
 
             return res.status(200).send(serializedUser);
         });

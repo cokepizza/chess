@@ -5,26 +5,24 @@ import { clickPieceThunk, initializeBlocked } from '../../modules/canvas';
 import { clearValue } from '../../modules/canvas';
 
 const CanvasContainer = ({ cellSize }) => {
-    const { board, reverseBoard, reversed, blocked, turn, tempAuth } = useSelector(({ canvas, auth, game, record }) => ({
+    const { board, reverseBoard, reversed, blocked, turn, role } = useSelector(({ canvas, socketAuth, game, record }) => ({
         board: canvas.board,
         reverseBoard: canvas.reverseBoard,
         reversed: record.reversed,
         blocked: canvas.blocked,
         turn: game.turn,
-        tempAuth: auth.tempAuth,
+        role: socketAuth.role,
     }));
 
     const dispatch = useDispatch();
     
     useEffect(() => {
-        if(tempAuth) {
-            if((tempAuth.role === 'white' && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
-                dispatch(initializeBlocked({ blocked: false }));
-            } else {
-                dispatch(initializeBlocked({ blocked: true }));
-            }
+        if((role === 'white' && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
+            dispatch(initializeBlocked({ blocked: false }));
+        } else {
+            dispatch(initializeBlocked({ blocked: true }));
         }
-    }, [dispatch, turn, tempAuth]);
+    }, [dispatch, turn, role]);
     
     useEffect(() => {
         return () => {
@@ -42,10 +40,8 @@ const CanvasContainer = ({ cellSize }) => {
     }, [dispatch]);
 
     let reversal = false;
-    if(tempAuth) {
-        if(((tempAuth.role === 'white' || tempAuth.role === 'spectator') && reversed) || (tempAuth.role === 'black' && !reversed)) {
-            reversal = true;
-        }
+    if(((role === 'white' || role === 'spectator') && reversed) || (role === 'black' && !reversed)) {
+        reversal = true;
     }
 
     let servedBoard = board;

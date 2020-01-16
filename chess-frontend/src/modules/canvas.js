@@ -75,17 +75,15 @@ const updateReverseBoard = (prevReverseBoard, nextOriginBoard) => {
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board, reverseBoard },
-            auth: { tempAuth },
+            socketAuth: { role },
             game: { turn }
         } = getState();
     
-    if(tempAuth) {
-        if(((tempAuth.role === 'white' || tempAuth.role === 'spectator') && turn % 2 === 0) || (tempAuth.role === 'black' && turn % 2 === 1)) {
-            dispatch(changeBlocked({ blocked: false }));
-        } else {
-            dispatch(changeBlocked({ blocked: true }));
-        };
-    }
+    if(((role === 'white' || role === 'spectator') && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
+        dispatch(changeBlocked({ blocked: false }));
+    } else {
+        dispatch(changeBlocked({ blocked: true }));
+    };
 
     const cell = board[prev.y][prev.x];
     const clearBoard = genClearBoard([...board], [
@@ -214,14 +212,12 @@ export const clickPieceThunk = ({ y: cy, x: cx }) => (dispatch, getState) => {
     const {
             canvas: { board, reverseBoard, clicked },
             record: { reversed },
-            auth: { tempAuth },
+            socketAuth: { role },
     } = getState();
     
     let reversal = false;
-    if(tempAuth) {
-        if((tempAuth.role === 'white' && reversed) || (tempAuth.role === 'black' && !reversed)) {
-            reversal = true;
-        }
+    if((role === 'white' && reversed) || (role === 'black' && !reversed)) {
+        reversal = true;
     }
     
     let y = cy;

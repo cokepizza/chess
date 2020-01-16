@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import useAsync from '../../lib/hook/useAsync';
-import { setSessionThunk } from '../../modules/auth';
+import { setSessionThunk } from '../../modules/sessionAuth';
 import GameLayout from '../../components/game/GameLayout';
 
 import { connectWebsocket, disconnectWebsocket, clearValue } from '../../modules/games';

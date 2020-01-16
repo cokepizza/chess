@@ -175,16 +175,11 @@ const Message = React.memo(({ message, myName, ...rest }) => {
     )
 });
 
-const Chat = ({ messages, onSubmit, onChange, text, tempAuth }) => {
+const Chat = ({ messages, onSubmit, onChange, text, nickname }) => {
     const ref = useRef();
     useEffect(() => {
         ref.current.scrollTop = ref.current.scrollHeight;
     }, [messages]);
-
-    let myName = '';
-    if(tempAuth) {
-        myName = tempAuth.nickname;
-    }
 
     return (
         <>
@@ -192,9 +187,10 @@ const Chat = ({ messages, onSubmit, onChange, text, tempAuth }) => {
                 <ChatFrameBlock>
                     <ChatHiddenBlock>
                         <ChatBlock ref={ref}>
-                            {messages.map(message => (
+                            {messages.map((message, index) => (
                                 <Message
-                                    myName={myName}
+                                    key={index}
+                                    myName={nickname}
                                     message={message}
                                 />
                             ))}

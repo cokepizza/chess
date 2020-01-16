@@ -5,8 +5,8 @@ import Record from '../../components/gameplay/Record';
 import { clearValue } from '../../modules/record';
 
 const RecordContainer = () => {
-    const { tempAuth, reversed } = useSelector(({ auth, record }) => ({
-        tempAuth: auth.tempAuth,
+    const { role, reversed } = useSelector(({ socketAuth, record }) => ({
+        role: socketAuth.role,
         reversed: record.reversed,
     }));
 
@@ -19,10 +19,8 @@ const RecordContainer = () => {
     }, [dispatch]);
 
     let reversal = false;
-    if(tempAuth) {
-        if(((tempAuth.role === 'white' || tempAuth.role === 'spectator') && reversed) || (tempAuth.role === 'black' && !reversed)) {
-            reversal = true;
-        }
+    if(((role === 'white' || role === 'spectator') && reversed) || (role === 'black' && !reversed)) {
+        reversal = true;
     }
 
     return (

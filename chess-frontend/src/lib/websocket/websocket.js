@@ -16,6 +16,7 @@ function* createEventChannel(io) {
 
         io.on('message', message => {
             emit(message)
+            console.dir(message);
         });
 
         return () => {
@@ -33,6 +34,7 @@ export function* connectNamespace(params) {
         initializeValue,
         changeValue,
         updateValue,
+        clearValue,
         query,
     } = params;
 
@@ -51,7 +53,9 @@ export function* connectNamespace(params) {
             const message = yield take(channel);
             switch(message.type) {
                 case 'socket':
-                    yield put(initializeSocket(message));
+                    if(initializeSocket) {
+                        yield put(initializeSocket(message));
+                    };
                     break;
                 case 'initialize':
                     yield put(initializeValue(message));
@@ -61,6 +65,9 @@ export function* connectNamespace(params) {
                     break;
                 case 'update':
                     yield put(updateValue(message));
+                    break;
+                case 'clear':
+                    yield put(clearValue(message));
                     break;
                 default:
                     console.dir(message);

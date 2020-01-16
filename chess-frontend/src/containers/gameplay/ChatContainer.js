@@ -8,11 +8,11 @@ import Chat from '../../components/gameplay/Chat';
 const ChatContainer = () => {
     const dispatch = useDispatch();
 
-    const { socket, messages, text, tempAuth } = useSelector(({ chat, auth }) => ({
+    const { socket, messages, text, nickname } = useSelector(({ chat, socketAuth }) => ({
         socket: chat.socket,
         messages: chat.messages,
         text: chat.text,
-        tempAuth: auth.tempAuth,
+        nickname: socketAuth.nickname,
     }));
 
     const onSubmit = useCallback(e => {
@@ -37,7 +37,7 @@ const ChatContainer = () => {
             onSubmit={onSubmit}
             onChange={onChange}
             text={text}
-            tempAuth={tempAuth}
+            nickname={nickname}
         />
     )
 };

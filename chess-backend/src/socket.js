@@ -19,7 +19,7 @@ const connectGame = (app, io, socket, key) => {
     const socketToSessionMap = app.get('socketToSession');
     socketToSessionMap.set(socket.id, socket.request.sessionID);
 
-    //  Broadcasting용 game 업데이트
+    //  Game(key) based service
     socket.join(key);
 
     //  Server용 game 객체 업데이트
@@ -29,7 +29,7 @@ const connectGame = (app, io, socket, key) => {
     //  프론트쪽에 game 없는 접근 redirect하는 코드 넣어둘 것
     if(!game) return;
 
-    if(channel === '/auth') {
+    if(channel === '/socketAuth') {
         if(game._participant.has(sessionId)) {
             const socketSet = game._participant.get(sessionId);
             socketSet.add(socket.id);
@@ -107,7 +107,7 @@ const disconnectGame = (app, io, socket, key) => {
     //  프론트쪽에 game 없는 접근 redirect하는 코드 넣어둘 것
     if(!game) return;
 
-    if(channel === '/auth') {
+    if(channel === '/socketAuth') {
         if(game._participant.has(sessionId)) {
             const socketSet = game._participant.get(sessionId);
             socketSet.delete(socket.id);
@@ -430,14 +430,40 @@ export default (server, app, sessionMiddleware) => {
         })
     });
 
+    // subscribe 'sessionAuth' Namespace
+    const sessionAuth = io.of('/sessionAuth');
+    sessionAuth.on('connect', socket => {
+        console.dir('-------------socket(sessionAuth)--------------');
+        console.dir(socket.request.sessionID);
+        
+        const { passport } = socket.request.session;
+        const passportUser = passport ? passport.user : null;
+        
+        //  Session based service
+        socket.join(socket.request.sessionID);
 
-    // subscribe 'Auth' Namespace
-    const auth = io.of('/auth');
-    auth.on('connect', socket => {      
+        if(passportUser) {
+            socket.emit('message', {
+                type: 'initialize',
+                ...passportUser,
+            });
+        }
+        
+        socket.on('disconnect', () => {
+            socket.leave(socket.request.sessionID);
+
+            console.dir('-------------socketDis(sessionAuth)--------------');
+            console.dir(socket.request.sessionID);
+        })
+    });
+
+    // subscribe 'socketAuth' Namespace
+    const socketAuth = io.of('/socketAuth');
+    socketAuth.on('connect', socket => {      
         //  io connection시에는 sessionID가 다르지만, 첫 http request 이후 세션 고정
         //  socket과 http request가 동일한 세션을 공유할 수 있음
         
-        console.dir('-------------socket(auth)--------------');
+        console.dir('-------------socket(socketAuth)--------------');
         console.dir(socket.request.sessionID);
 
         const key = socket.handshake.query['key'];
@@ -469,7 +495,7 @@ export default (server, app, sessionMiddleware) => {
 
         socket.on('disconnect', () => {
             disconnectGame(app, io, socket, key);
-            console.dir('-------------socketDis(auth)--------------')
+            console.dir('-------------socketDis(socketAuth)--------------')
             console.dir(socket.request.sessionID);
         })
     })

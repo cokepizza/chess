@@ -3,18 +3,18 @@ import { useDispatch } from 'react-redux';
 
 import useAsync from '../../lib/hook/useAsync';
 import GamePlayLayout from '../../components/gameplay/GamePlayLayout';
-import { setSessionThunk } from '../../modules/auth';
+import { setSessionThunk } from '../../modules/sessionAuth';
 
-import { clearValue as clearAuthValue } from '../../modules/auth';
+import { clearValue as clearAuthValue } from '../../modules/socketAuth';
 import { clearValue as clearGameValue } from '../../modules/game';
 
-import { connectWebsocket as connectAuthWebsocket } from '../../modules/auth';
+import { connectWebsocket as connectAuthWebsocket } from '../../modules/socketAuth';
 import { connectWebsocket as connectGameWebsocket } from '../../modules/game';
 import { connectWebsocket as connectChatWebsocket } from '../../modules/chat';
 import { connectWebsocket as connectCanvasWebsocket} from '../../modules/canvas';
 import { connectWebsocket as connectRecordWebsocket } from '../../modules/record';
 
-import { disconnectWebsocket as disconnectAuthWebsocket } from '../../modules/auth';
+import { disconnectWebsocket as disconnectAuthWebsocket } from '../../modules/socketAuth';
 import { disconnectWebsocket as disconnectGameWebsocket } from '../../modules/game';
 import { disconnectWebsocket as disconnectChatWebsocket } from '../../modules/chat';
 import { disconnectWebsocket as disconnectCanvasWebsocket } from '../../modules/canvas';

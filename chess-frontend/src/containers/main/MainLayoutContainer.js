@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import useAsync from '../../lib/hook/useAsync';
-import { setSessionThunk } from '../../modules/auth';
+import { setSessionThunk } from '../../modules/sessionAuth';
 
 import MainLayout from '../../components/main/MainLayout';
 

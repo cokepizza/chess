@@ -1,13 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from '../../components/common/Header';
-import { logoutProcessThunk, clearField } from '../../modules/auth';
+import { logoutProcessThunk, clearField } from '../../modules/sessionAuth';
+import { connectWebsocket, disconnectWebsocket } from '../../modules/sessionAuth';
 import { withRouter } from 'react-router-dom';
 
 const HeaderContainer = ({ history }) => {
-    const { session, auth } = useSelector(({ auth }) => ({
-        session: auth.session,
-        auth: auth.auth,
+    const { session, auth } = useSelector(({ sessionAuth }) => ({
+        session: sessionAuth.session,
+        auth: sessionAuth.auth,
     }));
     const dispatch = useDispatch();
 
@@ -25,6 +26,14 @@ const HeaderContainer = ({ history }) => {
         dispatch(clearField({ form: 'login' }));
         history.push('/login');
     }, [dispatch, history]);
+
+    //  async일 필요 없음, 따로 clearValue는 렌더링을 줄이기 위해 별도로 호출하지 않음
+    useEffect(() => {
+        dispatch(connectWebsocket());
+        return () => {
+            dispatch(disconnectWebsocket());
+        }
+    }, [dispatch]);
 
     return (
         <Header

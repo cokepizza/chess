@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Joi from 'joi';
-import { loginProcessThunk, changeField, clearField, clearSpecificField } from '../../modules/auth';
+import { loginProcessThunk, changeField, clearField, clearSpecificField } from '../../modules/sessionAuth';
 import AuthForm from '../../components/auth/AuthForm';
 
 const LoginContainer = ({ history }) => {
-    const { form, auth, authError } = useSelector(({ auth }) => ({
-        form: auth.login,
-        auth: auth.auth,
-        authError: auth.authError,
+    const { form, auth, authError } = useSelector(({ sessionAuth }) => ({
+        form: sessionAuth.login,
+        auth: sessionAuth.auth,
+        authError: sessionAuth.authError,
     }));
 
     const dispatch = useDispatch();
