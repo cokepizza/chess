@@ -1,10 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-// import { GoSearch } from 'react-icons/go';
-// import { IconContext } from 'react-icons';
-
-import GamesModalContainer from '../../containers/modal/GamesModalContainer';
 
 const HeaderBlock = styled.div`
     display: flex;

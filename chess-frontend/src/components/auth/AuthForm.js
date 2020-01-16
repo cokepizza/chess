@@ -141,6 +141,7 @@ const SubmitBlock = styled.button`
     width: 30%;
     cursor: pointer;
     height: 40px;
+    background-color: transparent;
 
     &:hover, :active {
         background-color: rgb(0, 0, 0, 0.05);

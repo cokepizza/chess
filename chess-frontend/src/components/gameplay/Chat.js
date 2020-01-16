@@ -4,6 +4,7 @@ import { IoIosSend } from 'react-icons/io';
 import { IconContext } from 'react-icons';
 
 const ChatSubmitBlock = styled.form`
+    width: 100%;
 `;
 
 const ChatFrameBlock = styled.div`

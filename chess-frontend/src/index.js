@@ -14,6 +14,7 @@ import rootReducer, { rootSaga } from './modules';
 import * as serviceWorker from './serviceWorker';
 import { getLocalStorage, clearLocalStorage } from './lib/storage/storage';
 import { checkThunk } from './modules/auth';
+import FixSize from './components/common/FixSize';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -45,7 +46,9 @@ ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
             <HelmetProvider>
-                <App />
+                <FixSize>
+                    <App />
+                </FixSize>
             </HelmetProvider>
         </BrowserRouter>
     </Provider>

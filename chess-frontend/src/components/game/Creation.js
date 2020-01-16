@@ -52,7 +52,7 @@ const SubmitBlock = styled.div`
 
 const ConfirmFrameBlock = styled.div`
     position: relative;
-    width: 100px;
+    width: 65px;
     height: 40px;
 `;
 
@@ -69,10 +69,11 @@ const ConfirmBlock = styled.button`
     left: 0px;
     display: flex;
     justify-content: flex-end;
-    width: 100px;
+    width: 65px;
     height: 40px;
     color: rgba(0, 0, 0, 0.3);
     transition: 0.5s;
+    background-color: transparent;
 
     @keyframes jump {
         0%, 100% {
