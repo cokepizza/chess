@@ -37,12 +37,22 @@ const connectGame = (app, io, socket, key) => {
             game.participant.push(nickname);
             game._participant.set(sessionId, new Set([socket.id]));
 
-            if(!game._white) {
+            //  Grab the opposite piece when the second player arrives
+            if(!game._white && game._black !== sessionId) {
                 game.white = nickname;
                 game._white = sessionId;
-            } else if(game._white !== sessionId && !game._black) {
+            }
+            if(!game._black && game._white !== sessionId) {
                 game.black = nickname;
                 game._black = sessionId;
+            }
+
+            //  Set game creator's nickname
+            if(game._white && game._white === sessionId) {
+                game.white = nickname;
+            }
+            if(game._black && game._black === sessionId) {
+                game.black = nickname;
             }
     
             if(game._white && game._black) {
@@ -358,7 +368,7 @@ export default (server, app, sessionMiddleware) => {
                     console.dir(`recharge ${order}`);
 
                     const game = app.get('game').get(key);
-                    this[order + 'Time'] += game.rechargeTime;
+                    this[order + 'Time'] += game.extraTime;
                     this[order + 'MaxTime'] = Math.max(this[order + 'MaxTime'], this[order + 'Time']);
                     this[order + 'Ratio'] = this[order + 'Time'] / this[order + 'MaxTime'];
                     

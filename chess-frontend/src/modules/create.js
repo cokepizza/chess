@@ -8,8 +8,8 @@ export const clearField = createAction(CLEAR_FIELD, payload => payload);
 const initialState = {
     map: 'Classical',
     mapList: ['Classical', 'Crazy House', 'Racing Kings'],
-    type: 'Normal',
-    typeList: ['Normal', 'Rank'],
+    mode: 'Normal',
+    modeList: ['Normal', 'Rank'],
     defaultTime: 15,
     extraTime: 30,
     config: {

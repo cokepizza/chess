@@ -110,7 +110,7 @@ const Creation = ({ onSubmit }) => {
             </TitleBlock>
             <SelectionBundleBlock>
                 <SelectionContainer kind='map' />
-                <SelectionContainer kind='type' />
+                <SelectionContainer kind='mode' />
             </SelectionBundleBlock>
             <SliderBundleBlock>
                 <SliderContainer kind='defaultTime'/>

@@ -47,8 +47,8 @@ const timeConverter = timeSlice => {
 
 const Timer = ({ time, color }) => {
     
-    const second = Math.floor(time / 1000);
-    const millisecond = Math.floor((time % 1000) / 10);
+    const minute = Math.floor(time / 60000);
+    const second = Math.floor((time % 60000) / 1000);
 
     // eslint-disable-next-line
     if(time == undefined || time === null) {
@@ -61,13 +61,13 @@ const Timer = ({ time, color }) => {
             color={color ? 1 : 0}
         >
             <TimeSliceBlock>
-                {timeConverter(second)}
+                {timeConverter(minute)}
             </TimeSliceBlock>
             <ColonBlock>
                 :
             </ColonBlock>
             <TimeSliceBlock>
-            {timeConverter(millisecond)}
+                {timeConverter(second)}
             </TimeSliceBlock>
         </TimerBlock>
     )

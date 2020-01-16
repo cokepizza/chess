@@ -8,6 +8,8 @@ export const createGame = (req, res, next) => {
     const io = req.app.get('io');
     const gameMap = req.app.get('game');
     const size = gameMap.size;
+    const { map, mode, defaultTime, extraTime, piece } = req.body;
+    const key = `_${piece}`;
 
     const genGame = {
         key: uuid(),
@@ -17,9 +19,10 @@ export const createGame = (req, res, next) => {
         participant: [],
         black: null,
         white: null,
-        method: 'timeAttack',
-        defaultTime: 50000,
-        rechargeTime: 5000,
+        map: map.toLowerCase(),
+        mode: mode.toLowerCase(),
+        defaultTime: defaultTime * 60000,
+        extraTime: extraTime * 1000,
         start: false,
         // _startTime: null,
         // _repTime: null,
@@ -43,10 +46,11 @@ export const createGame = (req, res, next) => {
         _participant: new Map(),
         _black: null,
         _white: null,
+        [key]: req.sessionID,
         _destroy: function() {
             gameMap.delete(this.key);
         },
-    }
+    };
 
     gameMap.set(genGame.key, genGame);
 
