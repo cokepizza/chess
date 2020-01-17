@@ -3,6 +3,7 @@
 // const socket = mapSessionToSocket.get(req.session.id);
 
 import uuid from 'uuid/v1';
+import Record from '../../models/record';
 
 export const createGame = (req, res, next) => {
     const io = req.app.get('io');
@@ -48,7 +49,11 @@ export const createGame = (req, res, next) => {
         _white: null,
         [key]: req.sessionID,
         _destroy: function() {
+            if(this.mode === 'rank') {
+                
+            }
             gameMap.delete(this.key);
+
         },
     };
 

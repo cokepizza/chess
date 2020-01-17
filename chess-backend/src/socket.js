@@ -124,6 +124,9 @@ const disconnectGame = (app, io, socket, key) => {
                     const record = app.get('record').get(key);
                     record._stop();
                     game.start = false;
+
+                    //  나가면 5초내에 재접속이 없을 시 게임 종료
+                    
                 };
 
                 io.of('/game').to(key).emit('message', {
@@ -435,7 +438,7 @@ export default (server, app, sessionMiddleware) => {
     sessionAuth.on('connect', socket => {
         console.dir('-------------socket(sessionAuth)--------------');
         console.dir(socket.request.sessionID);
-        
+
         const { passport } = socket.request.session;
         const passportUser = passport ? passport.user : null;
         
