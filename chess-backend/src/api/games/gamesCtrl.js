@@ -4,6 +4,7 @@
 
 import uuid from 'uuid/v1';
 import Record from '../../models/record';
+import User from '../../models/user';
 
 export const createGame = (req, res, next) => {
     const io = req.app.get('io');
@@ -48,12 +49,26 @@ export const createGame = (req, res, next) => {
         _black: null,
         _white: null,
         [key]: req.sessionID,
+        _draw: null,
+        _winner: null,
+        _loser: null,
         _destroy: function() {
             if(this.mode === 'rank') {
+                if(this._draw) {
+
+                } else {
+                    const winner = User.findOne({ username: _winner });
+                    const loser = User.findOne({ username: _loser });
+                    
+                    const record = new Record({
+
+                    });
+                    await record.save();
+                }
+                
                 
             }
             gameMap.delete(this.key);
-
         },
     };
 
