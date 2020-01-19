@@ -1,18 +1,12 @@
 import mongoose, { Schema } from 'mongoose';
 
 const GameSchema = new Schema({
+    //  !draw && player[0] => winner, !draw && player[1] => loser
     player: [{
         type: mongoose.Types.ObjectId,
         ref: 'User',
     }],
-    winner: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User',
-    },
-    loser: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User',
-    },
+    draw: Boolean,
     name: String,
     turn: Number,
     map: String,

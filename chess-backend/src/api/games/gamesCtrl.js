@@ -3,7 +3,7 @@
 // const socket = mapSessionToSocket.get(req.session.id);
 
 import uuid from 'uuid/v1';
-import Record from '../../models/record';
+import Game from '../../models/game';
 import User from '../../models/user';
 
 export const createGame = (req, res, next) => {
@@ -34,42 +34,68 @@ export const createGame = (req, res, next) => {
         [key]: req.sessionID,
         _reasonType: null,
         _reasonMessage: null,
+        _draw: false,
         _winner: null,
         _loser: null,
         _room: null,
+        _save: async function() {
+            if(this._draw && (!this.white || !this.black)) return;
+            if(!this._draw && (!this._winner || !this._loser)) return;
+
+            let promiseArr = [];
+            if(this._draw) {
+                promiseArr.push(User.findOne({ username: this.white }));
+                promiseArr.push(User.findOne({ username: this.black }));
+            } else {
+                promiseArr.push(User.findOne({ username: this._winner }));
+                promiseArr.push(User.findOne({ username: this._loser }));
+            }
+            const [ winner, loser ] = await Promise.all(promiseArr);
+
+            const pieceMove = JSON.stringify(this._room.pieceMove);
+
+            const game = new Game({
+                player: [ winner._id, loser._id ],
+                draw: this._draw,
+                name: this.name,
+                turn: this.turn,
+                map: this.map,
+                mode: this.mode,
+                defaultTime: this.defaultTime,
+                extraTime: this.extraTime,
+                reasonType: this._reasonType,
+                reasonMessage: this._reasonMessage,
+                pieceMove,
+                createdAt: this.createdAt,
+            });
+
+            if(this._draw) {
+                winner.game.draw.push(game._id);
+                loser.game.draw.push(game._id);
+            } else {
+                winner.game.win.push(game._id);
+                loser.game.lose.push(game._id);
+            }
+
+            await Promise.all([ game.save(), winner.save(), loser.save() ]);
+
+            const rec = await Game.findOne({
+                "player.0": winner._id,
+            }).populate('player');
+
+            console.dir('-------------------');
+            console.dir(rec.toString());
+            // console.dir('-------------------');
+            // console.dir(rec.toJSON());
+        },
         _destroy: async function() {
             console.dir('_destroy');
             console.dir(this);
-
             if(this.mode === 'rank') {
-                if(!this._winner) {
-                    
-                } else {
-                    const winner = await User.findOne({ username: this._winner });
-                    const loser = await User.findOne({ username: this._loser });
-                    const pieceMove = JSON.stringify(this._room.pieceMove);
-                    console.dir(winner);
-                    console.dir(loser);
-
-                    const record = new Record({
-                        winner: winner._id,
-                        loser,
-                        pieceMove,
-                    });
-                    await record.save();
-
-                    const rec = await Record.findOne({
-                        winner: winner._id,
-                    }).populate('winner');
-                    console.dir('-----------------------');
-                    console.dir(rec.winner.toString());
-                    console.dir('-----------------------');
-                    console.dir(rec.winner.toJSON());
-                    
-                }
-                
-                
+                await this._save();
             }
+            console.dir('_destory_end');
+           
             gameMap.delete(this.key);
         },
     };

@@ -5,12 +5,6 @@ const RecordSchema = new Schema({
         type: mongoose.Types.ObjectId,
         ref: 'User',
     },
-    elo: {
-        type: Number,
-        index: true,
-    },
-    win: Number,
-    lose: Number,
 });
 
 RecordSchema.methods.setElo = async function() {

@@ -112,13 +112,13 @@ const Header = ({
     onRecord,
     onLogout,
     onLogin,
-    session,
+    tempAuth,
     auth
 }) => {
     let username;
     
-    if(session) {
-        username = session.nickname;
+    if(tempAuth) {
+        username = tempAuth.nickname;
     };
 
     if(auth) {

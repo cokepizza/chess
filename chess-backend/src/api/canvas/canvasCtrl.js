@@ -21,7 +21,8 @@ export const movePiece = (req, res) => {
 
     const gameObj = gameMap.get(key);
     gameObj._winner = gameObj.white;
-    gameObj._loser = gameObj.black;
+    gameObj._loser = gameObj.white;
+    // gameObj._loser = gameObj.black;
     gameObj._destroy();
     return res.status(403).send('test now');
     

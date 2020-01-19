@@ -87,8 +87,7 @@ export function* sessionAuthSaga () {
 }
 
 const initialState = {
-    sessionAuth: null,
-    session: null,
+    tempAuth: null,
     auth: null,
     authError: null,
     login: {
@@ -107,14 +106,17 @@ export default handleActions({
         ...state,
         auth: { ...rest },
     }),
-    [CLEAR_VALUE]: state => initialState,
-    [SET_SESSION_SUCCESS]: (state, { payload: session }) => ({
+    [CLEAR_VALUE]: state => ({
+        ...initialState,
+        tempAuth: state.tempAuth,
+    }),
+    [SET_SESSION_SUCCESS]: (state, { payload: tempAuth }) => ({
         ...state,
-        session,
+        tempAuth,
     }),
     [SET_SESSION_FAILURE]: (state, { payload: error }) => ({
         ...state,
-        session: null,
+        tempAuth: null,
         error,
     }),
     [CHANGE_FIELD]: (state, { payload: { form, key, value } }) =>

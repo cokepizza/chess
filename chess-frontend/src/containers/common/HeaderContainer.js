@@ -6,8 +6,8 @@ import { connectWebsocket, disconnectWebsocket } from '../../modules/sessionAuth
 import { withRouter } from 'react-router-dom';
 
 const HeaderContainer = ({ history }) => {
-    const { session, auth } = useSelector(({ sessionAuth }) => ({
-        session: sessionAuth.session,
+    const { tempAuth, auth } = useSelector(({ sessionAuth }) => ({
+        tempAuth: sessionAuth.tempAuth,
         auth: sessionAuth.auth,
     }));
     const dispatch = useDispatch();
@@ -40,7 +40,7 @@ const HeaderContainer = ({ history }) => {
             onRecord={onRecord}
             onLogout={onLogout}
             onLogin={onLogin}
-            session={session}
+            tempAuth={tempAuth}
             auth={auth}
         />
     );

@@ -20,7 +20,7 @@ export const getSession = (req, res, next) => {
     console.dir(req.sessionID);
     console.dir(req.user);
     return res.status(202).send({
-        id: req.sessionID,
+        sessionId: req.sessionID,
         nickname: req.session.nickname,
     });
 }

@@ -79,7 +79,7 @@ const connectGame = (app, io, socket, key) => {
             });
         }
     }
-    console.dir(game);
+    // console.dir(game);
 }
 
 const disconnectGame = (app, io, socket, key) => {
@@ -450,6 +450,10 @@ export default (server, app, sessionMiddleware) => {
             socket.emit('message', {
                 type: 'initialize',
                 ...passportUser,
+            });
+        } else {
+            socket.emit('message', {
+                type: 'clear',
             });
         }
         

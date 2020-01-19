@@ -25,9 +25,22 @@ const UserSchema = new Schema({
             ref: 'Game',
         }],
     },
-    record: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Record',
+    elo: {
+        type: Number,
+        default: 1500,
+        index: true,
+    },
+    win: {
+        type: Number,
+        default: 0,
+    },
+    lose: {
+        type: Number,
+        default: 0,
+    },
+    draw: {
+        type: Number,
+        default: 0,
     },
     createdAt: {
         type: Date,
