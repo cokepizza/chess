@@ -32,6 +32,8 @@ export const createGame = (req, res, next) => {
         _black: null,
         _white: null,
         [key]: req.sessionID,
+        _blackAuth: false,
+        _whiteAuth: false,
         _reasonType: null,
         _reasonMessage: null,
         _draw: false,
@@ -41,6 +43,7 @@ export const createGame = (req, res, next) => {
         _save: async function() {
             if(this._draw && (!this.white || !this.black)) return;
             if(!this._draw && (!this._winner || !this._loser)) return;
+            if(!this._blackAuth || !this._whiteAuth) return;
 
             let promiseArr = [];
             if(this._draw) {
@@ -71,10 +74,14 @@ export const createGame = (req, res, next) => {
 
             if(this._draw) {
                 winner.game.draw.push(game._id);
+                winner.draw += 1;
                 loser.game.draw.push(game._id);
+                loser.draw += 1;
             } else {
                 winner.game.win.push(game._id);
+                winner.win += 1;
                 loser.game.lose.push(game._id);
+                loser.lose += 1;
             }
 
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
@@ -90,13 +97,17 @@ export const createGame = (req, res, next) => {
         },
         _destroy: async function() {
             console.dir('_destroy');
-            console.dir(this);
             if(this.mode === 'rank') {
                 await this._save();
             }
             console.dir('_destory_end');
-           
+            
             gameMap.delete(this.key);
+
+            io.of('/games').emit('message', {
+                type: 'initialize',
+                games: [...gameMap.values()],
+            });
         },
     };
 

@@ -10,6 +10,7 @@ const connectGame = (app, io, socket, key) => {
     const sessionId = socket.request.sessionID;
     const passportUser = passport ? passport.user : null;
     const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+    const auth = (passportUser && passportUser.username) ? true : false;
 
     //  mapping socket => gameId
     const socketToGameMap = app.get('socketToGame');
@@ -41,21 +42,25 @@ const connectGame = (app, io, socket, key) => {
             game._participant.set(sessionId, new Set([socket.id]));
 
             //  Grab the opposite piece when the second player arrives
-            if(!game._white && game._black !== sessionId) {
+            if(!game._white && game._black && game._black !== sessionId) {
                 game.white = username;
                 game._white = sessionId;
+                game._whiteAuth = auth;
             }
-            if(!game._black && game._white !== sessionId) {
+            if(!game._black && game._white && game._white !== sessionId) {
                 game.black = username;
                 game._black = sessionId;
+                game._blackAuth = auth;
             }
 
             //  Set game creator's username
             if(game._white && game._white === sessionId) {
                 game.white = username;
+                game._whiteAuth = auth;
             }
             if(game._black && game._black === sessionId) {
                 game.black = username;
+                game._blackAuth = auth;
             }
     
             if(game._white && game._black) {

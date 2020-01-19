@@ -1,6 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 
+mongoose.set('useCreateIndex', true);
+
 const UserSchema = new Schema({
     username: {
         type: String,
