@@ -1,17 +1,19 @@
 import mongoose, { Schema } from 'mongoose';
 
 const RecordSchema = new Schema({
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+    },
+    elo: {
+        type: Number,
+        index: true,
+    },
     win: Number,
     lose: Number,
-
-    recentPlayer: Array,
-    user: {
-        _id: mongoose.Types.ObjectId,
-        username: String,
-    },
 });
 
-RecordSchema.methods.setRecord = async function() {
+RecordSchema.methods.setElo = async function() {
     
 }
 

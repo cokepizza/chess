@@ -18,6 +18,12 @@ export const movePiece = (req, res) => {
     const { prev, next } = move;
 
     console.dir(req.session);
+
+    const gameObj = gameMap.get(key);
+    gameObj._winner = gameObj.white;
+    gameObj._loser = gameObj.black;
+    gameObj._destroy();
+    return res.status(403).send('test now');
     
     //  defensive code
     if(!gameMap.has(key)) {
@@ -179,7 +185,7 @@ export const movePiece = (req, res) => {
     io.of('/game').to(key).emit('message', {
         type: 'initialize',
         ...game,
-    })
+    });
     
     return res.status(200).end();
 };

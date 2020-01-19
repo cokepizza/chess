@@ -419,6 +419,7 @@ export default (server, app, sessionMiddleware) => {
                 },
             };
             recordSkeleton._initialize();
+            app.get('game').get(key)._room = recordSkeleton;
             app.get('record').set(key, recordSkeleton);
         }
 

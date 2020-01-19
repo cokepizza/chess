@@ -2,8 +2,41 @@ import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const UserSchema = new Schema({
-    username: String,
-    hashedPassword: String,
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    hashedPassword: {
+        type: String,
+        required: true,
+    },
+    game: {
+        win: [{
+            type: mongoose.Types.ObjectId,
+            ref: 'Game',
+        }],
+        lose: [{
+            type: mongoose.Types.ObjectId,
+            ref: 'Game',
+        }],
+        draw: [{
+            type: mongoose.Types.ObjectId,
+            ref: 'Game',
+        }],
+    },
+    record: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Record',
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    }
 });
 
 UserSchema.methods.setPassword = async function(password) {

@@ -25,45 +25,47 @@ export const createGame = (req, res, next) => {
         mode: mode.toLowerCase(),
         defaultTime: defaultTime * 60000,
         extraTime: extraTime * 1000,
+        createdAt: new Date(),
+        destroyAt: null,
         start: false,
-        // _startTime: null,
-        // _repTime: null,
-        // _start: function () {
-        //     this.start = true;
-        //     this._startTime = new Date().getTime();
-        //     this._repTime = this._startTime;
-        //     this._broadcastTime();
-        // },
-        // _boradcastTime: function() {
-        //     // const record = app.get('record').get(key);
-            
-        //     io.of('/record').emit('message', {
-        //         type: 'initialize',
-        //         time: {
-        //             black: this.blackTime,
-        //             white: this.whiteTime,
-        //         }
-        //     });
-        // },
         _participant: new Map(),
         _black: null,
         _white: null,
         [key]: req.sessionID,
-        _draw: null,
+        _reasonType: null,
+        _reasonMessage: null,
         _winner: null,
         _loser: null,
-        _destroy: function() {
+        _room: null,
+        _destroy: async function() {
+            console.dir('_destroy');
+            console.dir(this);
+
             if(this.mode === 'rank') {
-                if(this._draw) {
-
-                } else {
-                    const winner = User.findOne({ username: _winner });
-                    const loser = User.findOne({ username: _loser });
+                if(!this._winner) {
                     
-                    const record = new Record({
+                } else {
+                    const winner = await User.findOne({ username: this._winner });
+                    const loser = await User.findOne({ username: this._loser });
+                    const pieceMove = JSON.stringify(this._room.pieceMove);
+                    console.dir(winner);
+                    console.dir(loser);
 
+                    const record = new Record({
+                        winner: winner._id,
+                        loser,
+                        pieceMove,
                     });
                     await record.save();
+
+                    const rec = await Record.findOne({
+                        winner: winner._id,
+                    }).populate('winner');
+                    console.dir('-----------------------');
+                    console.dir(rec.winner.toString());
+                    console.dir('-----------------------');
+                    console.dir(rec.winner.toJSON());
+                    
                 }
                 
                 
