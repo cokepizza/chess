@@ -59,6 +59,9 @@ export const logout = (req, res, next) => {
     console.dir('logout success');
 
     const io = req.app.get('io');
+    const sessionToKeyMap = req.app.get('sessionToKey')
+    console.dir(sessionToKeyMap);
+
     const sessionID = req.sessionID;
 
     io.of('/sessionAuth').to(sessionID).emit('message', {

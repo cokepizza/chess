@@ -12,6 +12,19 @@ const connectGame = (app, io, socket, key) => {
     const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
     const auth = (passportUser && passportUser.username) ? true : false;
 
+    if(auth) {
+        const sessionToKeyMap = app.get('sessionToKey');
+        if(!sessionToKeyMap.has(sessionId)) {
+            sessionToKeyMap.set(sessionId, new Map());
+        }
+        const sessionMap = sessionToKeyMap.get(sessionId);
+        if(sessionMap.has(key)) {
+            sessionMap.set(key, sessionMap.get(key) + 1);
+        } else {
+            sessionMap.set(key, 1);
+        }
+    }
+
     //  mapping socket => gameId
     const socketToGameMap = app.get('socketToGame');
     socketToGameMap.set(socket.id, key);
@@ -97,6 +110,21 @@ const disconnectGame = (app, io, socket, key) => {
     const sessionId = socket.request.sessionID;
     const passportUser = passport ? passport.user : null;
     const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+    const auth = (passportUser && passportUser.username) ? true : false;
+
+    if(auth) {
+        const sessionToKeyMap = app.get('sessionToKey');
+        if(sessionToKeyMap.has(sessionId)) {
+            const sessionMap = sessionToKeyMap.get(sessionId);
+            if(sessionMap.has(key)) {
+                sessionMap.set(key, sessionMap.get(key) - 1);
+                if(sessionMap.get(key) === 0) sessionMap.delete(key);
+            }
+            if(sessionToKeyMap.get(sessionId).size === 0) sessionToKeyMap.delete(sessionId);
+        }
+        console.dir(sessionToKeyMap);
+    }
+    
 
     //  delete mapping socket => gameId;
     const socketToGameMap = app.get('socketToGame');
@@ -171,6 +199,7 @@ export default (server, app, sessionMiddleware) => {
 
     app.set('socketToSession', new Map());
     app.set('socketToGame', new Map());
+    app.set('sessionToKey', new Map());
     app.set('game', new Map());
 
     io.use((socket, next) => {
@@ -460,11 +489,7 @@ export default (server, app, sessionMiddleware) => {
                 type: 'initialize',
                 ...passportUser,
             });
-        } else {
-            socket.emit('message', {
-                type: 'clear',
-            });
-        }
+        };
         
         socket.on('disconnect', () => {
             socket.leave(socket.request.sessionID);

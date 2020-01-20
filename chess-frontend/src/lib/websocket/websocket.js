@@ -16,7 +16,6 @@ function* createEventChannel(io) {
 
         io.on('message', message => {
             emit(message)
-            console.dir(message);
         });
 
         return () => {
@@ -38,8 +37,6 @@ export function* connectNamespace(params) {
         query,
     } = params;
 
-    console.dir(url);
-    console.dir(query);
     try {
         const io = SocketIo(url, {
             query,
