@@ -56,7 +56,7 @@ export const createGame = (req, res, next) => {
             const [ winner, loser ] = await Promise.all(promiseArr);
 
             const pieceMove = JSON.stringify(this._room.pieceMove);
-
+            
             const game = new Game({
                 player: [ winner._id, loser._id ],
                 draw: this._draw,

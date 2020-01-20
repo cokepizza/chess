@@ -55,12 +55,16 @@ const connectGame = (app, io, socket, key) => {
 
             //  Set game creator's username
             if(game._white && game._white === sessionId) {
-                game.white = username;
-                game._whiteAuth = auth;
+                if(!game._whiteAuth) {
+                    game.white = username;
+                    game._whiteAuth = auth;
+                }
             }
             if(game._black && game._black === sessionId) {
-                game.black = username;
-                game._blackAuth = auth;
+                if(!game._blackAuth) {
+                    game.black = username;
+                    game._blackAuth = auth;
+                }
             }
     
             if(game._white && game._black) {
