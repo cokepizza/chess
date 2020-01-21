@@ -46,7 +46,6 @@ export const loginProcessThunk = param => async ( dispatch, getState ) => {
     } catch(e) {
         console.dir('Login failed');
     }
-    
 }
 
 export const registerProcessThunk = param => async ( dispatch, getState ) => {
