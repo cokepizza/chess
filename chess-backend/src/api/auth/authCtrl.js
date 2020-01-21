@@ -42,10 +42,32 @@ export const login = (req, res, next) => {
                 return res.status(400).send(err);
             };
 
-            const io = req.app.get('io');
-            const sessionID = req.sessionID;
+            const sessionToKeyMap = req.app.get('sessionToKey');
+            if(sessionToKeyMap.has(req.sessionID)) {
+                [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
+                    const game = gameMap.get(key);
+                
+                    const index = game.participant.findIndex(ele => ele === req.session.nickname);
+                    game.participant.splice(index, 1, req.user.username);
 
-            io.of('/sessionAuth').to(sessionID).emit('message', {
+                    // if(game.white === req.user.username || game.black === req.user.username) {
+                        
+                    //     if(game.white && game.participant)
+                    //     game.start = true;
+                    // }
+
+                    console.dir(game);
+                    console.dir(game.participant);
+            
+                    io.of('/game').to(key).emit('message', {
+                        type: 'initialize',
+                        ...instanceSanitizer(game),
+                    })
+                });
+            }
+
+            const io = req.app.get('io');
+            io.of('/sessionAuth').to(req.sessionID).emit('message', {
                 type: 'initialize',
                 ...user,
             });
@@ -58,27 +80,35 @@ export const login = (req, res, next) => {
 export const logout = (req, res, next) => {
     const io = req.app.get('io');
     const gameMap = req.app.get('game')
-    const sessionToKeyMap = req.app.get('sessionToKey')
-    console.dir(sessionToKeyMap);
-    console.dir(req.user);
-    console.dir(req.session.nickname);
-    Object.keys(sessionToKeyMap.get(req.sessionID)).forEach(key => {
-        const game = gameMap.get(key);
-        const index = game.participant.findIndex(ele === req.user.username);
-        game.participant.splice(index, 1, req.session.nickname);
+    
+    //  로그인된 유저가 로그아웃 했을 때 해당 key를 가지고 있는 game에 참가중이라면
+    //  participant에서 제외시키고 game 내에서 white나 black의 role을 갖고 있었다면 게임을 중단
+    const sessionToKeyMap = req.app.get('sessionToKey');
+    if(sessionToKeyMap.has(req.sessionID)) {
+        [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
+            const game = gameMap.get(key);
+           
+            if(game.white === req.user.username || game.black === req.user.username) {
+                game.start = false;
+            }
+    
+            const index = game.participant.findIndex(ele => ele === req.user.username);
+            game.participant.splice(index, 1, req.session.nickname);
+            console.dir(game);
+            console.dir(game.participant);
+    
+            io.of('/game').to(key).emit('message', {
+                type: 'initialize',
+                ...instanceSanitizer(game),
+            })
+        });
+    }
 
-        io.of('/game').to(key).emit('message', {
-            type: 'initializeValue',
-            ...instanceSanitizer(game),
-        })
-    });
     
     req.logout();
     console.dir('logout success');
 
-    const sessionID = req.sessionID;
-
-    io.of('/sessionAuth').to(sessionID).emit('message', {
+    io.of('/sessionAuth').to(req.sessionID).emit('message', {
         type: 'clear',
     });
     

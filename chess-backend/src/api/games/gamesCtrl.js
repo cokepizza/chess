@@ -40,6 +40,28 @@ export const createGame = (req, res, next) => {
         _winner: null,
         _loser: null,
         _room: null,
+        _join: function(socket) {
+            const sessionId = socket.request.sessionID;
+            const { nickname, passport } = socket.request.session;
+            const passportUser = passport ? passport.user : null;
+            const authname = (passportUser && passportUser.username) ? passportUser.username : nickname;
+            const auth = (passportUser && passportUser.username) ? true : false;
+
+            if(this._participant.has(sessionId)) {
+                //  duplicate session
+                const socketSet = this._participant.get(sessionId);
+                socketSet.add(socket.id);
+            } else {
+                //  initialize session (enter this._participant, this.participant)
+                this._participant.set(sessionId, new Set([ socket.id ]));
+                if(new Set(this.participant).has())
+            }
+        },
+        _ignite: function() {
+            if(this.mode === 'rank') {
+
+            }
+        },
         _save: async function() {
             if(this._draw && (!this.white || !this.black)) return;
             if(!this._draw && (!this._winner || !this._loser)) return;
