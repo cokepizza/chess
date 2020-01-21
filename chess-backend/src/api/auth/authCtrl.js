@@ -43,11 +43,13 @@ export const login = (req, res, next) => {
             };
 
             const sessionToKeyMap = req.app.get('sessionToKey');
+            console.dir(sessionToKeyMap);
             if(sessionToKeyMap.has(req.sessionID)) {
                 [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
                     const io = req.app.get('io');
                     const gameMap = req.app.get('game');
                     const game = gameMap.get(key);
+                    console.dir(game._socket);
                 
                     const index = game.participant.findIndex(ele => ele === req.session.nickname);
                     console.dir(index);
@@ -94,15 +96,17 @@ export const logout = (req, res, next) => {
     if(sessionToKeyMap.has(req.sessionID)) {
         [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
             const game = gameMap.get(key);
-           
+            //  session 제거
+            // game._socket.;
+
             if(game.white === req.user.username || game.black === req.user.username) {
                 game.start = false;
             }
     
             const index = game.participant.findIndex(ele => ele === req.user.username);
             if(index >= 0) {
-                // game.participant.splice(index, 1, req.session.nickname);
-                game.participant.splice(index, 1);
+                game.participant.splice(index, 1, req.session.nickname);
+                // game.participant.splice(index, 1);
             }
             // console.dir(game);
             // console.dir(game.participant);

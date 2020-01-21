@@ -12,17 +12,16 @@ const connectGame = (app, io, socket, key) => {
     const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
     const auth = (passportUser && passportUser.username) ? true : false;
 
-    if(auth) {
-        const sessionToKeyMap = app.get('sessionToKey');
-        if(!sessionToKeyMap.has(sessionId)) {
-            sessionToKeyMap.set(sessionId, new Map());
-        }
-        const sessionMap = sessionToKeyMap.get(sessionId);
-        if(sessionMap.has(key)) {
-            sessionMap.set(key, sessionMap.get(key) + 1);
-        } else {
-            sessionMap.set(key, 1);
-        }
+
+    const sessionToKeyMap = app.get('sessionToKey');
+    if(!sessionToKeyMap.has(sessionId)) {
+        sessionToKeyMap.set(sessionId, new Map());
+    }
+    const sessionMap = sessionToKeyMap.get(sessionId);
+    if(sessionMap.has(key)) {
+        sessionMap.set(key, sessionMap.get(key) + 1);
+    } else {
+        sessionMap.set(key, 1);
     }
 
     //  mapping socket => gameId
@@ -124,21 +123,19 @@ const disconnectGame = (app, io, socket, key) => {
     const passportUser = passport ? passport.user : null;
     const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
     const auth = (passportUser && passportUser.username) ? true : false;
-    console.dir('&_&_&_&_&_&');
-    console.dir(passport);
+    // console.dir('&_&_&_&_&_&');
+    // console.dir(passport);
 
-    if(auth) {
-        const sessionToKeyMap = app.get('sessionToKey');
-        if(sessionToKeyMap.has(sessionId)) {
-            const sessionMap = sessionToKeyMap.get(sessionId);
-            if(sessionMap.has(key)) {
-                sessionMap.set(key, sessionMap.get(key) - 1);
-                if(sessionMap.get(key) === 0) sessionMap.delete(key);
-            }
-            if(sessionToKeyMap.get(sessionId).size === 0) sessionToKeyMap.delete(sessionId);
+    const sessionToKeyMap = app.get('sessionToKey');
+    if(sessionToKeyMap.has(sessionId)) {
+        const sessionMap = sessionToKeyMap.get(sessionId);
+        if(sessionMap.has(key)) {
+            sessionMap.set(key, sessionMap.get(key) - 1);
+            if(sessionMap.get(key) === 0) sessionMap.delete(key);
         }
-        console.dir(sessionToKeyMap);
+        if(sessionToKeyMap.get(sessionId).size === 0) sessionToKeyMap.delete(sessionId);
     }
+
     
 
     //  delete mapping socket => gameId;
@@ -236,7 +233,7 @@ export default (server, app, sessionMiddleware) => {
         
         socket.emit('message', {
             type: 'initialize',
-            games: [...game.values()],
+            games: [...instanceSanitizer([...game.values()])],
         });
         
         socket.on('disconnect', () => {
@@ -261,7 +258,8 @@ export default (server, app, sessionMiddleware) => {
 
         const gameMap = app.get('game');
         const game = gameMap.get(key);
-        
+        game._socket = socket;
+
         io.of('/game').to(key).emit('message', {
             type: 'initialize',
             ...instanceSanitizer(game),
