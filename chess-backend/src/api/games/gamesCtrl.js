@@ -11,8 +11,7 @@ export const createGame = (req, res, next) => {
     const gameMap = req.app.get('game');
     const size = gameMap.size;
     const { map, mode, defaultTime, extraTime, piece } = req.body;
-    const key = `_${piece}`;
-
+    
     const genGame = {
         key: uuid(),
         name: `game${size}`,
@@ -28,10 +27,10 @@ export const createGame = (req, res, next) => {
         createdAt: new Date(),
         destroyAt: null,
         start: false,
+        _priority: piece,
         _participant: new Map(),
         _black: null,
         _white: null,
-        [key]: req.sessionID,
         _blackAuth: false,
         _whiteAuth: false,
         _reasonType: null,
@@ -105,7 +104,7 @@ export const createGame = (req, res, next) => {
                 loser.game.lose.push(game._id);
                 loser.lose += 1;
             }
-
+            
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
 
             const rec = await Game.findOne({
@@ -151,10 +150,10 @@ export const deleteGame = (req, res, next) => {
         //  지우려는 방의 기존과 동일한 uuid,
     }
 
-    io.of('/game').emit('message', {
-        type: 'change',
-        game,
-    });
+    // io.of('/game').emit('message', {
+    //     type: 'change',
+    //     game,
+    // });
     
     io.of('/games').emit('message', {
         type: 'initialize',

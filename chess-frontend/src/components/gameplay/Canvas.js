@@ -107,7 +107,7 @@ const CanvasCellBlock = styled.div`
 `
 
 const CanvasRow = React.memo(({ row, y, cellSize, onClickCell, pieceConverter }) => {
-    console.dir('Canvas Row');
+    // console.dir('Canvas Row');
     return (
         <CanvasRowBlock>
             {row.map((cell, x) => (
@@ -129,7 +129,7 @@ const CanvasRow = React.memo(({ row, y, cellSize, onClickCell, pieceConverter })
 });
 
 const CanvasCell = React.memo(({ cell, cellSize, cellNum, onClick, pieceConverter, y, x }) => {
-    console.dir(`Canvas Cell ${y}_${x}`);
+    // console.dir(`Canvas Cell ${y}_${x}`);
     return (
         <CanvasCellBlock
             onClick={onClick}

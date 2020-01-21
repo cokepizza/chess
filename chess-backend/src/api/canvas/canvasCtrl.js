@@ -15,11 +15,10 @@ export const movePiece = (req, res) => {
     const socketToGameMap = req.app.get('socketToGame');
     const key = socketToGameMap.get(socketId);
     const auth = req.user ? true : false;
-    console.dir(`auth: ${auth}`);
 
     const { prev, next } = move;
 
-    console.dir(req.session);
+    // console.dir(req.session);
 
     // const gameObj = gameMap.get(key);
     // gameObj._winner = gameObj.white;
@@ -62,7 +61,8 @@ export const movePiece = (req, res) => {
     }
 
     //  check if player needs authentication
-    console.dir(`player: ${player}'s Authenication ${game[`_${player}Auth`]}`)
+    console.dir(`player ${player}'s Authenication : ${game[`_${player}Auth`]}`);
+    console.dir(`request Authenication : ${auth}`);
     if(game[`_${player}Auth`] && !auth || !game[`_${player}Auth`] && auth) {
         console.dir(`Authentication mismatch`);
         return res.status(403).send({ error: `Authentication mismatch` });

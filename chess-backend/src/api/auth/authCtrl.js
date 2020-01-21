@@ -18,8 +18,8 @@ export const getSession = (req, res, next) => {
     req.session.save();
 
     console.dir('----------http(getSession)---------')
-    console.dir(req.sessionID);
-    console.dir(req.user);
+    // console.dir(req.sessionID);
+    // console.dir(req.user);
     return res.status(202).send({
         sessionId: req.sessionID,
         nickname: req.session.nickname,
@@ -48,7 +48,10 @@ export const login = (req, res, next) => {
                     const game = gameMap.get(key);
                 
                     const index = game.participant.findIndex(ele => ele === req.session.nickname);
-                    game.participant.splice(index, 1, req.user.username);
+                
+                    if(index >= 0) {
+                        game.participant.splice(index, 1, req.user.username);
+                    }
 
                     // if(game.white === req.user.username || game.black === req.user.username) {
                         
@@ -93,9 +96,12 @@ export const logout = (req, res, next) => {
             }
     
             const index = game.participant.findIndex(ele => ele === req.user.username);
-            game.participant.splice(index, 1, req.session.nickname);
-            console.dir(game);
-            console.dir(game.participant);
+            if(index >= 0) {
+                // game.participant.splice(index, 1, req.session.nickname);
+                game.participant.splice(index, 1);
+            }
+            // console.dir(game);
+            // console.dir(game.participant);
     
             io.of('/game').to(key).emit('message', {
                 type: 'initialize',
@@ -104,15 +110,16 @@ export const logout = (req, res, next) => {
         });
     }
 
-    
     req.logout();
+    // req.session.destroy();
+
     console.dir('logout success');
 
     io.of('/sessionAuth').to(req.sessionID).emit('message', {
         type: 'clear',
     });
     
-    // req.session.destroy();
+   
     return res.status(200).send('logout success');
 };
 

@@ -10,8 +10,8 @@ const passportConfig = () => {
     });
 
     passport.deserializeUser((user, done) => {
-        console.dir('deserializeUser');
-        console.dir(user);
+        // console.dir('deserializeUser');
+        // console.dir(user);
         done(null, user);
     });
 

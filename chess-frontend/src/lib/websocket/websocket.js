@@ -16,6 +16,7 @@ function* createEventChannel(io) {
 
         io.on('message', message => {
             emit(message)
+            console.dir(message);
         });
 
         return () => {

@@ -43,7 +43,7 @@ const connectGame = (app, io, socket, key) => {
     //  프론트쪽에 game 없는 접근 redirect하는 코드 넣어둘 것
     if(!game) return;
 
-    if(channel === '/socketAuth') {
+    if(channel === '/game') {
         if(game._participant.has(sessionId)) {
             const socketSet = game._participant.get(sessionId);
             socketSet.add(socket.id);
@@ -54,31 +54,50 @@ const connectGame = (app, io, socket, key) => {
             }
             game._participant.set(sessionId, new Set([socket.id]));
 
-            //  Grab the opposite piece when the second player arrives
-            if(!game._white && game._black && game._black !== sessionId) {
-                game.white = username;
-                game._white = sessionId;
-                game._whiteAuth = auth;
-            }
-            if(!game._black && game._white && game._white !== sessionId) {
-                game.black = username;
-                game._black = sessionId;
-                game._blackAuth = auth;
+            const prior = game._priority;
+            const subsequent = prior === 'white' ? 'black' : 'white';
+
+            //  서버쪽에서는 왠만하면 _white, _black으로 접속여부를 판단한다
+            if(!game[prior] && !game[`_${prior}`] && !game[subsequent] && !game[`_${subsequent}`]) {
+                game[prior] = username;
+                game[`_${prior}`] = sessionId;
+                game[`_${prior}Auth`] = auth;
+            // } else if(game[prior] && game[`_${prior}`] && game[`_${prior}`] !== sessionId && !game[subsequent] && !game[`_${subsequent}`]) {
+            //     game[subsequent] = username;
+            //     game[`_${subsequent}`] = sessionId;
+            //     game[`_${subsequent}Auth`] = auth;
+            // }
+            } else if(game[prior] && game[`_${prior}`] && !game[subsequent] && !game[`_${subsequent}`]) {
+                game[subsequent] = username;
+                game[`_${subsequent}`] = sessionId;
+                game[`_${subsequent}Auth`] = auth;
             }
 
+            //  Grab the opposite piece when the second player arrives
+            // if(!game._white && game._black && game._black !== sessionId) {
+            //     game.white = username;
+            //     game._white = sessionId;
+            //     game._whiteAuth = auth;
+            // }
+            // if(!game._black && game._white && game._white !== sessionId) {
+            //     game.black = username;
+            //     game._black = sessionId;
+            //     game._blackAuth = auth;
+            // }
+
             //  Set game creator's username
-            if(game._white && game._white === sessionId) {
-                if(!game._whiteAuth) {
-                    game.white = username;
-                    game._whiteAuth = auth;
-                }
-            }
-            if(game._black && game._black === sessionId) {
-                if(!game._blackAuth) {
-                    game.black = username;
-                    game._blackAuth = auth;
-                }
-            }
+            // if(game._white && game._white === sessionId) {
+            //     if(!game._whiteAuth) {
+            //         game.white = username;
+            //         game._whiteAuth = auth;
+            //     }
+            // }
+            // if(game._black && game._black === sessionId) {
+            //     if(!game._blackAuth) {
+            //         game.black = username;
+            //         game._blackAuth = auth;
+            //     }
+            // }
     
             if(game._white && game._black) {
                 if(sessionId === game._white || sessionId === game._black) {
@@ -90,11 +109,26 @@ const connectGame = (app, io, socket, key) => {
                 }
             }
             
+            console.dir('-------hole------');
+            const pop = instanceSanitizer(game);
+            // pop.black = null;
+            // pop.start = false;
+            console.dir(pop);
             io.of('/game').to(key).emit('message', {
                 type: 'initialize',
-                ...instanceSanitizer(game),
+                ...pop,
             });
+
+            // io.of('/game').to(key).emit('message', {
+            //     type: 'initialize',
+            //     ...instanceSanitizer(game),
+            // });
     
+            // io.of('/game').to(key).emit('message', {
+            //     type: 'initialize',
+            //     tong: instanceSanitizer(game),
+            // });
+
             io.of('/games').emit('message', {
                 type: 'initialize',
                 games: [...gameMap.values()],
@@ -111,6 +145,8 @@ const disconnectGame = (app, io, socket, key) => {
     const passportUser = passport ? passport.user : null;
     const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
     const auth = (passportUser && passportUser.username) ? true : false;
+    console.dir('&_&_&_&_&_&');
+    console.dir(passport);
 
     if(auth) {
         const sessionToKeyMap = app.get('sessionToKey');
@@ -144,7 +180,7 @@ const disconnectGame = (app, io, socket, key) => {
     //  프론트쪽에 game 없는 접근 redirect하는 코드 넣어둘 것
     if(!game) return;
 
-    if(channel === '/socketAuth') {
+    if(channel === '/game') {
         if(game._participant.has(sessionId)) {
             const socketSet = game._participant.get(sessionId);
             socketSet.delete(socket.id);
@@ -153,6 +189,11 @@ const disconnectGame = (app, io, socket, key) => {
                 game._participant.delete(sessionId);
 
                 const index = game.participant.findIndex(ele => ele === username);
+                console.dir('****************');
+                console.dir(index);
+                console.dir(username);
+                console.dir(auth);
+
                 if(index >= 0) {
                     game.participant.splice(index, 1);
                 };
@@ -166,10 +207,10 @@ const disconnectGame = (app, io, socket, key) => {
                     
                 };
 
-                io.of('/game').to(key).emit('message', {
-                    type: 'initialize',
-                    ...instanceSanitizer(game),
-                });
+                // io.of('/game').to(key).emit('message', {
+                //     type: 'initialize',
+                //     ...instanceSanitizer(game),
+                // });
 
                 io.of('/games').emit('message', {
                     type: 'initialize',
@@ -241,10 +282,10 @@ export default (server, app, sessionMiddleware) => {
 
         const game = app.get('game').get(key);
 
-        socket.emit('message', {
-            type: 'initialize',
-            ...game,
-        });
+        // socket.emit('message', {
+        //     type: 'initialize',
+        //     ...game,
+        // });
 
         socket.on('disconnect', () => {
             disconnectGame(app, io, socket, key);
