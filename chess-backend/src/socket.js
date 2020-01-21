@@ -62,16 +62,16 @@ const connectGame = (app, io, socket, key) => {
                 game[prior] = username;
                 game[`_${prior}`] = sessionId;
                 game[`_${prior}Auth`] = auth;
-            // } else if(game[prior] && game[`_${prior}`] && game[`_${prior}`] !== sessionId && !game[subsequent] && !game[`_${subsequent}`]) {
-            //     game[subsequent] = username;
-            //     game[`_${subsequent}`] = sessionId;
-            //     game[`_${subsequent}Auth`] = auth;
-            // }
-            } else if(game[prior] && game[`_${prior}`] && !game[subsequent] && !game[`_${subsequent}`]) {
+            } else if(game[prior] && game[`_${prior}`] && game[`_${prior}`] !== sessionId && !game[subsequent] && !game[`_${subsequent}`]) {
                 game[subsequent] = username;
                 game[`_${subsequent}`] = sessionId;
                 game[`_${subsequent}Auth`] = auth;
             }
+            // } else if(game[prior] && game[`_${prior}`] && !game[subsequent] && !game[`_${subsequent}`]) {
+            //     game[subsequent] = username;
+            //     game[`_${subsequent}`] = sessionId;
+            //     game[`_${subsequent}Auth`] = auth;
+            // }
 
             //  Grab the opposite piece when the second player arrives
             // if(!game._white && game._black && game._black !== sessionId) {
@@ -111,9 +111,8 @@ const connectGame = (app, io, socket, key) => {
             
             console.dir('-------hole------');
             const pop = instanceSanitizer(game);
-            // pop.black = null;
-            // pop.start = false;
             console.dir(pop);
+            
             io.of('/game').to(key).emit('message', {
                 type: 'initialize',
                 ...pop,
