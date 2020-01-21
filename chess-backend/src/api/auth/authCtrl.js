@@ -2,6 +2,7 @@ import ColorHash from 'color-hash';
 import passport from 'passport';
 import Joi from 'joi';
 import User from '../../models/user';
+import instanceSanitizer from '../../lib/util/instanceSanitizer';
 
 /* SocketIO 연결 전, 첫 세션 생성 시점 */
 export const getSession = (req, res, next) => {
@@ -55,12 +56,25 @@ export const login = (req, res, next) => {
 };
 
 export const logout = (req, res, next) => {
-    req.logout();
-    console.dir('logout success');
-
     const io = req.app.get('io');
+    const gameMap = req.app.get('game')
     const sessionToKeyMap = req.app.get('sessionToKey')
     console.dir(sessionToKeyMap);
+    console.dir(req.user);
+    console.dir(req.session.nickname);
+    Object.keys(sessionToKeyMap.get(req.sessionID)).forEach(key => {
+        const game = gameMap.get(key);
+        const index = game.participant.findIndex(ele === req.user.username);
+        game.participant.splice(index, 1, req.session.nickname);
+
+        io.of('/game').to(key).emit('message', {
+            type: 'initializeValue',
+            ...instanceSanitizer(game),
+        })
+    });
+    
+    req.logout();
+    console.dir('logout success');
 
     const sessionID = req.sessionID;
 
