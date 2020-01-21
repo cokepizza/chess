@@ -54,7 +54,7 @@ export const createGame = (req, res, next) => {
             } else {
                 //  initialize session (enter this._participant, this.participant)
                 this._participant.set(sessionId, new Set([ socket.id ]));
-                if(new Set(this.participant).has())
+                // if(new Set(this.participant).has())
             }
         },
         _ignite: function() {

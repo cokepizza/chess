@@ -14,6 +14,8 @@ export const movePiece = (req, res) => {
     const canvasMap = req.app.get('canvas');
     const socketToGameMap = req.app.get('socketToGame');
     const key = socketToGameMap.get(socketId);
+    const auth = req.user ? true : false;
+    console.dir(`auth: ${auth}`);
 
     const { prev, next } = move;
 
@@ -57,6 +59,19 @@ export const movePiece = (req, res) => {
     if(player === 'spectator') {
         console.dir(`You're just a spectator`);
         return res.status(403).send({ error: `You're just a spectator` });
+    }
+
+    //  check if player needs authentication
+    console.dir(`player: ${player}'s Authenication ${game[`_${player}Auth`]}`)
+    if(game[`_${player}Auth`] && !auth || !game[`_${player}Auth`] && auth) {
+        console.dir(`Authentication mismatch`);
+        return res.status(403).send({ error: `Authentication mismatch` });
+    }
+
+    //  check if player authentication confirms
+    if(auth && req.user.username !== game[player]) {
+        console.dir(`Authentication failed`);
+        return res.status(403).send({ error: `Authentication failed` });
     }
     
     //  check if it's your turn
