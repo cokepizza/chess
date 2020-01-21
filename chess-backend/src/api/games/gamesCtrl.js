@@ -3,8 +3,10 @@
 // const socket = mapSessionToSocket.get(req.session.id);
 
 import uuid from 'uuid/v1';
+
 import Game from '../../models/game';
 import User from '../../models/user';
+import instanceSanitizer from '../../lib/util/instanceSanitizer';
 
 export const createGame = (req, res, next) => {
     const io = req.app.get('io');
@@ -127,7 +129,7 @@ export const createGame = (req, res, next) => {
 
             io.of('/games').emit('message', {
                 type: 'initialize',
-                games: [...gameMap.values()],
+                games: [...instanceSanitizer([...gameMap.values()])],
             });
         },
     };
@@ -138,7 +140,7 @@ export const createGame = (req, res, next) => {
     //  change에서는 game 객체 정보만 전달하자
     io.of('/games').emit('message', {
         type: 'initialize',
-        games: [...gameMap.values()],
+        games: [...instanceSanitizer([...gameMap.values()])],
     });
 
     return res.status(202).send(genGame.key);
@@ -157,7 +159,7 @@ export const deleteGame = (req, res, next) => {
     
     io.of('/games').emit('message', {
         type: 'initialize',
-        games: [...gameMap.values()],
+        games: [...instanceSanitizer([...gameMap.values()])],
     });
 
     return res.status(202).end();

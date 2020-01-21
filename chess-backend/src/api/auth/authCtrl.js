@@ -45,13 +45,17 @@ export const login = (req, res, next) => {
             const sessionToKeyMap = req.app.get('sessionToKey');
             if(sessionToKeyMap.has(req.sessionID)) {
                 [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
+                    const io = req.app.get('io');
+                    const gameMap = req.app.get('game');
                     const game = gameMap.get(key);
                 
                     const index = game.participant.findIndex(ele => ele === req.session.nickname);
-                
+                    console.dir(index);
+                    console.dir(game.participant);
                     if(index >= 0) {
                         game.participant.splice(index, 1, req.user.username);
                     }
+                    console.dir(game.participant);
 
                     // if(game.white === req.user.username || game.black === req.user.username) {
                         
@@ -82,7 +86,7 @@ export const login = (req, res, next) => {
 
 export const logout = (req, res, next) => {
     const io = req.app.get('io');
-    const gameMap = req.app.get('game')
+    const gameMap = req.app.get('game');
     
     //  로그인된 유저가 로그아웃 했을 때 해당 key를 가지고 있는 game에 참가중이라면
     //  participant에서 제외시키고 game 내에서 white나 black의 role을 갖고 있었다면 게임을 중단

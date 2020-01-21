@@ -57,7 +57,6 @@ const connectGame = (app, io, socket, key) => {
             const prior = game._priority;
             const subsequent = prior === 'white' ? 'black' : 'white';
 
-            //  서버쪽에서는 왠만하면 _white, _black으로 접속여부를 판단한다
             if(!game[prior] && !game[`_${prior}`] && !game[subsequent] && !game[`_${subsequent}`]) {
                 game[prior] = username;
                 game[`_${prior}`] = sessionId;
@@ -67,11 +66,6 @@ const connectGame = (app, io, socket, key) => {
                 game[`_${subsequent}`] = sessionId;
                 game[`_${subsequent}Auth`] = auth;
             }
-            // } else if(game[prior] && game[`_${prior}`] && !game[subsequent] && !game[`_${subsequent}`]) {
-            //     game[subsequent] = username;
-            //     game[`_${subsequent}`] = sessionId;
-            //     game[`_${subsequent}Auth`] = auth;
-            // }
 
             //  Grab the opposite piece when the second player arrives
             // if(!game._white && game._black && game._black !== sessionId) {
@@ -98,40 +92,26 @@ const connectGame = (app, io, socket, key) => {
             //         game._blackAuth = auth;
             //     }
             // }
-    
+
             if(game._white && game._black) {
-                if(sessionId === game._white || sessionId === game._black) {
-                    if(game._participant.has(game._white) && game._participant.has(game._black)) {
+                if(game._participant.has(game._white) && game._participant.has(game._black)) {
+                    if((username === game.white && sessionId === game._white) || (username === game.black && sessionId === game._black)) {
                         const record = app.get('record').get(key);
                         record._start(game.order);
                         game.start = true;
                     };
-                }
-            }
-            
-            console.dir('-------hole------');
-            const pop = instanceSanitizer(game);
-            console.dir(pop);
-            
-            io.of('/game').to(key).emit('message', {
-                type: 'initialize',
-                ...pop,
-            });
+                };
+            };
 
             // io.of('/game').to(key).emit('message', {
             //     type: 'initialize',
             //     ...instanceSanitizer(game),
             // });
     
-            // io.of('/game').to(key).emit('message', {
+            // io.of('/games').emit('message', {
             //     type: 'initialize',
-            //     tong: instanceSanitizer(game),
+            //     games: [...instanceSanitizer([...gameMap.values()])],
             // });
-
-            io.of('/games').emit('message', {
-                type: 'initialize',
-                games: [...gameMap.values()],
-            });
         }
     }
     // console.dir(game);
@@ -213,7 +193,7 @@ const disconnectGame = (app, io, socket, key) => {
 
                 io.of('/games').emit('message', {
                     type: 'initialize',
-                    games: [...gameMap.values()],
+                    games: [...instanceSanitizer([...gameMap.values()])],
                 });
                 
                 //  나가는 선택권은 프론트에 주어져야 할 듯
@@ -279,7 +259,18 @@ export default (server, app, sessionMiddleware) => {
 
         connectGame(app, io, socket, key);
 
-        const game = app.get('game').get(key);
+        const gameMap = app.get('game');
+        const game = gameMap.get(key);
+        
+        io.of('/game').to(key).emit('message', {
+            type: 'initialize',
+            ...instanceSanitizer(game),
+        });
+
+        io.of('/games').emit('message', {
+            type: 'initialize',
+            games: [...instanceSanitizer([...gameMap.values()])],
+        });
 
         // socket.emit('message', {
         //     type: 'initialize',
@@ -496,6 +487,7 @@ export default (server, app, sessionMiddleware) => {
                     })
                 },
             };
+
             recordSkeleton._initialize();
             app.get('game').get(key)._room = recordSkeleton;
             app.get('record').set(key, recordSkeleton);
