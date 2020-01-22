@@ -23,19 +23,6 @@ const connectGame = (app, io, socket, key) => {
     //     sessionMap.set(key, 1);
     // }
 
-    //  game쪽으로 이관할 것 socket은 하나만 있어도 됨
-    const session = app.get('session');
-    if(!session.has(sessionId)) {
-        session.set(sessionId, new Map());
-    }
-    const sessionToKey = session.get(sessionId);
-    if(!sessionToKey.has(key)) {
-        sessionToKey.set(key, new Set());
-    }
-    const keyToSocket = sessionToKey.get(key);
-    keyToSocket.add(socket);
-
-
     //  mapping socket => gameId
     const socketToKeyMap = app.get('socketToKey');
     socketToKeyMap.set(socket.id, key);
@@ -78,41 +65,17 @@ const connectGame = (app, io, socket, key) => {
                 game[`_${subsequent}Auth`] = auth;
             }
 
-            //  Grab the opposite piece when the second player arrives
-            // if(!game._white && game._black && game._black !== sessionId) {
-            //     game.white = username;
-            //     game._white = sessionId;
-            //     game._whiteAuth = auth;
-            // }
-            // if(!game._black && game._white && game._white !== sessionId) {
-            //     game.black = username;
-            //     game._black = sessionId;
-            //     game._blackAuth = auth;
-            // }
-
-            //  Set game creator's username
-            // if(game._white && game._white === sessionId) {
-            //     if(!game._whiteAuth) {
-            //         game.white = username;
-            //         game._whiteAuth = auth;
-            //     }
-            // }
-            // if(game._black && game._black === sessionId) {
-            //     if(!game._blackAuth) {
-            //         game.black = username;
-            //         game._blackAuth = auth;
-            //     }
-            // }
-
-            if(game._white && game._black) {
-                if(game._participant.has(game._white) && game._participant.has(game._black)) {
-                    if((username === game.white && sessionId === game._white) || (username === game.black && sessionId === game._black)) {
-                        const record = app.get('record').get(key);
-                        record._start(game.order);
-                        game.start = true;
-                    };
-                };
-            };
+            game._ignite();
+            game._broadcast();
+            // if(game._white && game._black) {
+            //     if(game._participant.has(game._white) && game._participant.has(game._black)) {
+            //         if((username === game.white && sessionId === game._white) || (username === game.black && sessionId === game._black)) {
+            //             const record = app.get('record').get(key);
+            //             record._start(game.order);
+            //             game.start = true;
+            //         };
+            //     };
+            // };
 
             // io.of('/game').to(key).emit('message', {
             //     type: 'initialize',
@@ -137,6 +100,8 @@ const disconnectGame = (app, io, socket, key) => {
     const auth = (passportUser && passportUser.username) ? true : false;
     console.dir('-----------disconnect--------------');
     console.dir(socket.request.session.passport);
+    console.dir(passportUser);
+    console.dir(username);
     // console.dir('&_&_&_&_&_&');
     // console.dir(passport);
 
@@ -192,9 +157,6 @@ const disconnectGame = (app, io, socket, key) => {
                     const record = app.get('record').get(key);
                     record._stop();
                     game.start = false;
-
-                    //  나가면 5초내에 재접속이 없을 시 게임 종료
-                    
                 };
 
                 // io.of('/game').to(key).emit('message', {
@@ -273,7 +235,20 @@ export default (server, app, sessionMiddleware) => {
 
         const gameMap = app.get('game');
         const game = gameMap.get(key);
-        game._socket = socket;
+        const sessionId = socket.request.sessionID;
+
+        //  sessionId => key => socket
+        const session = app.get('session');
+        if(!session.has(sessionId)) {
+            session.set(sessionId, new Map());
+        }
+        const sessionToKey = session.get(sessionId);
+        if(!sessionToKey.has(key)) {
+            sessionToKey.set(key, new Set());
+        }
+        const keyToSocket = sessionToKey.get(key);
+        keyToSocket.add(socket);
+
 
         io.of('/game').to(key).emit('message', {
             type: 'initialize',
@@ -502,7 +477,7 @@ export default (server, app, sessionMiddleware) => {
             };
 
             recordSkeleton._initialize();
-            app.get('game').get(key)._room = recordSkeleton;
+            app.get('game').get(key)._record = recordSkeleton;
             app.get('record').set(key, recordSkeleton);
         }
 

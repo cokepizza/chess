@@ -40,7 +40,7 @@ export const createGame = (req, res, next) => {
         _draw: false,
         _winner: null,
         _loser: null,
-        _room: null,
+        _record: null,
         _join: function(socket) {
             const sessionId = socket.request.sessionID;
             const { nickname, passport } = socket.request.session;
@@ -59,9 +59,51 @@ export const createGame = (req, res, next) => {
             }
         },
         _ignite: function() {
-            if(this.mode === 'rank') {
+            //  Start the game if the conditions are correct
+           
+            //  username, sessionId
+            // if(this._white && this._black) {
+            //     if(this._participant.has(this._white) && this._participant.has(this._black)) {
+            //         if((username === this.white && sessionId === this._white) || (username === this.black && sessionId === this._black)) {
+            //             this.start = true;
+            //             this._broadcast();
 
+            //             this._record_start(this.order);    
+            //         };
+            //     };
+            // };
+            
+            console.dir('ignite');
+            const participantSet = new Set(this.participant);
+            if(this.white && participantSet.has(this.white) && this.black && participantSet.has(this.black)) {
+                this.start = true;
+                this._record_start(this.order);   
             }
+
+            return;
+        },
+        _smother: function() {
+            //  Stop the game if the conditions are not met
+            const participantSet = new Set(this.participant);
+            if(this.white && participantSet.has(this.white) && this.black && participantSet.has(this.black)) {
+                return;
+            }
+            
+            this.start = false;
+            this._record._stop();
+        },
+        _broadcast: function() {
+            io.of('/game').to(this.key).emit('message', {
+                type: 'initialize',
+                ...instanceSanitizer(this),
+            });
+        },
+        _multicast: function() {
+            const gameMap = req.app.get('game');
+            io.of('/games').emit('message', {
+                type: 'initialize',
+                games: [...instanceSanitizer([...gameMap.values()])],
+            });
         },
         _save: async function() {
             if(this._draw && (!this.white || !this.black)) return;
@@ -78,7 +120,7 @@ export const createGame = (req, res, next) => {
             }
             const [ winner, loser ] = await Promise.all(promiseArr);
 
-            const pieceMove = JSON.stringify(this._room.pieceMove);
+            const pieceMove = JSON.stringify(this._record.pieceMove);
             
             const game = new Game({
                 player: [ winner._id, loser._id ],

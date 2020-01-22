@@ -42,40 +42,75 @@ export const login = (req, res, next) => {
                 return res.status(400).send(err);
             };
 
-            const sessionToKeyMap = req.app.get('sessionToKey');
-            console.dir(sessionToKeyMap);
-            if(sessionToKeyMap.has(req.sessionID)) {
-                [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
-                    const io = req.app.get('io');
-                    const gameMap = req.app.get('game');
-                    const game = gameMap.get(key);
-                    console.dir(game._socket);
-                
-                    const index = game.participant.findIndex(ele => ele === req.session.nickname);
-                    console.dir(index);
-                    console.dir(game.participant);
-                    if(index >= 0) {
-                        game.participant.splice(index, 1, req.user.username);
-                    }
-                    console.dir(game.participant);
-
-                    // if(game.white === req.user.username || game.black === req.user.username) {
-                        
-                    //     if(game.white && game.participant)
-                    //     game.start = true;
-                    // }
-
-                    console.dir(game);
-                    console.dir(game.participant);
-            
-                    io.of('/game').to(key).emit('message', {
-                        type: 'initialize',
-                        ...instanceSanitizer(game),
-                    })
-                });
-            }
-
             const io = req.app.get('io');
+            const gameMap = req.app.get('game');
+            const sessionMap = req.app.get('session');
+
+            if(sessionMap.has(req.sessionID)) {
+                const sessionToKey = sessionMap.get(req.sessionID);
+                if(sessionToKey) {
+                    [...sessionToKey.keys()].forEach(key => {
+                        const keyToSocket = sessionToKey.get(key);
+                        if(keyToSocket) {
+                            [...keyToSocket].forEach(socket => {
+                                socket.request.session.passport = {
+                                    user: {
+                                        ...req.user
+                                    }
+                                };
+                            });
+                        }
+                        
+                        const game = gameMap.get(key);
+                        
+                        const index = game.participant.findIndex(ele => ele === req.session.nickname);
+                        if(index >= 0) {
+                            game.participant.splice(index, 1, req.user.username);
+                        }               
+                        
+                        game._ignite();
+                        game._broadcast();
+                    });
+                    console.dir('games initialize login~')
+                    io.of('/games').emit('message', {
+                        type: 'initialize',
+                        games: [...instanceSanitizer([...gameMap.values()])],
+                    });
+                }
+            }
+            
+            // const sessionToKeyMap = req.app.get('sessionToKey');
+            // console.dir(sessionToKeyMap);
+            // if(sessionToKeyMap.has(req.sessionID)) {
+            //     [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
+            //         const io = req.app.get('io');
+            //         const gameMap = req.app.get('game');
+            //         const game = gameMap.get(key);
+                
+            //         const index = game.participant.findIndex(ele => ele === req.session.nickname);
+            //         console.dir(index);
+            //         console.dir(game.participant);
+            //         if(index >= 0) {
+            //             game.participant.splice(index, 1, req.user.username);
+            //         }
+            //         console.dir(game.participant);
+
+            //         // if(game.white === req.user.username || game.black === req.user.username) {
+                        
+            //         //     if(game.white && game.participant)
+            //         //     game.start = true;
+            //         // }
+
+            //         console.dir(game);
+            //         console.dir(game.participant);
+            
+            //         io.of('/game').to(key).emit('message', {
+            //             type: 'initialize',
+            //             ...instanceSanitizer(game),
+            //         })
+            //     });
+            // }
+
             io.of('/sessionAuth').to(req.sessionID).emit('message', {
                 type: 'initialize',
                 ...user,
@@ -101,34 +136,25 @@ export const logout = (req, res, next) => {
                 if(keyToSocket) {
                     [...keyToSocket].forEach(socket => {
                         if(socket.request.session) {
-                            console.dir('passport erase');
-                            console.dir(socket.request.session.passport);
                             delete socket.request.session.passport;
                         }
                     });
                 }
                 
                 const game = gameMap.get(key);
-                //  session 제거
-                //  아무래도 session 객체를 만들어서 sessionId => key => socketId 로 연결되는 객체를 만들어야 할듯
-                // game._socket.;
-    
-                if(game.white === req.user.username || game.black === req.user.username) {
-                    game.start = false;
-                };
-        
+                
                 const index = game.participant.findIndex(ele => ele === req.user.username);
                 if(index >= 0) {
                     game.participant.splice(index, 1, req.session.nickname);
-                    // game.participant.splice(index, 1);
-                }
-                // console.dir(game);
-                // console.dir(game.participant);
-        
-                io.of('/game').to(key).emit('message', {
-                    type: 'initialize',
-                    ...instanceSanitizer(game),
-                })
+                }               
+
+                game._smother();
+                game._broadcast();
+            });
+            console.dir('games initialize logout~')
+            io.of('/games').emit('message', {
+                type: 'initialize',
+                games: [...instanceSanitizer([...gameMap.values()])],
             });
         }
     }
