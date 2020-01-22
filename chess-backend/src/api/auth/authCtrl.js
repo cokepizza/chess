@@ -78,38 +78,6 @@ export const login = (req, res, next) => {
                     });
                 }
             }
-            
-            // const sessionToKeyMap = req.app.get('sessionToKey');
-            // console.dir(sessionToKeyMap);
-            // if(sessionToKeyMap.has(req.sessionID)) {
-            //     [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
-            //         const io = req.app.get('io');
-            //         const gameMap = req.app.get('game');
-            //         const game = gameMap.get(key);
-                
-            //         const index = game.participant.findIndex(ele => ele === req.session.nickname);
-            //         console.dir(index);
-            //         console.dir(game.participant);
-            //         if(index >= 0) {
-            //             game.participant.splice(index, 1, req.user.username);
-            //         }
-            //         console.dir(game.participant);
-
-            //         // if(game.white === req.user.username || game.black === req.user.username) {
-                        
-            //         //     if(game.white && game.participant)
-            //         //     game.start = true;
-            //         // }
-
-            //         console.dir(game);
-            //         console.dir(game.participant);
-            
-            //         io.of('/game').to(key).emit('message', {
-            //             type: 'initialize',
-            //             ...instanceSanitizer(game),
-            //         })
-            //     });
-            // }
 
             io.of('/sessionAuth').to(req.sessionID).emit('message', {
                 type: 'initialize',

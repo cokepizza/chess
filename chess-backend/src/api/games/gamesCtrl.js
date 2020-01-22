@@ -77,7 +77,7 @@ export const createGame = (req, res, next) => {
             const participantSet = new Set(this.participant);
             if(this.white && participantSet.has(this.white) && this.black && participantSet.has(this.black)) {
                 this.start = true;
-                this._record_start(this.order);   
+                this._record._start(this.order);   
             }
 
             return;
