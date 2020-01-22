@@ -12,8 +12,8 @@ export const movePiece = (req, res) => {
     const io = req.app.get('io');
     const gameMap = req.app.get('game');
     const canvasMap = req.app.get('canvas');
-    const socketToGameMap = req.app.get('socketToGame');
-    const key = socketToGameMap.get(socketId);
+    const socketToKeyMap = req.app.get('socketToKey');
+    const key = socketToKeyMap.get(socketId);
     const auth = req.user ? true : false;
 
     const { prev, next } = move;

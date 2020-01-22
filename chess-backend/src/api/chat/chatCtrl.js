@@ -3,8 +3,8 @@ export const sendMessage = (req, res, next) => {
     const io = req.app.get('io');
     const { socket: socketId, message } = req.body;
     const { nickname, color } = req.session;
-    const socketToGameMap = req.app.get('socketToGame');
-    const key = socketToGameMap.get(socketId);
+    const socketToKeyMap = req.app.get('socketToKey');
+    const key = socketToKeyMap.get(socketId);
     
     console.dir(socketId);
     console.dir(key);

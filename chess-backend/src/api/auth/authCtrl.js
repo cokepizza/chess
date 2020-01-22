@@ -92,30 +92,45 @@ export const logout = (req, res, next) => {
     
     //  로그인된 유저가 로그아웃 했을 때 해당 key를 가지고 있는 game에 참가중이라면
     //  participant에서 제외시키고 game 내에서 white나 black의 role을 갖고 있었다면 게임을 중단
-    const sessionToKeyMap = req.app.get('sessionToKey');
-    if(sessionToKeyMap.has(req.sessionID)) {
-        [...sessionToKeyMap.get(req.sessionID).keys()].forEach(key => {
-            const game = gameMap.get(key);
-            //  session 제거
-            // game._socket.;
-
-            if(game.white === req.user.username || game.black === req.user.username) {
-                game.start = false;
-            }
+    const sessionMap = req.app.get('session');
+    if(sessionMap.has(req.sessionID)) {
+        const sessionToKey = sessionMap.get(req.sessionID);
+        if(sessionToKey) {
+            [...sessionToKey.keys()].forEach(key => {
+                const keyToSocket = sessionToKey.get(key);
+                if(keyToSocket) {
+                    [...keyToSocket].forEach(socket => {
+                        if(socket.request.session) {
+                            console.dir('passport erase');
+                            console.dir(socket.request.session.passport);
+                            delete socket.request.session.passport;
+                        }
+                    });
+                }
+                
+                const game = gameMap.get(key);
+                //  session 제거
+                //  아무래도 session 객체를 만들어서 sessionId => key => socketId 로 연결되는 객체를 만들어야 할듯
+                // game._socket.;
     
-            const index = game.participant.findIndex(ele => ele === req.user.username);
-            if(index >= 0) {
-                game.participant.splice(index, 1, req.session.nickname);
-                // game.participant.splice(index, 1);
-            }
-            // console.dir(game);
-            // console.dir(game.participant);
-    
-            io.of('/game').to(key).emit('message', {
-                type: 'initialize',
-                ...instanceSanitizer(game),
-            })
-        });
+                if(game.white === req.user.username || game.black === req.user.username) {
+                    game.start = false;
+                };
+        
+                const index = game.participant.findIndex(ele => ele === req.user.username);
+                if(index >= 0) {
+                    game.participant.splice(index, 1, req.session.nickname);
+                    // game.participant.splice(index, 1);
+                }
+                // console.dir(game);
+                // console.dir(game.participant);
+        
+                io.of('/game').to(key).emit('message', {
+                    type: 'initialize',
+                    ...instanceSanitizer(game),
+                })
+            });
+        }
     }
 
     req.logout();
