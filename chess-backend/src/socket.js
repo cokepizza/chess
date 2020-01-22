@@ -4,7 +4,7 @@ import _ from 'lodash';
 import defaultBoard from './lib/base/board';
 import instanceSanitizer from './lib/util/instanceSanitizer';
 
-const connectGame = (app, io, socket, key) => {
+const connectSocket = (app, io, socket, key) => {
     const channel = socket.id.split('#')[0];
     const { nickname, passport } = socket.request.session;
     const sessionId = socket.request.sessionID;
@@ -22,73 +22,15 @@ const connectGame = (app, io, socket, key) => {
 
     //  Game(key) based service
     socket.join(key);
-
-    //  Server용 game 객체 업데이트
-    const gameMap = app.get('game');
-    const game = gameMap.get(key);
-
-    //  프론트쪽에 game 없는 접근 redirect하는 코드 넣어둘 것
-    if(!game) return;
-
-    if(game._participant.has(sessionId)) {
-        const socketSet = game._participant.get(sessionId);
-        socketSet.add(socket.id);
-    } else {
-        //  first socket only serve
-        if(!new Set(game.participant).has(username)) {
-            game.participant.push(username);
-        }
-        game._participant.set(sessionId, new Set([socket.id]));
-
-        const prior = game._priority;
-        const subsequent = prior === 'white' ? 'black' : 'white';
-
-        if(!game[prior] && !game[`_${prior}`] && !game[subsequent] && !game[`_${subsequent}`]) {
-            game[prior] = username;
-            game[`_${prior}`] = sessionId;
-            game[`_${prior}Auth`] = auth;
-        } else if(game[prior] && game[`_${prior}`] && game[`_${prior}`] !== sessionId && !game[subsequent] && !game[`_${subsequent}`]) {
-            game[subsequent] = username;
-            game[`_${subsequent}`] = sessionId;
-            game[`_${subsequent}Auth`] = auth;
-        }
-
-        // if(game._white && game._black) {
-        //     if(game._participant.has(game._white) && game._participant.has(game._black)) {
-        //         if((username === game.white && sessionId === game._white) || (username === game.black && sessionId === game._black)) {
-        //             const record = app.get('record').get(key);
-        //             record._start(game.order);
-        //             game.start = true;
-        //         };
-        //     };
-        // };
-
-        // io.of('/game').to(key).emit('message', {
-        //     type: 'initialize',
-        //     ...instanceSanitizer(game),
-        // });
-
-        // io.of('/games').emit('message', {
-        //     type: 'initialize',
-        //     games: [...instanceSanitizer([...gameMap.values()])],
-        // });
-    }
-    // console.dir(game);
 }
 
-const disconnectGame = (app, io, socket, key) => {
+const disconnectSocket = (app, io, socket, key) => {
     const channel = socket.id.split('#')[0];
     const { nickname, passport } = socket.request.session;
     const sessionId = socket.request.sessionID;
     const passportUser = passport ? passport.user : null;
     const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
     const auth = (passportUser && passportUser.username) ? true : false;
-    // console.dir('-----------disconnect--------------');
-    // console.dir(socket.request.session.passport);
-    // console.dir(passportUser);
-    // console.dir(username);
-    // console.dir('&_&_&_&_&_&');
-    // console.dir(passport);
 
     //  delete mapping socket => gameId;
     const socketToKeyMap = app.get('socketToKey');
@@ -100,57 +42,6 @@ const disconnectGame = (app, io, socket, key) => {
 
     //  Broadcasting용 game 업데이트
     socket.leave(key);
-
-    //  Server용 game 객체 업데이트
-    const gameMap = app.get('game');
-    const game = gameMap.get(key);
-
-    //  프론트쪽에 game 없는 접근 redirect하는 코드 넣어둘 것
-    if(!game) return;
-
-    if(game._participant.has(sessionId)) {
-        const socketSet = game._participant.get(sessionId);
-        socketSet.delete(socket.id);
-
-        if(socketSet.size === 0) {
-            game._participant.delete(sessionId);
-
-            const index = game.participant.findIndex(ele => ele === username);
-            // console.dir('****************');
-            // console.dir(index);
-            // console.dir(username);
-            // console.dir(auth);
-
-            if(index >= 0) {
-                game.participant.splice(index, 1);
-            };
-            
-            // if(game._black === sessionId || game._white === sessionId) {
-            //     const record = app.get('record').get(key);
-            //     record._stop();
-            //     game.start = false;
-            // };
-
-            // io.of('/game').to(key).emit('message', {
-            //     type: 'initialize',
-            //     ...instanceSanitizer(game),
-            // });
-            console.dir('games broadcast');
-            game._smother();
-            game._broadcast();
-            game._multicast();
-            
-            // io.of('/games').emit('message', {
-            //     type: 'initialize',
-            //     games: [...instanceSanitizer([...gameMap.values()])],
-            // });
-            
-            //  나가는 선택권은 프론트에 주어져야 할 듯
-            // if(game._start && (game._black === null || game._white === null)) {
-            //     game._destory();
-            // }
-        }
-    }
 }
 
 export default (server, app, sessionMiddleware) => {
@@ -178,11 +69,11 @@ export default (server, app, sessionMiddleware) => {
     games.on('connect', socket => {
         console.dir('-------------socket(games)--------------');
         console.dir(socket.request.sessionID);
-        const game = app.get('game');
+        const gameMap = app.get('game');
         
         socket.emit('message', {
             type: 'initialize',
-            games: [...instanceSanitizer([...game.values()])],
+            games: [...instanceSanitizer([...gameMap.values()])],
         });
         
         socket.on('disconnect', () => {
@@ -203,12 +94,16 @@ export default (server, app, sessionMiddleware) => {
         const key = socket.handshake.query['key'];
         if(!key) return;
 
-        connectGame(app, io, socket, key);
+        connectSocket(app, io, socket, key);
 
         const gameMap = app.get('game');
         const game = gameMap.get(key);
+        const { nickname, passport } = socket.request.session;
+        const passportUser = passport ? passport.user : null;
         const sessionId = socket.request.sessionID;
-                
+        const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+        const auth = (passportUser && passportUser.username) ? true : false;
+        
         //  sessionId => key => socket
         const session = app.get('session');
         if(!session.has(sessionId)) {
@@ -221,33 +116,88 @@ export default (server, app, sessionMiddleware) => {
         const keyToSocket = sessionToKey.get(key);
         keyToSocket.add(socket);
 
+
+
+        if(game._participant.has(sessionId)) {
+            const socketSet = game._participant.get(sessionId);
+            socketSet.add(socket.id);
+        } else {
+            //  first socket only serve
+            if(!new Set(game.participant).has(username)) {
+                game.participant.push(username);
+            }
+            game._participant.set(sessionId, new Set([socket.id]));
+
+            const prior = game._priority;
+            const subsequent = prior === 'white' ? 'black' : 'white';
+
+            if(!game[prior] && !game[`_${prior}`] && !game[subsequent] && !game[`_${subsequent}`]) {
+                game[prior] = username;
+                game[`_${prior}`] = sessionId;
+                game[`_${prior}Auth`] = auth;
+            } else if(game[prior] && game[`_${prior}`] && game[`_${prior}`] !== sessionId && !game[subsequent] && !game[`_${subsequent}`]) {
+                game[subsequent] = username;
+                game[`_${subsequent}`] = sessionId;
+                game[`_${subsequent}Auth`] = auth;
+            }
+        }
+
         game._ignite();
         game._broadcast();
         game._multicast();
 
-        // io.of('/game').to(key).emit('message', {
-        //     type: 'initialize',
-        //     ...instanceSanitizer(game),
-        // });
-
-        // io.of('/games').emit('message', {
-        //     type: 'initialize',
-        //     games: [...instanceSanitizer([...gameMap.values()])],
-        // });
-
-        // socket.emit('message', {
-        //     type: 'initialize',
-        //     ...game,
-        // });
-
         socket.on('disconnect', () => {
-            disconnectGame(app, io, socket, key);
+            disconnectSocket(app, io, socket, key);
 
-            // console.dir('games broadcast222222');
-            // io.of('/games').emit('message', {
-            //     type: 'initialize',
-            //     games: [...instanceSanitizer([...gameMap.values()])],
-            // });
+            const session = app.get('session');
+            const sessionId = socket.request.sessionID;
+
+            if(session.has(sessionId)) {
+                const sessionToKey = session.get(sessionId);
+                if(sessionToKey.has(key)) {
+                    const keyToSocket = sessionToKey.get(key);
+                    sessionToKey.set(key,
+                        new Set(
+                            [...keyToSocket]
+                            .filter(soc => soc.id !== socket.id)
+                        )
+                    );
+                    if(sessionToKey.get(key).size === 0) {
+                        sessionToKey.delete(key);
+                    };
+                }
+                if(session.get(sessionId).size === 0) {
+                    session.delete(sessionId);
+                }
+            }
+            console.dir(session);
+            
+            
+
+            const { nickname, passport } = socket.request.session;
+            const passportUser = passport ? passport.user : null;
+            const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+
+            if(game._participant.has(sessionId)) {
+                const socketSet = game._participant.get(sessionId);
+                socketSet.delete(socket.id);
+        
+                if(socketSet.size === 0) {
+                    game._participant.delete(sessionId);
+        
+                    const index = game.participant.findIndex(ele => ele === username);
+        
+                    if(index >= 0) {
+                        game.participant.splice(index, 1);
+                    };
+                    
+                    console.dir('games broadcast');
+                    game._smother();
+                    game._broadcast();
+                    game._multicast();
+                    
+                }
+            }
             
             console.dir('-------------socketDis(game)--------------');
             console.dir(socket.request.sessionID);
@@ -266,7 +216,7 @@ export default (server, app, sessionMiddleware) => {
         const key = socket.handshake.query['key'];
         if(!key) return;
 
-        connectGame(app, io, socket, key);
+        connectSocket(app, io, socket, key);
         
         const { nickname, color } = socket.request.session;
         const socketToSessionMap = app.get('socketToSession');
@@ -316,7 +266,7 @@ export default (server, app, sessionMiddleware) => {
                     });
                 }
 
-                disconnectGame(app, io, socket, key);
+                disconnectSocket(app, io, socket, key);
             });
 
             console.dir('-------------socketDis(chat)--------------');
@@ -334,7 +284,7 @@ export default (server, app, sessionMiddleware) => {
         const key = socket.handshake.query['key'];
         if(!key) return;
        
-        connectGame(app, io, socket, key);
+        connectSocket(app, io, socket, key);
 
         //  canvas initialize
         const canvasMap = app.get('canvas');
@@ -352,7 +302,7 @@ export default (server, app, sessionMiddleware) => {
         });
         
         socket.on('disconnect', () => {
-            disconnectGame(app, io, socket, key);
+            disconnectSocket(app, io, socket, key);
 
             console.dir('-------------socketDis(canvas)--------------');
             console.dir(socket.request.sessionID);
@@ -368,7 +318,7 @@ export default (server, app, sessionMiddleware) => {
         const key = socket.handshake.query['key'];
         if(!key) return;
 
-        connectGame(app, io, socket, key);
+        connectSocket(app, io, socket, key);
 
         const recordMap = app.get('record');
         if(!recordMap.has(key)) {
@@ -466,7 +416,7 @@ export default (server, app, sessionMiddleware) => {
         record._unicast(socket);
 
         socket.on('disconnect', () => {
-            disconnectGame(app, io, socket, key);
+            disconnectSocket(app, io, socket, key);
             
             console.dir('-------------socketDis(record)--------------')
             console.dir(socket.request.sessionID);
@@ -512,7 +462,7 @@ export default (server, app, sessionMiddleware) => {
         const key = socket.handshake.query['key'];
         if(!key) return;
 
-        connectGame(app, io, socket, key);
+        connectSocket(app, io, socket, key);
 
         const { nickname, color, passport } = socket.request.session;
         const passportUser = passport ? passport.user : null;
@@ -526,6 +476,9 @@ export default (server, app, sessionMiddleware) => {
 
         const role = (game._black === sessionId && game.black === username) ? 'black': ((game._white === sessionId && game.white === username)? 'white' : 'spectator');
         
+        console.dir(game._black === sessionId);
+        console.dir(game.black === username);
+        console.dir(username);
         socket.emit('message', {
             type: 'initialize',
             nickname,
@@ -540,7 +493,7 @@ export default (server, app, sessionMiddleware) => {
         // });
 
         socket.on('disconnect', () => {
-            disconnectGame(app, io, socket, key);
+            disconnectSocket(app, io, socket, key);
             console.dir('-------------socketDis(socketAuth)--------------')
             console.dir(socket.request.sessionID);
         })

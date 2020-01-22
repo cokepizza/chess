@@ -26,14 +26,14 @@ const GamePlayLayoutContainer = ({ gameId }) => {
     const connection = async () => {
         await dispatch(setSessionThunk());
       
-        dispatch(disconnectAuthWebsocket());
         dispatch(disconnectGameWebsocket());
+        dispatch(disconnectAuthWebsocket());
         dispatch(disconnectChatWebsocket());
         dispatch(disconnectCanvasWebsocket());
         dispatch(disconnectRecordWebsocket());
         await Promise.resolve().then(() => {
-            dispatch(connectAuthWebsocket(gameId));
             dispatch(connectGameWebsocket(gameId));
+            dispatch(connectAuthWebsocket(gameId));
             dispatch(connectChatWebsocket(gameId));
             dispatch(connectCanvasWebsocket(gameId));
             dispatch(connectRecordWebsocket(gameId));
@@ -43,8 +43,8 @@ const GamePlayLayoutContainer = ({ gameId }) => {
 
     useEffect(() => {
         return () => {
-            dispatch(disconnectAuthWebsocket());
             dispatch(disconnectGameWebsocket());
+            dispatch(disconnectAuthWebsocket());
             dispatch(disconnectChatWebsocket());
             dispatch(disconnectCanvasWebsocket());
             dispatch(disconnectRecordWebsocket());
