@@ -98,14 +98,15 @@ export default (server, app, sessionMiddleware) => {
 
         const gameMap = app.get('game');
         const game = gameMap.get(key);
+
+        const session = app.get('session');
+        const sessionId = socket.request.sessionID;
         const { nickname, passport } = socket.request.session;
         const passportUser = passport ? passport.user : null;
-        const sessionId = socket.request.sessionID;
         const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
         const auth = (passportUser && passportUser.username) ? true : false;
         
-        //  sessionId => key => socket
-        const session = app.get('session');
+        //  sessionId => key => socket(game channel only)
         if(!session.has(sessionId)) {
             session.set(sessionId, new Map());
         }
@@ -116,8 +117,7 @@ export default (server, app, sessionMiddleware) => {
         const keyToSocket = sessionToKey.get(key);
         keyToSocket.add(socket);
 
-
-
+        //  _participant connect
         if(game._participant.has(sessionId)) {
             const socketSet = game._participant.get(sessionId);
             socketSet.add(socket.id);
@@ -148,10 +148,14 @@ export default (server, app, sessionMiddleware) => {
 
         socket.on('disconnect', () => {
             disconnectSocket(app, io, socket, key);
-
+            
             const session = app.get('session');
             const sessionId = socket.request.sessionID;
+            const { nickname, passport } = socket.request.session;
+            const passportUser = passport ? passport.user : null;
+            const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
 
+            //  sessionId => key => socket(game channel only)
             if(session.has(sessionId)) {
                 const sessionToKey = session.get(sessionId);
                 if(sessionToKey.has(key)) {
@@ -170,14 +174,8 @@ export default (server, app, sessionMiddleware) => {
                     session.delete(sessionId);
                 }
             }
-            console.dir(session);
-            
-            
 
-            const { nickname, passport } = socket.request.session;
-            const passportUser = passport ? passport.user : null;
-            const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
-
+            //  _participant disconnect
             if(game._participant.has(sessionId)) {
                 const socketSet = game._participant.get(sessionId);
                 socketSet.delete(socket.id);
@@ -191,7 +189,6 @@ export default (server, app, sessionMiddleware) => {
                         game.participant.splice(index, 1);
                     };
                     
-                    console.dir('games broadcast');
                     game._smother();
                     game._broadcast();
                     game._multicast();
