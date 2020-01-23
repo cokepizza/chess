@@ -117,10 +117,12 @@ export const logout = (req, res, next) => {
                 }
 
                 //여기 작업해야함
-                // const session = 
-                // const authSocket = ;
-                game._socketAuth.initialize();
-                game._socketAuth.unicast();
+                const socketMap = req.app.get('socket');
+                const targetSocket = socketMap.get(key).get('/socketAuth').socket;
+                // console.dir(authSocket.id);
+
+                game._socketAuth._initialize();
+                game._socketAuth._unicast(targetSocket);
                 game._smother();
                 game._broadcast();
             });

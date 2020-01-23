@@ -526,7 +526,7 @@ export default (server, app, sessionMiddleware) => {
                     },
                 }
 
-                socketAuthSkeleton._initialize();    
+                socketAuthSkeleton._initialize();  
                 app.get('game').get(key)._socketAuth = socketAuthSkeleton;
                 app.get('socketAuth').set(key, socketAuthSkeleton);
             }
