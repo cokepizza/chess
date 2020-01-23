@@ -117,12 +117,13 @@ export default (server, app, sessionMiddleware) => {
         const keyToSocket = sessionToKey.get(key);
         keyToSocket.add(socket);
 
-        //  _participant connect
+        //  game._join
         if(game._participant.has(sessionId)) {
+            //  duplicate session
             const socketSet = game._participant.get(sessionId);
             socketSet.add(socket.id);
         } else {
-            //  first socket only serve
+            //  initialize session (enter _participant, participant)
             if(!new Set(game.participant).has(username)) {
                 game.participant.push(username);
             }
@@ -175,7 +176,7 @@ export default (server, app, sessionMiddleware) => {
                 }
             }
 
-            //  _participant disconnect
+            //  game._leave
             if(game._participant.has(sessionId)) {
                 const socketSet = game._participant.get(sessionId);
                 socketSet.delete(socket.id);
@@ -470,7 +471,7 @@ export default (server, app, sessionMiddleware) => {
         const sessionId = socket.request.sessionID;
         const game = app.get('game').get(key);
         if(!game) return;
-
+        
         const role = (game._black === sessionId && game.black === username) ? 'black': ((game._white === sessionId && game.white === username)? 'white' : 'spectator');
         
         console.dir(game._black === sessionId);
