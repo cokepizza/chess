@@ -37,6 +37,7 @@ export function* socketAuthSaga () {
 const initialState = {
     socket: null,
     nickname: null,
+    role: null,
     error: null,
 };
 

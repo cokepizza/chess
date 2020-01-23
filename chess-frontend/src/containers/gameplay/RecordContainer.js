@@ -23,11 +23,15 @@ const RecordContainer = () => {
         reversal = true;
     }
 
-    return (
-        <Record
-            reversal={reversal}
-        />
-    );
+    if(role) {
+        return (
+            <Record
+                reversal={reversal}
+            />
+        );
+    }
+
+    return null;
 };
 
 export default RecordContainer;
