@@ -74,6 +74,7 @@ export default (server, app, sessionMiddleware) => {
     app.set('canvas', new Map());
     app.set('chat', new Map());
     app.set('record', new Map());
+    app.set('socketAuth', new Map());
 
     app.set('socketToSession', new Map());
     app.set('socketToKey', new Map());
@@ -483,31 +484,63 @@ export default (server, app, sessionMiddleware) => {
 
         const key = socket.handshake.query['key'];
         if(!key) return;
+        
+        const game = app.get('game').get(key);
+        if(!game) return;
 
         const initialize = () => {
-            const { nickname, color, passport } = socket.request.session;
-            const passportUser = passport ? passport.user : null;
-            const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+            // const { nickname, color, passport } = socket.request.session;
+            // const passportUser = passport ? passport.user : null;
+            // const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
     
-            if(!nickname) return;
+            // if(!nickname) return;
+            
+            const socketAuthMap = app.get('socketAuth');
+            if(!socketAuthMap.has(key)) {
+                const socketAuthSkeleton = {
+                    role: null,
+                    nickname: null,
+                    color: null,
+                    _initialize: function() {
+                        const { nickname, color, passport } = socket.request.session;
+                        const passportUser = passport ? passport.user : null;
+                        const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+                        const sessionId = socket.request.sessionID;
+                        const game = app.get('game').get(key);
     
-            const sessionId = socket.request.sessionID;
-            const game = app.get('game').get(key);
-            if(!game) return;
+                        this.role = (game._black === sessionId && game.black === username) ? 'black': ((game._white === sessionId && game.white === username)? 'white' : 'spectator');
+                        this.nickname = nickname;
+                        this.color = color;
+    
+                        console.dir(game._black === sessionId);
+                        console.dir(game.black === username);
+                        console.dir(game._white === sessionId);
+                        console.dir(game.white === username);
+                        console.dir(username);
+                    },
+                    _unicast: function(socket) {
+                        socket.emit('message', {
+                            type: 'initialize',
+                            ...instanceSanitizer(this),
+                        });
+                    },
+                }
+
+                socketAuthSkeleton._initialize();    
+                app.get('game').get(key)._socketAuth = socketAuthSkeleton;
+                app.get('socketAuth').set(key, socketAuthSkeleton);
+            }
             
-            const role = (game._black === sessionId && game.black === username) ? 'black': ((game._white === sessionId && game.white === username)? 'white' : 'spectator');
-            
-            console.dir(game._black === sessionId);
-            console.dir(game.black === username);
-            console.dir(game._white === sessionId);
-            console.dir(game.white === username);
-            console.dir(username);
-            socket.emit('message', {
-                type: 'initialize',
-                nickname,
-                role,
-                color,
-            });
+            const socketAuth = socketAuthMap.get(key);
+            socketAuth._initialize();
+            socketAuth._unicast(socket);
+
+            // socket.emit('message', {
+            //     type: 'initialize',
+            //     nickname,
+            //     role,
+            //     color,
+            // });
         }
 
         connectSocket(app, socket, key, initialize);

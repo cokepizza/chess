@@ -41,6 +41,7 @@ export const createGame = (req, res, next) => {
         _winner: null,
         _loser: null,
         _record: null,
+        _socketAuth: null,
         _join: function(socket) {
             const sessionId = socket.request.sessionID;
             const { nickname, passport } = socket.request.session;

@@ -114,8 +114,13 @@ export const logout = (req, res, next) => {
                 const index = game.participant.findIndex(ele => ele === req.user.username);
                 if(index >= 0) {
                     game.participant.splice(index, 1, req.session.nickname);
-                }               
+                }
 
+                //여기 작업해야함
+                // const session = 
+                // const authSocket = ;
+                game._socketAuth.initialize();
+                game._socketAuth.unicast();
                 game._smother();
                 game._broadcast();
             });
