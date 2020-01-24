@@ -20,6 +20,8 @@ const TimeLineContainer = ({ white, black }) => {
             let nextTime = white ? whiteRatio : blackRatio;
             nextTime = Math.min(nextTime, 1);
             setTime(nextTime);
+        } else {
+            setTime(0);
         }
     }, [white, black, whiteNick, blackNick, whiteRatio, blackRatio, participant]);
 

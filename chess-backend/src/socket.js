@@ -511,7 +511,11 @@ export default (server, app, sessionMiddleware) => {
                         this.role = (game._black === sessionId && game.black === username) ? 'black': ((game._white === sessionId && game.white === username)? 'white' : 'spectator');
                         this.nickname = nickname;
                         this.color = color;
-    
+                        
+                        console.dir(socket.id);
+                        console.dir(passport);
+
+                        console.dir(username);
                         console.dir(game._black === sessionId);
                         console.dir(game.black === username);
                         console.dir(game._white === sessionId);

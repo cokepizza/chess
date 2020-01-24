@@ -66,8 +66,13 @@ export const login = (req, res, next) => {
                         const index = game.participant.findIndex(ele => ele === req.session.nickname);
                         if(index >= 0) {
                             game.participant.splice(index, 1, req.user.username);
-                        }               
+                        }
                         
+                        const socketMap = req.app.get('socket');
+                        const targetSocket = socketMap.get(key).get('/socketAuth').socket;
+
+                        game._socketAuth._initialize();
+                        game._socketAuth._unicast(targetSocket);
                         game._ignite();
                         game._broadcast();
                     });
@@ -119,7 +124,6 @@ export const logout = (req, res, next) => {
                 //여기 작업해야함
                 const socketMap = req.app.get('socket');
                 const targetSocket = socketMap.get(key).get('/socketAuth').socket;
-                // console.dir(authSocket.id);
 
                 game._socketAuth._initialize();
                 game._socketAuth._unicast(targetSocket);
