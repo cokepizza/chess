@@ -1,17 +1,46 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+import RankingContainer from '../../containers/main/RankingContainer';
 
 const MainLayoutBlock = styled.div`
     width: 100%;
-    height: 800px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const sideBlockStyle = css`
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 20%;
+`;
+
+const LeftSideBlock = styled.div`
+    ${sideBlockStyle}
+    margin-right: 1%;
+`;
+
+const RightSideBlock = styled.div`
+    ${sideBlockStyle}
+    margin-left: 1%;
 `;
 
 const MainLayout = () => {
     return (
         <MainLayoutBlock>
-            
+            <LeftSideBlock>
+
+            </LeftSideBlock>
+            <RankingContainer />
+            <RightSideBlock>
+
+            </RightSideBlock>
         </MainLayoutBlock>
     )
 };
 
-export default MainLayout;
+export default React.memo(MainLayout);
