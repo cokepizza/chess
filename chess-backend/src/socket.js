@@ -162,9 +162,25 @@ export default (server, app, sessionMiddleware) => {
     app.set('socket', new Map());
     app.set('game', new Map());
 
+    // app.set('user', );
+
     io.use((socket, next) => {
         sessionMiddleware(socket.request, socket.request.res, next);
     })
+
+
+    //  subscribe 'Ranking' Namespace
+    io.of('/ranking').on('connect', socket => {
+        console.dir('-------------socket(ranking)--------------');
+        console.dir(socket.request.sessionID);
+        
+
+        socket.on('disconnect', () => {
+            console.dir('-------------socketDis(ranking)--------------');
+            console.dir(socket.request.sessionID);
+        });
+    });
+
 
     //  subscribe 'Games' Namespace
     const games = io.of('/games');

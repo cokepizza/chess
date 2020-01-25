@@ -8,6 +8,7 @@ import canvas, { canvasSaga } from './canvas';
 import chat, { chatSaga } from './chat';
 import record, { recordSaga }  from './record';
 import create from './create';
+import ranking from './ranking';
 
 
 const rootReducer = combineReducers({
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     chat,
     record,
     create,
+    ranking,
 })
 
 

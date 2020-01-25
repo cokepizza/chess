@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import RankImage from '../../static/image/ranking.svg';
+import ListContainer from '../../containers/main/ListContainer';
 
 const RankingBlock = styled.div`
     width: 720px;
@@ -41,9 +42,7 @@ const Ranking = () => {
             <BackgroundFrameBlock>
                 <BackgroundBlock src={RankImage}/>
             </BackgroundFrameBlock>
-            <ListBlock>
-
-            </ListBlock>
+            <ListContainer />
         </RankingBlock>
     )
 };
