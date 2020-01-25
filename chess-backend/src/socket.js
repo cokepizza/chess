@@ -88,10 +88,10 @@ const disconnectSocket = (app, socket, key, tabKey) => {
             socketKeyMap.delete(channel);
         }
         if(socketKeyMap.size === 0) {
+            cleanup.forEach(obj => obj.cleanup());
             socketMap.delete(tabKey);
         }
     };
-    cleanup.forEach(obj => obj.cleanup());
 
     //  delete mapping sessionId => gameKey => channel => socket
     const sessionToKey = app.get('session');
