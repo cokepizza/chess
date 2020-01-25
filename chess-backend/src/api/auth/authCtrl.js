@@ -26,96 +26,68 @@ export const getSession = (req, res, next) => {
     });
 }
 
-export const login = (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if(err || info) {
-            console.dir(err || info);
-            console.dir(err);
-            console.dir(info);
-            return res.status(400).send(err || info);
-        }
-
-        console.dir('login success');
-        return req.login(user, err => {
-            if(err) {
-                console.dir(err);
-                return res.status(400).send(err);
-            };
-
-            const io = req.app.get('io');
-            const gameMap = req.app.get('game');
-            const sessionToKey = req.app.get('session');
-
-            if(sessionToKey.has(req.sessionID)) {
-                const keyToChannel = sessionToKey.get(req.sessionID);
-                if(keyToChannel) {
-                    [...keyToChannel.keys()].forEach(key => {
-
-                        const game = gameMap.get(key);
-                        const index = game.participant.findIndex(ele => ele === req.session.nickname);
-                        if(index >= 0) {
-                            game.participant.splice(index, 1, req.user.username);
-                        }
-                        
-                        game._ignite();
-                        game._broadcast();
-
-                        const channelToSocket = keyToChannel.get(key);
-                        if(channelToSocket) {
-                            const gameSocketSet = channelToSocket.get('/game');
-                            if(gameSocketSet) {
-                                [...gameSocketSet].forEach(socket => {
-                                    socket.request.session.passport = {
-                                        user: {
-                                            ...req.user
-                                        }
-                                    };
-                                });
-                            }
-
-                            //  session 객체는 참조로 유지되고 있음
-                            //  game채널의 socket을 통한 session 변경은 socketAuth 채널에도 적용됨
-                            game._socketAuth._initialize();
-
-                            const socketAuthSocketSet = channelToSocket.get('/socketAuth');
-                            if(socketAuthSocketSet) {
-                                [...socketAuthSocketSet].forEach(socket => {
-                                    game._socketAuth._unicast(socket);
-                                });
-                            }
-                        }
-                    });
-
-                    console.dir('games initialize login~')
-                    io.of('/games').emit('message', {
-                        type: 'initialize',
-                        games: [...instanceSanitizer([...gameMap.values()])],
-                    });
-                }
-            }
-
-            io.of('/sessionAuth').to(req.sessionID).emit('message', {
-                type: 'initialize',
-                ...user,
-            });
-
-            return res.status(200).send(user);
-        });
-    })(req, res, next);
-};
-
-export const logout = (req, res, next) => {
+const loginMode = req => {
     const io = req.app.get('io');
     const gameMap = req.app.get('game');
-    
-    //  로그인된 유저가 로그아웃 했을 때 해당 key를 가지고 있는 game에 참가중이라면
-    //  participant에서 제외시키고 game 내에서 white나 black의 role을 갖고 있었다면 게임을 중단
     const sessionToKey = req.app.get('session');
+
     if(sessionToKey.has(req.sessionID)) {
         const keyToChannel = sessionToKey.get(req.sessionID);
         if(keyToChannel) {
             [...keyToChannel.keys()].forEach(key => {
+
+                const game = gameMap.get(key);
+                const index = game.participant.findIndex(ele => ele === req.session.nickname);
+                if(index >= 0) {
+                    game.participant.splice(index, 1, req.user.username);
+                }
                 
+                game._ignite();
+                game._broadcast();
+
+                const channelToSocket = keyToChannel.get(key);
+                if(channelToSocket) {
+                    const gameSocketSet = channelToSocket.get('/game');
+                    if(gameSocketSet) {
+                        [...gameSocketSet].forEach(socket => {
+                            socket.request.session.passport = {
+                                user: {
+                                    ...req.user
+                                }
+                            };
+                        });
+                    }
+
+                    //  session 객체는 참조로 유지되고 있음
+                    //  game채널의 socket을 통한 session 변경은 socketAuth 채널에도 적용됨
+                    game._socketAuth._initialize();
+
+                    const socketAuthSocketSet = channelToSocket.get('/socketAuth');
+                    if(socketAuthSocketSet) {
+                        [...socketAuthSocketSet].forEach(socket => {
+                            game._socketAuth._unicast(socket);
+                        });
+                    }
+                }
+            });
+
+            io.of('/games').emit('message', {
+                type: 'initialize',
+                games: [...instanceSanitizer([...gameMap.values()])],
+            });
+        }
+    }
+}
+
+const logoutMode = req => {
+    const io = req.app.get('io');
+    const gameMap = req.app.get('game');
+    const sessionToKey = req.app.get('session');
+
+    if(sessionToKey.has(req.sessionID)) {
+        const keyToChannel = sessionToKey.get(req.sessionID);
+        if(keyToChannel) {
+            [...keyToChannel.keys()].forEach(key => {
                 const game = gameMap.get(key);
                 const index = game.participant.findIndex(ele => ele === req.user.username);
                 if(index >= 0) {
@@ -147,19 +119,53 @@ export const logout = (req, res, next) => {
                 }
             });
 
-            console.dir('games initialize logout~')
             io.of('/games').emit('message', {
                 type: 'initialize',
                 games: [...instanceSanitizer([...gameMap.values()])],
             });
         }
     }
+}
+
+export const login = (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if(err || info) {
+            console.dir(err || info);
+            console.dir(err);
+            console.dir(info);
+            return res.status(400).send(err || info);
+        }
+
+        console.dir('login success');
+        return req.login(user, err => {
+            if(err) {
+                console.dir(err);
+                return res.status(400).send(err);
+            };
+
+            loginMode(req);
+            
+            const io = req.app.get('io');
+            io.of('/sessionAuth').to(req.sessionID).emit('message', {
+                type: 'initialize',
+                ...user,
+            });
+
+            return res.status(200).send(user);
+        });
+    })(req, res, next);
+};
+
+export const logout = (req, res, next) => {
+    
+    logoutMode(req);
 
     req.logout();
     // req.session.destroy();
 
     console.dir('logout success');
 
+    const io = req.app.get('io');
     io.of('/sessionAuth').to(req.sessionID).emit('message', {
         type: 'clear',
     });
@@ -207,6 +213,8 @@ export const register = async (req, res, next) => {
                 console.dir(err);
                 return res.status(400).send(err);
             };
+
+            loginMode(req);
 
             const io = req.app.get('io');
             const sessionID = req.sessionID;

@@ -161,35 +161,21 @@ export default (server, app, sessionMiddleware) => {
     game.on('connect', socket => {
         console.dir('-------------socket(game)--------------');
         console.dir(socket.request.sessionID);
-        //  game join & broadcast
-        // const key = socket.handshake.query['key'];
-        // if(!key) return;
 
         const key = socket.handshake.query['gameKey'];
         const tabKey = socket.handshake.query['tabKey'];
+        if(!key) return;
 
         connectSocket(app, socket, key, tabKey);
 
         const gameMap = app.get('game');
         const game = gameMap.get(key);
 
-        const session = app.get('session');
         const sessionId = socket.request.sessionID;
         const { nickname, passport } = socket.request.session;
         const passportUser = passport ? passport.user : null;
         const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
         const auth = (passportUser && passportUser.username) ? true : false;
-        
-        // //  sessionId => key => socket(game channel only)
-        // if(!session.has(sessionId)) {
-        //     session.set(sessionId, new Map());
-        // }
-        // const sessionToKey = session.get(sessionId);
-        // if(!sessionToKey.has(key)) {
-        //     sessionToKey.set(key, new Set());
-        // }
-        // const keyToSocket = sessionToKey.get(key);
-        // keyToSocket.add(socket);
 
         //  game._join
         if(game._participant.has(sessionId)) {
@@ -224,31 +210,10 @@ export default (server, app, sessionMiddleware) => {
         socket.on('disconnect', () => {
             disconnectSocket(app, socket, key);
             
-            const session = app.get('session');
             const sessionId = socket.request.sessionID;
             const { nickname, passport } = socket.request.session;
             const passportUser = passport ? passport.user : null;
             const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
-
-            // //  sessionId => key => socket(game channel only)
-            // if(session.has(sessionId)) {
-            //     const sessionToKey = session.get(sessionId);
-            //     if(sessionToKey.has(key)) {
-            //         const keyToSocket = sessionToKey.get(key);
-            //         sessionToKey.set(key,
-            //             new Set(
-            //                 [...keyToSocket]
-            //                 .filter(soc => soc.id !== socket.id)
-            //             )
-            //         );
-            //         if(sessionToKey.get(key).size === 0) {
-            //             sessionToKey.delete(key);
-            //         };
-            //     }
-            //     if(session.get(sessionId).size === 0) {
-            //         session.delete(sessionId);
-            //     }
-            // }
 
             //  game._leave
             if(game._participant.has(sessionId)) {
@@ -283,13 +248,10 @@ export default (server, app, sessionMiddleware) => {
     chat.on('connect', socket => {
         console.dir('-------------socket(chat)--------------');
         console.dir(socket.request.sessionID);
-        
-        //  game join & broadcast
-        // const key = socket.handshake.query['key'];
-        // if(!key) return;
 
         const key = socket.handshake.query['gameKey'];
         const tabKey = socket.handshake.query['tabKey'];
+        if(!key) return;
 
         connectSocket(app, socket, key, tabKey);
         
@@ -354,13 +316,10 @@ export default (server, app, sessionMiddleware) => {
     io.of('/canvas').on('connect', socket => {
         console.dir('-------------socket(canvas)--------------');
         console.dir(socket.request.sessionID);
-
-        //  프론트쪽에 key 없는 접근 redirect하는 코드 넣어둘 것 (서버쪽에서 message를 보내면 좋을 듯)
-        // const key = socket.handshake.query['key'];
-        // if(!key) return;
        
         const key = socket.handshake.query['gameKey'];
         const tabKey = socket.handshake.query['tabKey'];
+        if(!key) return;
 
         connectSocket(app, socket, key, tabKey);
 
@@ -393,11 +352,9 @@ export default (server, app, sessionMiddleware) => {
         console.dir('-------------socket(record)--------------');
         console.dir(socket.request.sessionID);
 
-        // const key = socket.handshake.query['key'];
-        // if(!key) return;
-
         const key = socket.handshake.query['gameKey'];
         const tabKey = socket.handshake.query['tabKey'];
+        if(!key) return;
 
         const initialize = () => {
             const recordMap = app.get('record');
@@ -542,11 +499,9 @@ export default (server, app, sessionMiddleware) => {
         console.dir('-------------socket(socketAuth)--------------');
         console.dir(socket.request.sessionID);
 
-        // const key = socket.handshake.query['key'];
-        // if(!key) return;
-        
         const key = socket.handshake.query['gameKey'];
         const tabKey = socket.handshake.query['tabKey'];
+        if(!key) return;
 
         const game = app.get('game').get(key);
         if(!game) return;
@@ -576,15 +531,14 @@ export default (server, app, sessionMiddleware) => {
                         this.nickname = nickname;
                         this.color = color;
                         
-                        console.dir(socket.id);
-                        console.dir(passport);
+                        // console.dir(socket.id);
+                        // console.dir(passport);
 
-                        console.dir(username);
-                        console.dir(game._black === sessionId);
-                        console.dir(game.black === username);
-                        console.dir(game._white === sessionId);
-                        console.dir(game.white === username);
-                        console.dir(username);
+                        // console.dir(username);
+                        // console.dir(game._black === sessionId);
+                        // console.dir(game.black === username);
+                        // console.dir(game._white === sessionId);
+                        // console.dir(game.white === username);
                     },
                     _unicast: function(socket) {
                         socket.emit('message', {
@@ -608,31 +562,8 @@ export default (server, app, sessionMiddleware) => {
         socket.on('disconnect', () => {
             disconnectSocket(app, socket, key);
 
-            // //  sessionId => key => socket(socketAuth channel only)
-            // const session2 = app.get('session2');
-            // const sessionId = socket.request.sessionID;
-            // if(session2.has(sessionId)) {
-            //     const sessionToKey = session2.get(sessionId);
-            //     if(sessionToKey.has(key)) {
-            //         const keyToSocket = sessionToKey.get(key);
-            //         sessionToKey.set(key,
-            //             new Set(
-            //                 [...keyToSocket]
-            //                 .filter(soc => soc.id !== socket.id)
-            //             )
-            //         );
-            //         if(sessionToKey.get(key).size === 0) {
-            //             sessionToKey.delete(key);
-            //         };
-            //     }
-            //     if(session2.get(sessionId).size === 0) {
-            //         session2.delete(sessionId);
-            //     }
-            // }
-
             console.dir('-------------socketDis(socketAuth)--------------')
             console.dir(socket.request.sessionID);
         })
     })
-
 };
