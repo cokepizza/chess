@@ -26,11 +26,11 @@ const connectSocket = (app, socket, key, tabKey, initialize) => {
     //  namespace간에 connection 단계에서 dependency가 있는 로직이 있기 때문에 (socketAuth와 game 채널에서)
     //  객체 매핑 & 게임 초기화 단계와 그 다음 처리 로직을 순차적으로 구분하였다
 
-    //  connection 단계 => initialize 단계 => cleanup 단계 => disconnection 단계로 나눠볼 수 있다
+    //  connection 단계 => initialize 단계 => disconnection 단계 => cleanup 단계로 나눠볼 수 있다
     //  connection 단계에서는 namespace 객체간 매핑 및 초기 게임 정보를 세팅한다
     //  initialize 단계에서는 객체 매핑이나 초기 게임 정보가 삽입된 후 필요한 처리가 들어간다 (각 initialize함수는 dependency가 있어서는 안된다)
-    //  cleanup 단계에서는 socket의 namespace가 끊기기전, 즉 첫번째 소켓이 종료를 원할때 각 namespace에서 필요한 코드가 실행된다
     //  disconnection 단계에서는 각 namespace들이 종료된다
+    //  cleanup 단계에서는 socket의 namespace가 모두 끊긴 직후, 즉 마지막 namespace가 종료를 원할떄 각 namespace에서 필요한 코드가 실행된다
     //  각 단계는 순차적으로 진행되며 직전단계까지의 완료가 보장된다
 
     if(socketKeyMap.size % requiredNameSpace === 0) {
@@ -79,21 +79,19 @@ const disconnectSocket = (app, socket, key, tabKey) => {
     //  disconnect socket information for each channel
     const channel = socket.id.split('#')[0];
     const socketMap = app.get('socket');
-
+    const cleanup = [];
     if(socketMap.has(tabKey)) {
         const socketKeyMap = socketMap.get(tabKey);
-        [...socketKeyMap.keys()].forEach(chan => {
-            const obj = socketKeyMap.get(chan);
-            obj.cleanup && obj.cleanup();
-            obj.cleanup = null;
-        });
-        if(socketKeyMap.has(channel)) {            
+        if(socketKeyMap.has(channel)) {
+            const obj = socketKeyMap.get(channel);
+            obj.cleanup && cleanup.push(obj);
             socketKeyMap.delete(channel);
         }
         if(socketKeyMap.size === 0) {
             socketMap.delete(tabKey);
         }
     };
+    cleanup.forEach(obj => obj.cleanup());
 
     //  delete mapping sessionId => gameKey => channel => socket
     const sessionToKey = app.get('session');

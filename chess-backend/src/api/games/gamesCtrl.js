@@ -68,7 +68,7 @@ export const createGame = (req, res, next) => {
                 this.start = false;
                 this._record._stop();
             }
-
+            
             this._broadcast();
             this._multicast();
         },
