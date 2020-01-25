@@ -518,7 +518,7 @@ export default (server, app, sessionMiddleware) => {
                     role: null,
                     nickname: null,
                     color: null,
-                    _initialize: function() {
+                    _initialize: function(socket) {
                         const { nickname, color, passport } = socket.request.session;
                         const passportUser = passport ? passport.user : null;
                         const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
@@ -551,7 +551,7 @@ export default (server, app, sessionMiddleware) => {
             }
 
             const socketAuth = app.get('socketAuth').get(key);
-            socketAuth._initialize();
+            socketAuth._initialize(socket);
             socketAuth._unicast(socket);
         }
 

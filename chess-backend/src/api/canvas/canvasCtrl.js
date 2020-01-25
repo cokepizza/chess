@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import { checkSafeMove, checkCheckmate, checkCovered } from '../../lib/base/validation';
 import { genBoard } from '../../lib/base/genBoard';
+import instanceSanitizer from '../../lib/util/instanceSanitizer';
 
 export const movePiece = (req, res) => {
     console.dir('----------http(movePiece)---------')
@@ -200,7 +201,7 @@ export const movePiece = (req, res) => {
 
     io.of('/game').to(key).emit('message', {
         type: 'initialize',
-        ...game,
+        ...instanceSanitizer(game),
     });
     
     return res.status(200).end();

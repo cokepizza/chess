@@ -60,11 +60,10 @@ const loginMode = req => {
 
                     //  session 객체는 참조로 유지되고 있음
                     //  game채널의 socket을 통한 session 변경은 socketAuth 채널에도 적용됨
-                    game._socketAuth._initialize();
-
                     const socketAuthSocketSet = channelToSocket.get('/socketAuth');
                     if(socketAuthSocketSet) {
                         [...socketAuthSocketSet].forEach(socket => {
+                            game._socketAuth._initialize(socket);
                             game._socketAuth._unicast(socket);
                         });
                     }
@@ -108,11 +107,10 @@ const logoutMode = req => {
                         });
                     }
 
-                    game._socketAuth._initialize();
-                    
                     const socketAuthSocketSet = channelToSocket.get('/socketAuth');
                     if(socketAuthSocketSet) {
                         [...socketAuthSocketSet].forEach(socket => {
+                            game._socketAuth._initialize(socket);
                             game._socketAuth._unicast(socket);
                         })
                     }
@@ -144,7 +142,7 @@ export const login = (req, res, next) => {
             };
 
             loginMode(req);
-            
+
             const io = req.app.get('io');
             io.of('/sessionAuth').to(req.sessionID).emit('message', {
                 type: 'initialize',
