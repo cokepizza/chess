@@ -45,6 +45,7 @@ export const login = (req, res, next) => {
             const io = req.app.get('io');
             const gameMap = req.app.get('game');
             const sessionMap = req.app.get('session');
+            const session2Map = req.app.get('session2');
 
             if(sessionMap.has(req.sessionID)) {
                 const sessionToKey = sessionMap.get(req.sessionID);
@@ -67,12 +68,20 @@ export const login = (req, res, next) => {
                         if(index >= 0) {
                             game.participant.splice(index, 1, req.user.username);
                         }
-                        
-                        const socketMap = req.app.get('socket');
-                        const targetSocket = socketMap.get(key).get('/socketAuth').socket;
 
+                        const key2ToSocket = session2Map.get(req.sessionID).get(key);
                         game._socketAuth._initialize();
-                        game._socketAuth._unicast(targetSocket);
+                        if(key2ToSocket) {
+                            [...key2ToSocket].forEach(socket => {
+                                game._socketAuth._unicast(socket);
+                            })
+                        };
+                        
+                        // const socketMap = req.app.get('socket');
+                        // const targetSocket = socketMap.get(key).get('/socketAuth').socket;
+
+                        // game._socketAuth._initialize();
+                        // game._socketAuth._unicast(targetSocket);
                         game._ignite();
                         game._broadcast();
                     });
@@ -101,6 +110,7 @@ export const logout = (req, res, next) => {
     //  로그인된 유저가 로그아웃 했을 때 해당 key를 가지고 있는 game에 참가중이라면
     //  participant에서 제외시키고 game 내에서 white나 black의 role을 갖고 있었다면 게임을 중단
     const sessionMap = req.app.get('session');
+    const session2Map = req.app.get('session2');
     if(sessionMap.has(req.sessionID)) {
         const sessionToKey = sessionMap.get(req.sessionID);
         if(sessionToKey) {
@@ -113,7 +123,7 @@ export const logout = (req, res, next) => {
                         }
                     });
                 }
-                
+
                 const game = gameMap.get(key);
                 
                 const index = game.participant.findIndex(ele => ele === req.user.username);
@@ -121,12 +131,21 @@ export const logout = (req, res, next) => {
                     game.participant.splice(index, 1, req.session.nickname);
                 }
 
-                //여기 작업해야함
-                const socketMap = req.app.get('socket');
-                const targetSocket = socketMap.get(key).get('/socketAuth').socket;
-
+                const key2ToSocket = session2Map.get(req.sessionID).get(key);
                 game._socketAuth._initialize();
-                game._socketAuth._unicast(targetSocket);
+                if(key2ToSocket) {
+                    [...key2ToSocket].forEach(socket => {
+                        game._socketAuth._unicast(socket);
+                    })
+                };
+
+                //여기 작업해야함
+                // const socketMap = req.app.get('socket');
+                // const targetSocket = socketMap.get(key).get('/socketAuth').socket;
+
+                // game._socketAuth._initialize();
+                // game._socketAuth._unicast(targetSocket);
+
                 game._smother();
                 game._broadcast();
             });

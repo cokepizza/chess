@@ -15,9 +15,10 @@ export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload
 export const clearValue = createAction(CLEAR_VALUE);
 
 function* connectWebsocketSaga (action) {
-    const key = action.payload;
-        
-    const query = `key=${key}`;
+    // const key = action.payload;
+    // const query = `key=${key}`;
+
+    const query = action.payload;
     
     const socketTask = yield fork(connectNamespace, {
         url: '/socketAuth',

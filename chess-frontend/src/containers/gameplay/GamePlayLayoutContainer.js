@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import uuid from 'uuid/v1';
 
 import useAsync from '../../lib/hook/useAsync';
 import GamePlayLayout from '../../components/gameplay/GamePlayLayout';
@@ -25,18 +26,22 @@ const GamePlayLayoutContainer = ({ gameId }) => {
 
     const connection = async () => {
         await dispatch(setSessionThunk());
-      
         dispatch(disconnectGameWebsocket());
         dispatch(disconnectAuthWebsocket());
         dispatch(disconnectChatWebsocket());
         dispatch(disconnectCanvasWebsocket());
         dispatch(disconnectRecordWebsocket());
         await Promise.resolve().then(() => {
-            dispatch(connectGameWebsocket(gameId));
-            dispatch(connectAuthWebsocket(gameId));
-            dispatch(connectChatWebsocket(gameId));
-            dispatch(connectCanvasWebsocket(gameId));
-            dispatch(connectRecordWebsocket(gameId));
+            const tabKey = uuid();
+            const param = {
+                gameKey: gameId,
+                tabKey,
+            }
+            dispatch(connectGameWebsocket(param));
+            dispatch(connectAuthWebsocket(param));
+            dispatch(connectChatWebsocket(param));
+            dispatch(connectCanvasWebsocket(param));
+            dispatch(connectRecordWebsocket(param));
         })
         return true;
     };
