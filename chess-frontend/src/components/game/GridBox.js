@@ -56,7 +56,7 @@ const GridBox = ({ game, canvas, onClick, onMouseEnter, onMouseLeave, ...rest })
             </BoxContentBlock>
             {canvas ?
             (<CanvasWrapperContainer
-                gameId={game.key}
+                gameKey={game.key}
                 cellSize = '27px'
             />)
             : null}

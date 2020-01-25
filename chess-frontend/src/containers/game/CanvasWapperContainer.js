@@ -5,13 +5,15 @@ import useAsync from '../../lib/hook/useAsync';
 import { connectWebsocket, disconnectWebsocket } from '../../modules/canvas';
 import CanvasWrapper from '../../components/game/CanvasWrapper';
 
-const CanvasWrapperContainer = ({ gameId, cellSize }) => {
+const CanvasWrapperContainer = ({ gameKey, cellSize }) => {
     const dispatch = useDispatch();
 
     const connection = async () => {
         dispatch(disconnectWebsocket());
         await Promise.resolve().then(() => {
-            dispatch(connectWebsocket(gameId));
+            dispatch(connectWebsocket({
+                gameKey,
+            }));
         });
         return true;
     };

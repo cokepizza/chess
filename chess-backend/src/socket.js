@@ -45,7 +45,6 @@ const connectSocket = (app, socket, key, tabKey, initialize) => {
     const socketSet = channelToSocket.get(channel);
     socketSet.add(socket);
 
-
     //  mapping socket => gameId
     const socketToKeyMap = app.get('socketToKey');
     socketToKeyMap.set(socket.id, key);
@@ -58,17 +57,17 @@ const connectSocket = (app, socket, key, tabKey, initialize) => {
     socket.join(key);
 }
 
-const disconnectSocket = (app, socket, key) => {
+const disconnectSocket = (app, socket, key, tabKey) => {
     //  disconnect socket information for each channel
     const channel = socket.id.split('#')[0];
     const socketMap = app.get('socket');
-    if(socketMap.has(key)) {
-        const socketKeyMap = socketMap.get(key);
+    if(socketMap.has(tabKey)) {
+        const socketKeyMap = socketMap.get(tabKey);
         if(socketKeyMap.has(channel)) {
             socketKeyMap.delete(channel);
         }
         if(socketKeyMap.size === 0) {
-            socketMap.delete(key);
+            socketMap.delete(tabKey);
         }
     };
 
@@ -100,7 +99,6 @@ const disconnectSocket = (app, socket, key) => {
             sessionToKey.delete(sessionId);
         }
     }
-
 
     //  delete mapping socket => gameId;
     const socketToKeyMap = app.get('socketToKey');
@@ -208,7 +206,7 @@ export default (server, app, sessionMiddleware) => {
         game._multicast();
 
         socket.on('disconnect', () => {
-            disconnectSocket(app, socket, key);
+            disconnectSocket(app, socket, key, tabKey);
             
             const sessionId = socket.request.sessionID;
             const { nickname, passport } = socket.request.session;
@@ -303,11 +301,11 @@ export default (server, app, sessionMiddleware) => {
                     });
                 }
 
-                disconnectSocket(app, socket, key);
-            });
+                disconnectSocket(app, socket, key, tabKey);
 
-            console.dir('-------------socketDis(chat)--------------');
-            console.dir(socket.request.sessionID);
+                console.dir('-------------socketDis(chat)--------------');
+                console.dir(socket.request.sessionID);
+            });        
         })
     })
 
@@ -339,7 +337,7 @@ export default (server, app, sessionMiddleware) => {
         });
         
         socket.on('disconnect', () => {
-            disconnectSocket(app, socket, key);
+            disconnectSocket(app, socket, key, tabKey);
 
             console.dir('-------------socketDis(canvas)--------------');
             console.dir(socket.request.sessionID);
@@ -456,7 +454,7 @@ export default (server, app, sessionMiddleware) => {
         connectSocket(app, socket, key, tabKey, initialize);
 
         socket.on('disconnect', () => {
-            disconnectSocket(app, socket, key);
+            disconnectSocket(app, socket, key, tabKey);
             
             console.dir('-------------socketDis(record)--------------')
             console.dir(socket.request.sessionID);
@@ -560,7 +558,7 @@ export default (server, app, sessionMiddleware) => {
         connectSocket(app, socket, key, tabKey, initialize);
 
         socket.on('disconnect', () => {
-            disconnectSocket(app, socket, key);
+            disconnectSocket(app, socket, key, tabKey);
 
             console.dir('-------------socketDis(socketAuth)--------------')
             console.dir(socket.request.sessionID);
