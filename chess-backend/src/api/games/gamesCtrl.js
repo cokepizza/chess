@@ -59,39 +59,18 @@ export const createGame = (req, res, next) => {
                 // if(new Set(this.participant).has())
             }
         },
-        _ignite: function() {
-            //  Start the game if the conditions are correct
-           
-            //  username, sessionId
-            // if(this._white && this._black) {
-            //     if(this._participant.has(this._white) && this._participant.has(this._black)) {
-            //         if((username === this.white && sessionId === this._white) || (username === this.black && sessionId === this._black)) {
-            //             this.start = true;
-            //             this._broadcast();
-
-            //             this._record_start(this.order);    
-            //         };
-            //     };
-            // };
-            
-            console.dir('ignite');
+        _heartbeat: function() {
             const participantSet = new Set(this.participant);
             if(this.white && participantSet.has(this.white) && this.black && participantSet.has(this.black)) {
                 this.start = true;
                 this._record._start(this.order);   
+            } else {
+                this.start = false;
+                this._record._stop();
             }
 
-            return;
-        },
-        _smother: function() {
-            //  Stop the game if the conditions are not met
-            const participantSet = new Set(this.participant);
-            if(this.white && participantSet.has(this.white) && this.black && participantSet.has(this.black)) {
-                return;
-            }
-            
-            this.start = false;
-            this._record._stop();
+            this._broadcast();
+            this._multicast();
         },
         _broadcast: function() {
             io.of('/game').to(this.key).emit('message', {

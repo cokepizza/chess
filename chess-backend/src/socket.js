@@ -201,9 +201,7 @@ export default (server, app, sessionMiddleware) => {
             }
         }
 
-        game._ignite();
-        game._broadcast();
-        game._multicast();
+        game._heartbeat();
 
         socket.on('disconnect', () => {
             disconnectSocket(app, socket, key, tabKey);
@@ -227,10 +225,7 @@ export default (server, app, sessionMiddleware) => {
                         game.participant.splice(index, 1);
                     };
                     
-                    game._smother();
-                    game._broadcast();
-                    game._multicast();
-                    
+                    game._heartbeat();
                 }
             }
             

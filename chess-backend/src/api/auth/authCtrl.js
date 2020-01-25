@@ -42,8 +42,7 @@ const loginMode = req => {
                     game.participant.splice(index, 1, req.user.username);
                 }
                 
-                game._ignite();
-                game._broadcast();
+                game._heartbeat();
 
                 const channelToSocket = keyToChannel.get(key);
                 if(channelToSocket) {
@@ -93,8 +92,7 @@ const logoutMode = req => {
                     game.participant.splice(index, 1, req.session.nickname);
                 }
 
-                game._smother();
-                game._broadcast();
+                game._heartbeat();
 
                 const channelToSocket = keyToChannel.get(key);
                 if(channelToSocket) {
