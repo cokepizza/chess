@@ -8,8 +8,7 @@ import instanceSanitizer from './lib/util/instanceSanitizer';
 const requiredNameSpace = 5;
 const connectSocket = (app, socket, key, tabKey, initialize) => {
     //  initialization proceeds when all necessary sockets are connected (sockets => 5)
-    //  key => channel => { socket, initialize }
-    console.dir(tabKey);
+    //  tabKey => channel => { socket, initialize }
     const channel = socket.id.split('#')[0];
     const socketMap = app.get('socket');
     if(!socketMap.has(tabKey)) {
@@ -24,11 +23,28 @@ const connectSocket = (app, socket, key, tabKey, initialize) => {
         });
     }
 
-    console.dir(socketKeyMap.size);
-
     if(socketKeyMap.size % requiredNameSpace === 0) {
         [...socketKeyMap.values()].forEach(obj => obj.initialize && obj.initialize());
     }
+
+
+    //  sessionId => gameKey => channel => socket
+    const sessionToKey = app.get('session');
+    const sessionId = socket.request.sessionID;
+    if(!sessionToKey.has(sessionId)) {
+        sessionToKey.set(sessionId, new Map());
+    }
+    const keyToChannel = sessionToKey.get(sessionId);
+    if(!keyToChannel.has(key)) {
+        keyToChannel.set(key, new Map());
+    }
+    const channelToSocket = keyToChannel.get(key);
+    if(!channelToSocket.has(channel)) {
+        channelToSocket.set(channel, new Set());
+    }
+    const socketSet = channelToSocket.get(channel);
+    socketSet.add(socket);
+
 
     //  mapping socket => gameId
     const socketToKeyMap = app.get('socketToKey');
@@ -56,6 +72,36 @@ const disconnectSocket = (app, socket, key) => {
         }
     };
 
+
+    //  delete mapping sessionId => gameKey => channel => socket
+    const sessionToKey = app.get('session');
+    const sessionId = socket.request.sessionID;
+    if(sessionToKey.has(sessionId)) {
+        const keyToChannel = sessionToKey.get(sessionId);
+        if(keyToChannel.has(key)) {
+            const channelToSocket = keyToChannel.get(key);
+            if(channelToSocket.has(channel)) {
+                const socketSet = channelToSocket.get(channel);
+                channelToSocket.set(channel, 
+                    new Set(
+                        [...socketSet]
+                        .filter(soc => soc.id !== socket.id)
+                    )
+                );
+                if(channelToSocket.get(channel).size === 0) {
+                    channelToSocket.delete(channel);
+                };
+            }
+            if(keyToChannel.get(key).size === 0) {
+                keyToChannel.delete(key);
+            };
+        }
+        if(sessionToKey.get(sessionId).size === 0) {
+            sessionToKey.delete(sessionId);
+        }
+    }
+
+
     //  delete mapping socket => gameId;
     const socketToKeyMap = app.get('socketToKey');
     socketToKeyMap.delete(socket.id);
@@ -82,7 +128,6 @@ export default (server, app, sessionMiddleware) => {
     app.set('socketToSession', new Map());
     app.set('socketToKey', new Map());
     app.set('session', new Map());
-    app.set('session2', new Map());
     app.set('socket', new Map());
     app.set('game', new Map());
 
@@ -135,16 +180,16 @@ export default (server, app, sessionMiddleware) => {
         const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
         const auth = (passportUser && passportUser.username) ? true : false;
         
-        //  sessionId => key => socket(game channel only)
-        if(!session.has(sessionId)) {
-            session.set(sessionId, new Map());
-        }
-        const sessionToKey = session.get(sessionId);
-        if(!sessionToKey.has(key)) {
-            sessionToKey.set(key, new Set());
-        }
-        const keyToSocket = sessionToKey.get(key);
-        keyToSocket.add(socket);
+        // //  sessionId => key => socket(game channel only)
+        // if(!session.has(sessionId)) {
+        //     session.set(sessionId, new Map());
+        // }
+        // const sessionToKey = session.get(sessionId);
+        // if(!sessionToKey.has(key)) {
+        //     sessionToKey.set(key, new Set());
+        // }
+        // const keyToSocket = sessionToKey.get(key);
+        // keyToSocket.add(socket);
 
         //  game._join
         if(game._participant.has(sessionId)) {
@@ -185,25 +230,25 @@ export default (server, app, sessionMiddleware) => {
             const passportUser = passport ? passport.user : null;
             const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
 
-            //  sessionId => key => socket(game channel only)
-            if(session.has(sessionId)) {
-                const sessionToKey = session.get(sessionId);
-                if(sessionToKey.has(key)) {
-                    const keyToSocket = sessionToKey.get(key);
-                    sessionToKey.set(key,
-                        new Set(
-                            [...keyToSocket]
-                            .filter(soc => soc.id !== socket.id)
-                        )
-                    );
-                    if(sessionToKey.get(key).size === 0) {
-                        sessionToKey.delete(key);
-                    };
-                }
-                if(session.get(sessionId).size === 0) {
-                    session.delete(sessionId);
-                }
-            }
+            // //  sessionId => key => socket(game channel only)
+            // if(session.has(sessionId)) {
+            //     const sessionToKey = session.get(sessionId);
+            //     if(sessionToKey.has(key)) {
+            //         const keyToSocket = sessionToKey.get(key);
+            //         sessionToKey.set(key,
+            //             new Set(
+            //                 [...keyToSocket]
+            //                 .filter(soc => soc.id !== socket.id)
+            //             )
+            //         );
+            //         if(sessionToKey.get(key).size === 0) {
+            //             sessionToKey.delete(key);
+            //         };
+            //     }
+            //     if(session.get(sessionId).size === 0) {
+            //         session.delete(sessionId);
+            //     }
+            // }
 
             //  game._leave
             if(game._participant.has(sessionId)) {
@@ -355,7 +400,6 @@ export default (server, app, sessionMiddleware) => {
         const tabKey = socket.handshake.query['tabKey'];
 
         const initialize = () => {
-            console.dir('record init');
             const recordMap = app.get('record');
             if(!recordMap.has(key)) {
                 const recordSkeleton = {
@@ -507,20 +551,6 @@ export default (server, app, sessionMiddleware) => {
         const game = app.get('game').get(key);
         if(!game) return;
 
-        
-        //  sessionId => key => socket(game channel only)
-        const session2 = app.get('session2');
-        const sessionId = socket.request.sessionID;
-        if(!session2.has(sessionId)) {
-            session2.set(sessionId, new Map());
-        }
-        const sessionToKey = session2.get(sessionId);
-        if(!sessionToKey.has(key)) {
-            sessionToKey.set(key, new Set());
-        }
-        const keyToSocket = sessionToKey.get(key);
-        keyToSocket.add(socket);
-
         const initialize = () => {
             console.dir('socketAuth init');
             // const { nickname, color, passport } = socket.request.session;
@@ -571,17 +601,6 @@ export default (server, app, sessionMiddleware) => {
             const socketAuth = app.get('socketAuth').get(key);
             socketAuth._initialize();
             socketAuth._unicast(socket);
-            
-            // const socketAuth = socketAuthMap.get(key);
-            // socketAuth._initialize();
-            // socketAuth._unicast(socket);
-
-            // socket.emit('message', {
-            //     type: 'initialize',
-            //     nickname,
-            //     role,
-            //     color,
-            // });
         }
 
         connectSocket(app, socket, key, tabKey, initialize);
@@ -589,27 +608,27 @@ export default (server, app, sessionMiddleware) => {
         socket.on('disconnect', () => {
             disconnectSocket(app, socket, key);
 
-            //  sessionId => key => socket(socketAuth channel only)
-            const session2 = app.get('session2');
-            const sessionId = socket.request.sessionID;
-            if(session2.has(sessionId)) {
-                const sessionToKey = session2.get(sessionId);
-                if(sessionToKey.has(key)) {
-                    const keyToSocket = sessionToKey.get(key);
-                    sessionToKey.set(key,
-                        new Set(
-                            [...keyToSocket]
-                            .filter(soc => soc.id !== socket.id)
-                        )
-                    );
-                    if(sessionToKey.get(key).size === 0) {
-                        sessionToKey.delete(key);
-                    };
-                }
-                if(session2.get(sessionId).size === 0) {
-                    session2.delete(sessionId);
-                }
-            }
+            // //  sessionId => key => socket(socketAuth channel only)
+            // const session2 = app.get('session2');
+            // const sessionId = socket.request.sessionID;
+            // if(session2.has(sessionId)) {
+            //     const sessionToKey = session2.get(sessionId);
+            //     if(sessionToKey.has(key)) {
+            //         const keyToSocket = sessionToKey.get(key);
+            //         sessionToKey.set(key,
+            //             new Set(
+            //                 [...keyToSocket]
+            //                 .filter(soc => soc.id !== socket.id)
+            //             )
+            //         );
+            //         if(sessionToKey.get(key).size === 0) {
+            //             sessionToKey.delete(key);
+            //         };
+            //     }
+            //     if(session2.get(sessionId).size === 0) {
+            //         session2.delete(sessionId);
+            //     }
+            // }
 
             console.dir('-------------socketDis(socketAuth)--------------')
             console.dir(socket.request.sessionID);

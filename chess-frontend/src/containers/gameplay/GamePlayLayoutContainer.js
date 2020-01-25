@@ -21,7 +21,7 @@ import { disconnectWebsocket as disconnectChatWebsocket } from '../../modules/ch
 import { disconnectWebsocket as disconnectCanvasWebsocket } from '../../modules/canvas';
 import { disconnectWebsocket as disconnectRecordWebsocket } from '../../modules/record';
 
-const GamePlayLayoutContainer = ({ gameId }) => {
+const GamePlayLayoutContainer = ({ gameKey }) => {
     const dispatch = useDispatch();
 
     const connection = async () => {
@@ -34,7 +34,7 @@ const GamePlayLayoutContainer = ({ gameId }) => {
         await Promise.resolve().then(() => {
             const tabKey = uuid();
             const param = {
-                gameKey: gameId,
+                gameKey,
                 tabKey,
             }
             dispatch(connectGameWebsocket(param));
@@ -63,7 +63,7 @@ const GamePlayLayoutContainer = ({ gameId }) => {
         }
     }, [dispatch]);
 
-    const [state] = useAsync(connection, [ dispatch, gameId ]);
+    const [state] = useAsync(connection, [ dispatch, gameKey ]);
 
     const { loading, data, error } = state;
 

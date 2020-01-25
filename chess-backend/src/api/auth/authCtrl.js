@@ -44,47 +44,48 @@ export const login = (req, res, next) => {
 
             const io = req.app.get('io');
             const gameMap = req.app.get('game');
-            const sessionMap = req.app.get('session');
-            const session2Map = req.app.get('session2');
+            const sessionToKey = req.app.get('session');
 
-            if(sessionMap.has(req.sessionID)) {
-                const sessionToKey = sessionMap.get(req.sessionID);
-                if(sessionToKey) {
-                    [...sessionToKey.keys()].forEach(key => {
-                        const keyToSocket = sessionToKey.get(key);
-                        if(keyToSocket) {
-                            [...keyToSocket].forEach(socket => {
-                                socket.request.session.passport = {
-                                    user: {
-                                        ...req.user
-                                    }
-                                };
-                            });
-                        }
-                        
+            if(sessionToKey.has(req.sessionID)) {
+                const keyToChannel = sessionToKey.get(req.sessionID);
+                if(keyToChannel) {
+                    [...keyToChannel.keys()].forEach(key => {
+
                         const game = gameMap.get(key);
-                        
                         const index = game.participant.findIndex(ele => ele === req.session.nickname);
                         if(index >= 0) {
                             game.participant.splice(index, 1, req.user.username);
                         }
-
-                        const key2ToSocket = session2Map.get(req.sessionID).get(key);
-                        game._socketAuth._initialize();
-                        if(key2ToSocket) {
-                            [...key2ToSocket].forEach(socket => {
-                                game._socketAuth._unicast(socket);
-                            })
-                        };
                         
-                        // const socketMap = req.app.get('socket');
-                        // const targetSocket = socketMap.get(key).get('/socketAuth').socket;
-
-                        // game._socketAuth._initialize();
-                        // game._socketAuth._unicast(targetSocket);
                         game._ignite();
                         game._broadcast();
+
+                        const channelToSocket = keyToChannel.get(key);
+                        if(channelToSocket) {
+                            const gameSocketSet = channelToSocket.get('/game');
+                            if(gameSocketSet) {
+                                [...gameSocketSet].forEach(socket => {
+                                    socket.request.session.passport = {
+                                        user: {
+                                            ...req.user
+                                        }
+                                    };
+                                });
+                            }
+
+                            //  session 객체는 참조로 유지되고 있음
+                            //  game채널의 socket을 통한 session 변경은 socketAuth 채널에도 적용됨
+                            game._socketAuth._initialize();
+
+                            const socketAuthSocketSet = channelToSocket.get('/socketAuth');
+                            if(socketAuthSocketSet) {
+                                [...socketAuthSocketSet].forEach(socket => {
+                                    game._socketAuth._unicast(socket);
+                                });
+                            }
+                        }
                     });
+
                     console.dir('games initialize login~')
                     io.of('/games').emit('message', {
                         type: 'initialize',
@@ -109,46 +110,43 @@ export const logout = (req, res, next) => {
     
     //  로그인된 유저가 로그아웃 했을 때 해당 key를 가지고 있는 game에 참가중이라면
     //  participant에서 제외시키고 game 내에서 white나 black의 role을 갖고 있었다면 게임을 중단
-    const sessionMap = req.app.get('session');
-    const session2Map = req.app.get('session2');
-    if(sessionMap.has(req.sessionID)) {
-        const sessionToKey = sessionMap.get(req.sessionID);
-        if(sessionToKey) {
-            [...sessionToKey.keys()].forEach(key => {
-                const keyToSocket = sessionToKey.get(key);
-                if(keyToSocket) {
-                    [...keyToSocket].forEach(socket => {
-                        if(socket.request.session) {
-                            delete socket.request.session.passport;
-                        }
-                    });
-                }
-
-                const game = gameMap.get(key);
+    const sessionToKey = req.app.get('session');
+    if(sessionToKey.has(req.sessionID)) {
+        const keyToChannel = sessionToKey.get(req.sessionID);
+        if(keyToChannel) {
+            [...keyToChannel.keys()].forEach(key => {
                 
+                const game = gameMap.get(key);
                 const index = game.participant.findIndex(ele => ele === req.user.username);
                 if(index >= 0) {
                     game.participant.splice(index, 1, req.session.nickname);
                 }
 
-                const key2ToSocket = session2Map.get(req.sessionID).get(key);
-                game._socketAuth._initialize();
-                if(key2ToSocket) {
-                    [...key2ToSocket].forEach(socket => {
-                        game._socketAuth._unicast(socket);
-                    })
-                };
-
-                //여기 작업해야함
-                // const socketMap = req.app.get('socket');
-                // const targetSocket = socketMap.get(key).get('/socketAuth').socket;
-
-                // game._socketAuth._initialize();
-                // game._socketAuth._unicast(targetSocket);
-
                 game._smother();
                 game._broadcast();
+
+                const channelToSocket = keyToChannel.get(key);
+                if(channelToSocket) {
+                    const gameSocketSet = channelToSocket.get('/game');
+                    if(gameSocketSet) {
+                        [...gameSocketSet].forEach(socket => {
+                            if(socket.request.session) {
+                                delete socket.request.session.passport;
+                            }
+                        });
+                    }
+
+                    game._socketAuth._initialize();
+                    
+                    const socketAuthSocketSet = channelToSocket.get('/socketAuth');
+                    if(socketAuthSocketSet) {
+                        [...socketAuthSocketSet].forEach(socket => {
+                            game._socketAuth._unicast(socket);
+                        })
+                    }
+                }
             });
+
             console.dir('games initialize logout~')
             io.of('/games').emit('message', {
                 type: 'initialize',
@@ -165,7 +163,6 @@ export const logout = (req, res, next) => {
     io.of('/sessionAuth').to(req.sessionID).emit('message', {
         type: 'clear',
     });
-    
    
     return res.status(200).send('logout success');
 };

@@ -22,7 +22,7 @@ const GamePlayPage = ({ history, match }) => {
                 <title>GamePlay • Chesssup.com</title>
             </Helmet>
             <HeaderContainer />
-            <GamePlayLayoutContainer gameId={id}/>
+            <GamePlayLayoutContainer gameKey={id}/>
         </>
     )
 };
