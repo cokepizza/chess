@@ -23,8 +23,26 @@ const connectSocket = (app, socket, key, tabKey, initialize) => {
         });
     }
 
+    //  namespace간에 connection 단계에서 dependency가 있는 로직이 있기 때문에 (socketAuth와 game 채널에서)
+    //  객체 매핑 & 게임 초기화 단계와 그 다음 처리 로직을 순차적으로 구분하였다
+
+    //  connection 단계 => initialize 단계 => cleanup 단계 => disconnection 단계로 나눠볼 수 있다
+    //  connection 단계에서는 namespace 객체간 매핑 및 초기 게임 정보를 세팅한다
+    //  initialize 단계에서는 객체 매핑이나 초기 게임 정보가 삽입된 후 필요한 처리가 들어간다 (각 initialize함수는 dependency가 있어서는 안된다)
+    //  cleanup 단계에서는 socket의 namespace가 끊기기전, 즉 첫번째 소켓이 종료를 원할때 각 namespace에서 필요한 코드가 실행된다
+    //  disconnection 단계에서는 각 namespace들이 종료된다
+    //  각 단계는 순차적으로 진행되며 직전단계까지의 완료가 보장된다
+
     if(socketKeyMap.size % requiredNameSpace === 0) {
-        [...socketKeyMap.values()].forEach(obj => obj.initialize && obj.initialize());
+        [...socketKeyMap.values()].forEach(obj => {
+            const cleanup = obj.initialize && obj.initialize();
+            if(cleanup) {
+                socketKeyMap.set(channel, {
+                    ...socketKeyMap.get(channel),
+                    cleanup,
+                });
+            }
+        });
     }
 
 
@@ -61,16 +79,21 @@ const disconnectSocket = (app, socket, key, tabKey) => {
     //  disconnect socket information for each channel
     const channel = socket.id.split('#')[0];
     const socketMap = app.get('socket');
+
     if(socketMap.has(tabKey)) {
         const socketKeyMap = socketMap.get(tabKey);
-        if(socketKeyMap.has(channel)) {
+        [...socketKeyMap.keys()].forEach(chan => {
+            const obj = socketKeyMap.get(chan);
+            obj.cleanup && obj.cleanup();
+            obj.cleanup = null;
+        });
+        if(socketKeyMap.has(channel)) {            
             socketKeyMap.delete(channel);
         }
         if(socketKeyMap.size === 0) {
             socketMap.delete(tabKey);
         }
     };
-
 
     //  delete mapping sessionId => gameKey => channel => socket
     const sessionToKey = app.get('session');
@@ -164,8 +187,6 @@ export default (server, app, sessionMiddleware) => {
         const tabKey = socket.handshake.query['tabKey'];
         if(!key) return;
 
-        connectSocket(app, socket, key, tabKey);
-
         const gameMap = app.get('game');
         const game = gameMap.get(key);
 
@@ -201,10 +222,17 @@ export default (server, app, sessionMiddleware) => {
             }
         }
 
-        game._heartbeat();
-
+        const initialize = () => {
+            game._heartbeat();
+            //  clean up function
+            return () => {
+                game._heartbeat();
+            }
+        }
+        
+        connectSocket(app, socket, key, tabKey, initialize);
+        
         socket.on('disconnect', () => {
-            disconnectSocket(app, socket, key, tabKey);
             
             const sessionId = socket.request.sessionID;
             const { nickname, passport } = socket.request.session;
@@ -224,11 +252,11 @@ export default (server, app, sessionMiddleware) => {
                     if(index >= 0) {
                         game.participant.splice(index, 1);
                     };
-                    
-                    game._heartbeat();
                 }
             }
-            
+
+            disconnectSocket(app, socket, key, tabKey);
+
             console.dir('-------------socketDis(game)--------------');
             console.dir(socket.request.sessionID);
         })
@@ -349,104 +377,102 @@ export default (server, app, sessionMiddleware) => {
         const tabKey = socket.handshake.query['tabKey'];
         if(!key) return;
 
-        const initialize = () => {
-            const recordMap = app.get('record');
-            if(!recordMap.has(key)) {
-                const recordSkeleton = {
-                    startTime: null,
-                    endTime: null,
-                    blackTime: null,
-                    whiteTime: null,
-                    blackMaxTime: null,
-                    whiteMaxTime: null,
-                    blackRatio: null,
-                    whiteRatio: null,
-                    pieceMove: [],
-                    _setTimeRef: null,
-                    _initialize: function() {
-                        const game = app.get('game').get(key);
-                        this.blackTime = game.defaultTime;
-                        this.whiteTime = game.defaultTime;
-                        this.blackMaxTime = game.defaultTime;
-                        this.whiteMaxTime = game.defaultTime;
-                        this.blackRatio = 1;
-                        this.whiteRatio = 1;
-                    },
-                    _start: function(order) {
-                        this.startTime = new Date().getTime();
-                        this._reduce(order);
-                    },
-                    _end: function(order) {
-                        this.endTime = new Date().getTime();
-                        console.dir(order + ' end');
-                    },
-                    _change: function() {
-                        this._stop();
-                        const game = app.get('game').get(key);
-                        this._recharge(game.order === 'white' ? 'black': 'white');
-                        this._start(game.order, true);
-                    },
-                    _stop: function() {
-                        clearTimeout(this._setTimeRef);
-                    },
-                    _recharge: function(order) {
-                        console.dir(`recharge ${order}`);
+        const recordMap = app.get('record');
+        if(!recordMap.has(key)) {
+            const recordSkeleton = {
+                startTime: null,
+                endTime: null,
+                blackTime: null,
+                whiteTime: null,
+                blackMaxTime: null,
+                whiteMaxTime: null,
+                blackRatio: null,
+                whiteRatio: null,
+                pieceMove: [],
+                _setTimeRef: null,
+                _initialize: function() {
+                    const game = app.get('game').get(key);
+                    this.blackTime = game.defaultTime;
+                    this.whiteTime = game.defaultTime;
+                    this.blackMaxTime = game.defaultTime;
+                    this.whiteMaxTime = game.defaultTime;
+                    this.blackRatio = 1;
+                    this.whiteRatio = 1;
+                },
+                _start: function(order) {
+                    this.startTime = new Date().getTime();
+                    this._reduce(order);
+                },
+                _end: function(order) {
+                    this.endTime = new Date().getTime();
+                    console.dir(order + ' end');
+                },
+                _change: function() {
+                    this._stop();
+                    const game = app.get('game').get(key);
+                    this._recharge(game.order === 'white' ? 'black': 'white');
+                    this._start(game.order, true);
+                },
+                _stop: function() {
+                    clearTimeout(this._setTimeRef);
+                },
+                _recharge: function(order) {
+                    console.dir(`recharge ${order}`);
 
-                        const game = app.get('game').get(key);
-                        this[order + 'Time'] += game.extraTime;
-                        this[order + 'MaxTime'] = Math.max(this[order + 'MaxTime'], this[order + 'Time']);
-                        this[order + 'Ratio'] = this[order + 'Time'] / this[order + 'MaxTime'];
-                        
-                        this._broadcast({
-                            type: 'change',
-                            [order + 'Time']: this[order + 'Time'],
-                            [order + 'MaxTime']: this[order + 'MaxTime'],
-                            [order + 'Ratio']: this[order + 'Ratio'],
-                        });
-                        this._broadcast({
-                            type: 'update',
-                            pieceMove: this.pieceMove[this.pieceMove.length - 1],
-                        });
-                    },
-                    _reduce: function(order) {
-                        this._stop();
-                        this._setTimeRef = setTimeout(() => {
-                            this[order + 'Time'] -= 1000;
-                            if(this[order + 'Time'] >= 0) {
-                                this[order + 'Ratio'] = this[order + 'Time'] / this[order + 'MaxTime'];
-                                this._broadcast({
-                                    type: 'change',
-                                    [order + 'Time']: this[order + 'Time'],
-                                    [order + 'Ratio']: this[order + 'Ratio'],
-                                });    
-                                this._reduce(order);
-                            } else {
-                                this[order + 'Time'] = 0;
-                                this._end(order);
-                            }
-                        }, 1000);
-                    },
-                    _broadcast: function(message) {
-                        io.of('/record').to(key).emit('message', message);
-                    },
-                    _unicast: function(socket) {
-                        socket.emit('message', {
-                            type: 'initialize',
-                            ...instanceSanitizer(this),
-                        })
-                    },
-                };
+                    const game = app.get('game').get(key);
+                    this[order + 'Time'] += game.extraTime;
+                    this[order + 'MaxTime'] = Math.max(this[order + 'MaxTime'], this[order + 'Time']);
+                    this[order + 'Ratio'] = this[order + 'Time'] / this[order + 'MaxTime'];
+                    
+                    this._broadcast({
+                        type: 'change',
+                        [order + 'Time']: this[order + 'Time'],
+                        [order + 'MaxTime']: this[order + 'MaxTime'],
+                        [order + 'Ratio']: this[order + 'Ratio'],
+                    });
+                    this._broadcast({
+                        type: 'update',
+                        pieceMove: this.pieceMove[this.pieceMove.length - 1],
+                    });
+                },
+                _reduce: function(order) {
+                    this._stop();
+                    this._setTimeRef = setTimeout(() => {
+                        this[order + 'Time'] -= 1000;
+                        if(this[order + 'Time'] >= 0) {
+                            this[order + 'Ratio'] = this[order + 'Time'] / this[order + 'MaxTime'];
+                            this._broadcast({
+                                type: 'change',
+                                [order + 'Time']: this[order + 'Time'],
+                                [order + 'Ratio']: this[order + 'Ratio'],
+                            });    
+                            this._reduce(order);
+                        } else {
+                            this[order + 'Time'] = 0;
+                            this._end(order);
+                        }
+                    }, 1000);
+                },
+                _broadcast: function(message) {
+                    io.of('/record').to(key).emit('message', message);
+                },
+                _unicast: function(socket) {
+                    socket.emit('message', {
+                        type: 'initialize',
+                        ...instanceSanitizer(this),
+                    })
+                },
+            };
 
-                recordSkeleton._initialize();
-                app.get('game').get(key)._record = recordSkeleton;
-                app.get('record').set(key, recordSkeleton);
-            }
-
-            const record = app.get('record').get(key);
-            record._unicast(socket);
+            recordSkeleton._initialize();
+            app.get('game').get(key)._record = recordSkeleton;
+            app.get('record').set(key, recordSkeleton);
         }
 
-        connectSocket(app, socket, key, tabKey, initialize);
+        const record = app.get('record').get(key);
+        record._unicast(socket);
+
+        connectSocket(app, socket, key, tabKey);
 
         socket.on('disconnect', () => {
             disconnectSocket(app, socket, key, tabKey);
@@ -499,55 +525,57 @@ export default (server, app, sessionMiddleware) => {
         const game = app.get('game').get(key);
         if(!game) return;
 
+        const socketAuthMap = app.get('socketAuth');
+        if(!socketAuthMap.has(key)) {
+            const socketAuthSkeleton = {
+                role: null,
+                nickname: null,
+                color: null,
+                _initialize: function(socket) {
+                    const { nickname, color, passport } = socket.request.session;
+                    const passportUser = passport ? passport.user : null;
+                    const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+                    const sessionId = socket.request.sessionID;
+                    const game = app.get('game').get(key);
+
+                    this.role = (game._black === sessionId && game.black === username) ? 'black': ((game._white === sessionId && game.white === username)? 'white' : 'spectator');
+                    this.nickname = nickname;
+                    this.color = color;
+                    
+                    // console.dir(socket.id);
+                    // console.dir(passport);
+
+                    // console.dir(username);
+                    // console.dir(game._black === sessionId);
+                    // console.dir(game.black === username);
+                    // console.dir(game._white === sessionId);
+                    // console.dir(game.white === username);
+                },
+                _unicast: function(socket) {
+                    socket.emit('message', {
+                        type: 'initialize',
+                        ...instanceSanitizer(this),
+                    });
+                },
+            }
+
+            app.get('game').get(key)._socketAuth = socketAuthSkeleton;
+            app.get('socketAuth').set(key, socketAuthSkeleton);
+        }
+
         const initialize = () => {
             console.dir('socketAuth init');
             // const { nickname, color, passport } = socket.request.session;
             // const passportUser = passport ? passport.user : null;
             // const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
-    
-            // if(!nickname) return;
             
-            const socketAuthMap = app.get('socketAuth');
-            if(!socketAuthMap.has(key)) {
-                const socketAuthSkeleton = {
-                    role: null,
-                    nickname: null,
-                    color: null,
-                    _initialize: function(socket) {
-                        const { nickname, color, passport } = socket.request.session;
-                        const passportUser = passport ? passport.user : null;
-                        const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
-                        const sessionId = socket.request.sessionID;
-                        const game = app.get('game').get(key);
-    
-                        this.role = (game._black === sessionId && game.black === username) ? 'black': ((game._white === sessionId && game.white === username)? 'white' : 'spectator');
-                        this.nickname = nickname;
-                        this.color = color;
-                        
-                        // console.dir(socket.id);
-                        // console.dir(passport);
-
-                        // console.dir(username);
-                        // console.dir(game._black === sessionId);
-                        // console.dir(game.black === username);
-                        // console.dir(game._white === sessionId);
-                        // console.dir(game.white === username);
-                    },
-                    _unicast: function(socket) {
-                        socket.emit('message', {
-                            type: 'initialize',
-                            ...instanceSanitizer(this),
-                        });
-                    },
-                }
-
-                app.get('game').get(key)._socketAuth = socketAuthSkeleton;
-                app.get('socketAuth').set(key, socketAuthSkeleton);
-            }
-
-            const socketAuth = app.get('socketAuth').get(key);
-            socketAuth._initialize(socket);
-            socketAuth._unicast(socket);
+            // const socketAuth = app.get('socketAuth').get(key);
+            // socketAuth._initialize(socket);
+            // socketAuth._unicast(socket);
+            
+            const game = app.get('game').get(key);
+            game._socketAuth._initialize(socket);
+            game._socketAuth._unicast(socket);
         }
 
         connectSocket(app, socket, key, tabKey, initialize);
