@@ -79,16 +79,28 @@ const disconnectSocket = (app, socket, key, tabKey) => {
     //  disconnect socket information for each channel
     const channel = socket.id.split('#')[0];
     const socketMap = app.get('socket');
-    const cleanup = [];
     if(socketMap.has(tabKey)) {
         const socketKeyMap = socketMap.get(tabKey);
         if(socketKeyMap.has(channel)) {
             const obj = socketKeyMap.get(channel);
-            obj.cleanup && cleanup.push(obj);
+            if(obj.cleanup) {
+                if(!socketMap.has(`${tabKey}_cleanup`)) {
+                    socketMap.set(`${tabKey}_cleanup`, [ obj.cleanup ]);
+                } else {
+                    socketMap.set(`${tabKey}_cleanup`,
+                        [ ...socketMap.get(`${tabKey}_cleanup`), obj.cleanup ]
+                    );
+                };
+            };
+                
             socketKeyMap.delete(channel);
         }
         if(socketKeyMap.size === 0) {
-            cleanup.forEach(obj => obj.cleanup());
+            if(socketMap.has(`${tabKey}_cleanup`)) {
+                socketMap.get(`${tabKey}_cleanup`).forEach(cleanup => cleanup());
+                socketMap.delete(`${tabKey}_cleanup`);
+            }
+            
             socketMap.delete(tabKey);
         }
     };
@@ -539,15 +551,6 @@ export default (server, app, sessionMiddleware) => {
                     this.role = (game._black === sessionId && game.black === username) ? 'black': ((game._white === sessionId && game.white === username)? 'white' : 'spectator');
                     this.nickname = nickname;
                     this.color = color;
-                    
-                    // console.dir(socket.id);
-                    // console.dir(passport);
-
-                    // console.dir(username);
-                    // console.dir(game._black === sessionId);
-                    // console.dir(game.black === username);
-                    // console.dir(game._white === sessionId);
-                    // console.dir(game.white === username);
                 },
                 _unicast: function(socket) {
                     socket.emit('message', {
@@ -561,16 +564,7 @@ export default (server, app, sessionMiddleware) => {
             app.get('socketAuth').set(key, socketAuthSkeleton);
         }
 
-        const initialize = () => {
-            console.dir('socketAuth init');
-            // const { nickname, color, passport } = socket.request.session;
-            // const passportUser = passport ? passport.user : null;
-            // const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
-            
-            // const socketAuth = app.get('socketAuth').get(key);
-            // socketAuth._initialize(socket);
-            // socketAuth._unicast(socket);
-            
+        const initialize = () => {        
             const game = app.get('game').get(key);
             game._socketAuth._initialize(socket);
             game._socketAuth._unicast(socket);
