@@ -2,8 +2,8 @@ import User from './models/user';
 
 const cache = async () => {
     const users = await User.find();
-    const sortedUsers = users
-        .map(user => user.toJSON())
+    const sortedUsers = users 
+        .map(user => user.serialize())
         .map(user => ({ 
             ...user,
             ratio: (user.win === 0

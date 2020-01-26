@@ -5,13 +5,19 @@ import useAsync from '../../lib/hook/useAsync';
 import { setSessionThunk } from '../../modules/sessionAuth';
 
 import MainLayout from '../../components/main/MainLayout';
+import { connectWebsocket, disconnectWebsocket } from '../../modules/ranking';
 
 const MainLayoutContainer = () => {
     const dispatch = useDispatch();
 
     const connection = async () => {
         await dispatch(setSessionThunk());
-
+        
+        dispatch(disconnectWebsocket());
+        await Promise.resolve().then(() => {
+            dispatch(connectWebsocket());
+        })
+        
         return true;
     };
 

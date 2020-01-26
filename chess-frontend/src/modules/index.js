@@ -8,7 +8,7 @@ import canvas, { canvasSaga } from './canvas';
 import chat, { chatSaga } from './chat';
 import record, { recordSaga }  from './record';
 import create from './create';
-import ranking from './ranking';
+import ranking, { rankingSaga } from './ranking';
 
 
 const rootReducer = combineReducers({
@@ -25,7 +25,16 @@ const rootReducer = combineReducers({
 
 
 export function* rootSaga() {
-    yield all([ sessionAuthSaga(), socketAuthSaga(), gameSaga(), gamesSaga(), canvasSaga(), chatSaga(), recordSaga() ]);
+    yield all([
+        sessionAuthSaga(),
+        socketAuthSaga(),
+        gameSaga(),
+        gamesSaga(),
+        canvasSaga(),
+        chatSaga(),
+        recordSaga(),
+        rankingSaga(),
+    ]);
 };
 
 export default rootReducer;

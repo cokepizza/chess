@@ -40,9 +40,6 @@ export const updateValueThunk = params => ( dispatch, getState ) => {
 };
 
 function* connectWebsocketSaga (action) {
-    // const key = action.payload;
-    // const query = `key=${key}`;
-
     const query = action.payload;
 
     const socketTask = yield fork(connectNamespace, { 

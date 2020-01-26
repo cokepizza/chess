@@ -29,10 +29,16 @@ export function* rankingSaga () {
 }
 
 const initialState = {
-    
+    socket: null,
+    ranking: null,
+    error: null,
 };
 
 export default handleActions({
+    [INITIALIZE_SOCKET]: (state, { payload: { socket } }) => ({
+        ...state,
+        socket,
+    }),
     [INITIALIZE_VALUE]: (state, { payload: { type, ...rest } }) => ({
         ...state,
         ...rest,

@@ -147,7 +147,7 @@ const disconnectSocket = (app, socket, key, tabKey) => {
 
 export default (server, app, sessionMiddleware) => {
     const io = SocketIO(server);
-    
+
     app.set('io', io);
 
     app.set('counter', 0);
@@ -162,8 +162,6 @@ export default (server, app, sessionMiddleware) => {
     app.set('socket', new Map());
     app.set('game', new Map());
 
-    app.set('user', new Map());
-
     io.use((socket, next) => {
         sessionMiddleware(socket.request, socket.request.res, next);
     });
@@ -173,6 +171,11 @@ export default (server, app, sessionMiddleware) => {
         console.dir('-------------socket(ranking)--------------');
         console.dir(socket.request.sessionID);
         
+        const ranking = app.get('ranking');
+        socket.emit('message', {
+            type: 'initialize',
+            ranking,
+        });
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(ranking)--------------');

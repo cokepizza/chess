@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
@@ -49,7 +50,7 @@ const server = data => {
 
     Object.keys(data).forEach(key => {
         app.set(key, data[key]);
-    })
+    });
     
     //  라우팅 로직을 제외한 모든 get요청
     app.get("*", (req, res) => {

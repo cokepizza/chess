@@ -28,9 +28,6 @@ const [ SEND_MESSAGE, SEND_MESSAGE_SUCCESS, SEND_MESSAGE_FAILURE ] = createReque
 export const sendMessageThunk = createRequestThunk(SEND_MESSAGE, chatAPI.sendMessage);
 
 function* connectWebsocketSaga (action) {
-    // const key = action.payload;
-    // const query = `key=${key}`;
-
     const query = action.payload;
     
     const socketTask = yield fork(connectNamespace, {
