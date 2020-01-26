@@ -10,8 +10,10 @@ export const disconnectWebsocket = createAction(DISCONNECT_WEBSOCKET);
 
 const INITIALIZE_VALUE = 'ranking/INITIALIZE_VALUE';
 const INITIALIZE_SOCKET = 'ranking/INITIALIZE_SOCKET';
+const CLEAR_VALUE = 'ranking/CLEAR_VALUE';
 export const initializeSocket = createAction(INITIALIZE_SOCKET);
 export const initializeValue = createAction(INITIALIZE_VALUE);
+export const clearValue = createAction(CLEAR_VALUE);
 
 function* connectWebsocketSaga () {
     const socketTask = yield fork(connectNamespace, { 
@@ -43,4 +45,5 @@ export default handleActions({
         ...state,
         ...rest,
     }),
+    [CLEAR_VALUE]: state => initialState,
 }, initialState);

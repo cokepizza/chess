@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import useAsync from '../../lib/hook/useAsync';
 import { setSessionThunk } from '../../modules/sessionAuth';
 
 import MainLayout from '../../components/main/MainLayout';
-import { connectWebsocket, disconnectWebsocket } from '../../modules/ranking';
+import { connectWebsocket, disconnectWebsocket, clearValue } from '../../modules/ranking';
 
 const MainLayoutContainer = () => {
     const dispatch = useDispatch();
@@ -20,6 +20,16 @@ const MainLayoutContainer = () => {
         
         return true;
     };
+
+    useEffect(() => {
+        return () => {
+            dispatch(disconnectWebsocket());
+        };
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(clearValue());
+    }, [dispatch])
 
     const [state] = useAsync(connection, [ dispatch ]);
 

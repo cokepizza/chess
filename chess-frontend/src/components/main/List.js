@@ -13,21 +13,14 @@ const ListCellBlock = styled.div`
     position: absolute;
     height: 40px;
     width: 100%;
-    /* box-shadow: 0 2px 2px 0 rgba(0,0,0,0.07), 0 3px 1px -2px rgba(0,0,0,0.1), 0 1px 5px 0 rgba(0,0,0,0.06); */
-    /* border-bottom: 1px solid #ccc; */
     display: flex;
     cursor: pointer;
-    transition: 1s;
-    
+    transition: 1s top;
     top: ${props => (props.index * 41 + 42) + 'px'};
-    /* top: ${props => (props.index * 50) + 'px'}; */
     left: 0;
 
-    background-color: rgba(255, 255, 255, 0.2);
-    /* background-color: blue;
-    z-index: 1000; */
     &:hover {
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255, 255, 255, 0.8);
     }
     
 `;
@@ -43,10 +36,14 @@ const TextBlock = styled.div`
         width: 120px;
     `}
 
-    ${props => props.name && css`
+    ${props => props.mail && css`
         width: 240px;
         justify-content: flex-start;
     `}
+
+    ${props => props.header && css`
+        justify-content: center;
+    `};
 
 `;
 
@@ -56,7 +53,7 @@ const ListCell = React.memo(({ cell }) => {
             <TextBlock>
                 {cell.index + 1}
             </TextBlock>
-            <TextBlock name>
+            <TextBlock mail>
                 {cell.username}
             </TextBlock>
             <TextBlock elo>
@@ -84,8 +81,42 @@ const BorderBlock = styled.div`
     left: 0;
 `;
 
+const HeaderCell = React.memo(() => {
+    return (
+        <HeaderCellBlock>
+            <TextBlock>
+                Rank
+            </TextBlock>
+            <TextBlock mail={true} header={true}>
+                Email
+            </TextBlock>
+            <TextBlock elo={true}>
+                Elo
+            </TextBlock>
+            <TextBlock>
+                Ratio
+            </TextBlock>
+            <TextBlock>
+                Win
+            </TextBlock>
+            <TextBlock>
+                Lose
+            </TextBlock>
+        </HeaderCellBlock>
+    )
+});
+
+const HeaderCellBlock = styled.div`
+    position: absolute;
+    display: flex;
+    height: 40px;
+    width: 100%;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.7);
+    top: 0;
+    left: 0;
+`;
+
 const List = ({ list }) => {
-    console.dir(list);
     const listArr = list && list
         .map(cell => (
                 <ListCell
@@ -94,19 +125,26 @@ const List = ({ list }) => {
                 />
             )
         );
-    
-    const leng = list && list.length;
+
     const borderArr = [];
-    if(leng) {
+    if(list) {
+        const leng = list.reduce((acc, cur) => {
+            return acc + (cur.index < 15 ? 1 : 0);
+        }, 0);
+        
         for(let i=1; i<leng; ++i) {
             borderArr.push(
-                <BorderBlock index={i}/>
+                <BorderBlock
+                    key={`border_${i}`}
+                    index={i}
+                />
             )
         }
     }
 
     return (
         <ListBlock>
+            <HeaderCell />
             {listArr}
             {borderArr}
         </ListBlock>
