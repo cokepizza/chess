@@ -162,12 +162,11 @@ export default (server, app, sessionMiddleware) => {
     app.set('socket', new Map());
     app.set('game', new Map());
 
-    // app.set('user', );
+    app.set('user', new Map());
 
     io.use((socket, next) => {
         sessionMiddleware(socket.request, socket.request.res, next);
-    })
-
+    });
 
     //  subscribe 'Ranking' Namespace
     io.of('/ranking').on('connect', socket => {
