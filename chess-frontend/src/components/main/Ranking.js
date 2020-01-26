@@ -22,13 +22,14 @@ const BackgroundBlock = styled.img`
     width: 80%;
     height: 80%;
     opacity: 0.1;
+    z-index: -1;
 `;
 
-const Ranking = ({ ranking }) => {
+const Ranking = ({ rank }) => {
     return (
         <RankingBlock>
             <BackgroundBlock src={RankImage}/>
-            <ListContainer list={ranking}/>
+            <ListContainer list={rank}/>
         </RankingBlock>
     )
 };

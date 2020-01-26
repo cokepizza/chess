@@ -172,9 +172,10 @@ export default (server, app, sessionMiddleware) => {
         console.dir(socket.request.sessionID);
         
         const ranking = app.get('ranking');
+
         socket.emit('message', {
             type: 'initialize',
-            ranking,
+            ranking: ranking.slice(0, 15),
         });
 
         socket.on('disconnect', () => {
