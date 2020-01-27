@@ -6,6 +6,9 @@ import session from 'express-session';
 import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
+import greenlock from 'greenlock-express';
+import https from 'https';
+import http from 'http';
 
 import api from './api';
 import socket from './socket';
@@ -32,6 +35,23 @@ const server = data => {
         },
         name: 'chess',
     });
+
+    const lex = greenlock.create({
+        version: 'draft-11',
+        configDir: '/etc/letsencrypt',
+        server: 'https://acme-staging-v02.api.letsencrypt.org/directory',
+        approveDomains: (opts, certs, cb) => {
+          if (certs) {
+            opts.domains = ['chesssup.com', 'www.chesssup.com'];
+          } else {
+            opts.email = 'lsjphd@gmail.com';
+            opts.agreeTos = true;
+          }
+          cb(null, { options: opts, certs });
+        },
+        renewWithin: 81 * 24 * 60 * 60 * 1000,
+        renewBy: 80 * 24 * 60 * 60 * 1000,
+    });
     
     app.set('views', path.join(__dirname, 'views'));
     app.use(morgan('dev'));
@@ -52,14 +72,17 @@ const server = data => {
         app.set(key, data[key]);
     });
     
+    const server = https.createServer(lex.httpsOptions, lex.middleware(app)).listen(process.env.SSL_PORT || 443);
+    http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80);
+
     //  라우팅 로직을 제외한 모든 get요청
     app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname, '../../chess-frontend/build', 'index.html'));
     });
     
-    const server = app.listen(app.get('port'), () => {
-        console.dir(`Port ${app.get('port')} => listening~`);
-    })
+    // const server = app.listen(app.get('port'), () => {
+    //     console.dir(`Port ${app.get('port')} => listening~`);
+    // })
     
     socket(server, app, sessionMiddleware);
 }

@@ -17,6 +17,7 @@ const cache = async () => {
             if(a.elo === b.elo) {
                 if(a.ratio === b.ratio) {
                     if(a.win === b.win) {
+                        //  test 필요 숫자로 바꿔서 비교해줘야함
                         return b.createdAt - a.createdAt;
                     } else {
                         return b.win - a.win;
