@@ -8,7 +8,8 @@ import * as canvasCtrl from '../lib/api/canvas';
 
 // import rules from '../lib/base/rules';
 import board from '../lib/base/board';
-import { checkCovered } from '../lib/base/validation';
+import { checkCovered, checkSafeMove } from '../lib/base/validation';
+import { genBoard } from '../lib/base/genBoard';
 
 const CONNECT_WEBSOCKET = 'canvas/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'canvas/DISCONNECT_WEBSOCKET';
@@ -245,12 +246,26 @@ export const clickPieceThunk = ({ y: cy, x: cx }) => (dispatch, getState) => {
         'clicked',
     ]);
 
+    // coveredAxis.forEach(axis => {
+    //     clearBoard[axis.dy] = [ ...clearBoard[axis.dy] ];
+    //     const popedCell = clearBoard[axis.dy][axis.dx];
+    //     clearBoard[axis.dy].splice(axis.dx, 1, {
+    //         ...popedCell,
+    //         covered: true,
+    //     });
+    // });
+
     coveredAxis.forEach(axis => {
+        const tempBoard = genBoard(clearBoard, { y, x }, axis);
+        if(!checkSafeMove(role, tempBoard)) {
+            return;
+        };
+
         clearBoard[axis.dy] = [ ...clearBoard[axis.dy] ];
         const popedCell = clearBoard[axis.dy][axis.dx];
         clearBoard[axis.dy].splice(axis.dx, 1, {
             ...popedCell,
-            covered:true,
+            covered: true,
         });
     });
 
