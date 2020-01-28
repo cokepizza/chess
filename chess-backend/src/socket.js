@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import defaultBoard from './lib/base/board';
 import instanceSanitizer from './lib/util/instanceSanitizer';
+import registerCache from './registerCache';
 
 //  socket connection for gameplay
 const requiredNameSpace = 5;
@@ -166,21 +167,19 @@ export default (server, app, sessionMiddleware) => {
         sessionMiddleware(socket.request, socket.request.res, next);
     });
 
+    registerCache(app);
+
     //  subscribe 'Ranking' Namespace
     io.of('/ranking').on('connect', socket => {
         console.dir('-------------socket(ranking)--------------');
         console.dir(socket.request.sessionID);
         
         const ranking = app.get('ranking');
-
-        socket.emit('message', {
-            type: 'initialize',
-            ranking: ranking.slice(0, 15),
-        });
+        ranking._unicast(socket);
 
         // test
         setTimeout(() => {
-            const copiedRanking = JSON.parse(JSON.stringify(ranking.slice(0, 15)));
+            const copiedRanking = JSON.parse(JSON.stringify(ranking.list.slice(0, 15)));
             const wait = copiedRanking[0];
             copiedRanking[0] = copiedRanking[5];
             copiedRanking[5] = wait;

@@ -32,7 +32,10 @@ const cache = async () => {
     
 
     const data = {
-        ranking: sortedUsers,
+        ranking: {
+            limit: 15,
+            list: sortedUsers,
+        },
     }
     
     return data;

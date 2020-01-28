@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
+import eloRank from 'elo-rank';
 
 mongoose.set('useCreateIndex', true);
 
@@ -68,6 +69,12 @@ UserSchema.methods.serialize = function() {
     const data = this.toJSON();
     delete data.hashedPassword;
     return data;
+};
+
+UserSchema.methods.setElo = function(result, oppositeElo) {
+    const elo = new eloRank(20);
+    const expectedScore = elo.getExpected(this.elo, oppositeElo);
+    this.elo = elo.updateRating(expectedScore, result, this.elo);
 };
 
 const User = mongoose.model('User', UserSchema);

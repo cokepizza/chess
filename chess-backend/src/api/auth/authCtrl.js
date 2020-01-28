@@ -127,8 +127,6 @@ export const login = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err || info) {
             console.dir(err || info);
-            console.dir(err);
-            console.dir(info);
             return res.status(400).send(err || info);
         }
 
