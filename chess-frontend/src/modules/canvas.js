@@ -226,6 +226,8 @@ export const clickPieceThunk = ({ y: cy, x: cx }) => (dispatch, getState) => {
         x = 7 - cx;
     };
 
+    if(board[y][x].owner !== role) return;
+
     if(clicked && board[y][x].covered) {
         const { canvas: { socket } } = getState();
 

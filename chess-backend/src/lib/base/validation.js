@@ -17,6 +17,8 @@ export const findKingLocation = (player, board) => {
 }
 
 export const deduplicate = axisArr => {
+    if(axisArr.length === 0) return axisArr;
+
     const axisSet = new Set();
     axisArr.forEach(axis => axisSet.add(axis.dy * 10 + axis.dx));
     return [ ...axisSet ].map(key => ({ dy: parseInt(key / 10), dx: key % 10 }));
@@ -50,7 +52,7 @@ export const checkSafeMove = (player, board) => {
         }
     });
 
-    //  is king in danger? false means check state
+    //  is king in danger?
     if(clonedBoard[playerKing.y][playerKing.x].movable) {
         return false;
     }
@@ -76,25 +78,6 @@ export const checkMovable = (player, board) => {
 
     return false;
 }
-
-// export const checkStaleMate = (player, board) => {
-//     for(let i=0; i<8; ++i) {
-//         for(let j=0; j<8; ++j) {
-//             if(board[i][j] === player) {
-//                 const coveredAxis = checkCovered(board, i, j);
-//                 const length = coveredAxis.length;
-//                 for(let k=0; k<length; ++k) {
-//                     const tempBoard = genBoard(board, { y: i, x: j }, { y: coveredAxis[k].dy, x: coveredAxis[k].dx });
-//                     if(checkSafeMove(player, tempBoard)) {
-//                         return false;
-//                     };
-//                 }
-//             }
-//         }
-//     }
-
-//     return true;
-// };
 
 export const checkCovered = (board, y, x, castling) => {
     const { piece, owner } = board[y][x];
