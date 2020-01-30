@@ -16,6 +16,12 @@ export const findKingLocation = (player, board) => {
     }
 }
 
+export const filter = axisArr => {
+    const axisSet = new Set();
+    axisArr.forEach(axis => axisSet.add(axis.dy * 10 + axis.dx));
+    return [ ...axisSet ].map(key => ({ dy: parseInt(key / 10), dx: key % 10 }));
+}
+
 export const checkPlayersEveryMove = (player, board, castling) => {
     let coveredAxisBundle = [];
     for(let i=0; i<8; ++i) {
@@ -26,8 +32,8 @@ export const checkPlayersEveryMove = (player, board, castling) => {
             }
         }
     };
-
-    return coveredAxisBundle;
+    
+    return filter(coveredAxisBundle);
 };
 
 export const checkSafeMove = (player, board) => {
@@ -87,7 +93,7 @@ export const checkCovered = (board, y, x, castling) => {
             if(dy < 0 || dx < 0 || dy > 7 || dx > 7) return acc;
             
             inform = { ...inform, dy, dx };
-
+            
             if(!cur.except || (!(piece === 'king' && castling) && cur.except && cur.except(inform))) {
                 if(!board[dy][dx].owner || board[y][x].owner !== board[dy][dx].owner) {
                     acc.push({dy, dx});

@@ -19,7 +19,7 @@ export const findKingLocation = (player, board) => {
 export const filter = axisArr => {
     const axisSet = new Set();
     axisArr.forEach(axis => axisSet.add(axis.dy * 10 + axis.dx));
-    return [ ...axisSet ].map(key => ({ dy: key / 10, dx: key % 10 }));
+    return [ ...axisSet ].map(key => ({ dy: parseInt(key / 10), dx: key % 10 }));
 }
 
 export const checkPlayersEveryMove = (player, board, castling) => {
@@ -33,10 +33,7 @@ export const checkPlayersEveryMove = (player, board, castling) => {
         }
     };
     
-    console.dir(coveredAxisBundle);
-    console.dir(filter(coveredAxisBundle));
-
-    return coveredAxisBundle;
+    return filter(coveredAxisBundle);
 };
 
 export const checkSafeMove = (player, board) => {
