@@ -256,7 +256,7 @@ export const clickPieceThunk = ({ y: cy, x: cx }) => (dispatch, getState) => {
     // });
 
     coveredAxis.forEach(axis => {
-        const tempBoard = genBoard(clearBoard, { y, x }, axis);
+        const tempBoard = genBoard(clearBoard, { y, x }, { y: axis.dy, x: axis.dx });
         if(!checkSafeMove(role, tempBoard)) {
             return;
         };
