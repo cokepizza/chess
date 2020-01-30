@@ -197,7 +197,6 @@ export default (server, app, sessionMiddleware) => {
                 ranking: copiedRanking,
             });
         }, 1000);
-        
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(ranking)--------------');

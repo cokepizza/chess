@@ -16,6 +16,12 @@ export const findKingLocation = (player, board) => {
     }
 }
 
+export const filter = axisArr => {
+    const axisSet = new Set();
+    axisArr.forEach(axis => axisSet.add(axis.y * 10 + axis.x));
+    return [ ...axisSet ].map(key => ({ y: key / 10, x: key % 10 }));
+}
+
 export const checkPlayersEveryMove = (player, board, castling) => {
     let coveredAxisBundle = [];
     for(let i=0; i<8; ++i) {
@@ -26,6 +32,9 @@ export const checkPlayersEveryMove = (player, board, castling) => {
             }
         }
     };
+    
+    console.dir(checkCovered);
+    console.dir(filter(checkCovered));
 
     return coveredAxisBundle;
 };
