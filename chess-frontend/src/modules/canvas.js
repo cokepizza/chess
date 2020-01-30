@@ -209,9 +209,9 @@ export function* canvasSaga () {
 
 export const clickPieceThunk = ({ y: cy, x: cx }) => (dispatch, getState) => {
     const {
-            canvas: { board, reverseBoard, clicked },
-            record: { reversed },
-            socketAuth: { role },
+        canvas: { board, reverseBoard, clicked },
+        record: { reversed },
+        socketAuth: { role },
     } = getState();
     
     let reversal = false;
@@ -245,19 +245,10 @@ export const clickPieceThunk = ({ y: cy, x: cx }) => (dispatch, getState) => {
         'covered',
         'clicked',
     ]);
-
-    // coveredAxis.forEach(axis => {
-    //     clearBoard[axis.dy] = [ ...clearBoard[axis.dy] ];
-    //     const popedCell = clearBoard[axis.dy][axis.dx];
-    //     clearBoard[axis.dy].splice(axis.dx, 1, {
-    //         ...popedCell,
-    //         covered: true,
-    //     });
-    // });
-
+    
     coveredAxis.forEach(axis => {
         const tempBoard = genBoard(clearBoard, { y, x }, { y: axis.dy, x: axis.dx });
-        if(!checkSafeMove(role, tempBoard)) {
+        if(!checkSafeMove(board[y][x].owner, tempBoard)) {
             return;
         };
 

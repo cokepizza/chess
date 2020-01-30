@@ -17,6 +17,8 @@ export const findKingLocation = (player, board) => {
 }
 
 export const deduplicate = axisArr => {
+    if(axisArr.length === 0) return axisArr;
+    
     const axisSet = new Set();
     axisArr.forEach(axis => axisSet.add(axis.dy * 10 + axis.dx));
     return [ ...axisSet ].map(key => ({ dy: parseInt(key / 10), dx: key % 10 }));
