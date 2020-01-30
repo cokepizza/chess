@@ -33,8 +33,8 @@ export const checkPlayersEveryMove = (player, board, castling) => {
         }
     };
     
-    console.dir(checkCovered);
-    console.dir(filter(checkCovered));
+    console.dir(coveredAxisBundle);
+    console.dir(filter(coveredAxisBundle));
 
     return coveredAxisBundle;
 };
