@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { checkSafeMove, checkCheckmate, checkCovered } from '../../lib/base/validation';
+import { checkSafeMove, checkMovable, checkCovered } from '../../lib/base/validation';
 import { genBoard } from '../../lib/base/genBoard';
 import instanceSanitizer from '../../lib/util/instanceSanitizer';
 
@@ -122,24 +122,27 @@ export const movePiece = (req, res) => {
     //  validate enemy's state
     const enemy = player === 'white' ? 'black' : 'white';
     if(!checkSafeMove(enemy, tempBoard)) {
-        if(checkCheckmate(enemy, tempBoard)) {
-            io.of('/chat').to(key).emit('message', {
-                type: 'change',
-                message: `CheckMate ${player} win`,
-            });
-        } else {
+        if(checkMovable(enemy, tempBoard)) {
             io.of('/chat').to(key).emit('message', {
                 type: 'change',
                 message: `${enemy} Checked`,
             });
+        } else {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `CheckMate ${player} win`,
+            });
+        }
+    } else {
+        if (!checkMovable(enemy, tempBoard)) {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `StaleMate. The game is draw`,
+            });
         }
     }
 
-    //  validate enemy's stale mate
-    // const coveredAxisBundle = checkPlayersEveryMove(enemy, tempBoard);
-
     //  기본적으로 covered가 중복을 filter하고 가서는 안되는(메이트) 등을 covered해서는 안된다
-    
 
     //  set server board object
     const prevPiece = { ...board[prev.y][prev.x] };
