@@ -135,6 +135,11 @@ export const movePiece = (req, res) => {
         }
     }
 
+    //  validate enemy's stale mate
+    const coveredAxisBundle = checkPlayersEveryMove(enemy, tempBoard);
+    //  기본적으로 covered가 중복을 filter하고 가서는 안되는(메이트) 등을 covered해서는 안된다
+    
+
     //  set server board object
     const prevPiece = { ...board[prev.y][prev.x] };
     const nextPiece = { ...board[next.y][next.x] };
