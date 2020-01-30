@@ -18,8 +18,8 @@ export const findKingLocation = (player, board) => {
 
 export const filter = axisArr => {
     const axisSet = new Set();
-    axisArr.forEach(axis => axisSet.add(axis.y * 10 + axis.x));
-    return [ ...axisSet ].map(key => ({ y: key / 10, x: key % 10 }));
+    axisArr.forEach(axis => axisSet.add(axis.dy * 10 + axis.dx));
+    return [ ...axisSet ].map(key => ({ dy: key / 10, dx: key % 10 }));
 }
 
 export const checkPlayersEveryMove = (player, board, castling) => {
