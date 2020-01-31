@@ -29,6 +29,7 @@ export const createGame = (req, res, next) => {
         createdAt: new Date(),
         destroyAt: null,
         start: false,
+        _init: false,
         _priority: piece,
         _participant: new Map(),
         _black: null,
@@ -43,6 +44,7 @@ export const createGame = (req, res, next) => {
         _record: null,
         _socketAuth: null,
         _join: function(socket) {
+            //  도입 예정
             const sessionId = socket.request.sessionID;
             const { nickname, passport } = socket.request.session;
             const passportUser = passport ? passport.user : null;
@@ -62,6 +64,7 @@ export const createGame = (req, res, next) => {
         _heartbeat: function() {
             const participantSet = new Set(this.participant);
             if(this.white && participantSet.has(this.white) && this.black && participantSet.has(this.black)) {
+                this._init = true;
                 this.start = true;
                 this._record._start(this.order);
             } else {
@@ -86,7 +89,6 @@ export const createGame = (req, res, next) => {
             });
         },
         _save: async function() {
-            if(this._draw && (!this.white || !this.black)) return;
             if(!this._draw && (!this._winner || !this._loser)) return;
             if(!this._blackAuth || !this._whiteAuth) return;
 
@@ -131,23 +133,30 @@ export const createGame = (req, res, next) => {
             
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
 
-            const rec = await Game.findOne({
-                "player.0": winner._id,
-            }).populate('player');
-
-            console.dir('-------------------');
-            console.dir(rec.toString());
-            // console.dir('-------------------');
-            // console.dir(rec.toJSON());
+            const ranking = req.app.get('ranking');
+            ranking.list.findIndex(user => {
+                
+            });
         },
-        _destroy: async function() {
-            console.dir('_destroy');
-            if(this.mode === 'rank') {
-                await this._save();
+        _destroy: async function(snapshot) {
+            if(snapshot) {
+                snapshot.draw && (this._draw = true);
+                snapshot.winner && (this._winner = snapshot.winner);
+                snapshot.loser && (this._loser = snapshot.loser);
             }
-            console.dir('_destory_end');
+
+            if(this.mode === 'rank') {
+                try {
+                    await this._save();
+                    console.dir('save complete');
+                } catch(e) {
+                    console.dir('save error emerge');
+                }
+            }
             
             gameMap.delete(this.key);
+
+            console.dir(`${this.key} Game destroy`);
 
             io.of('/games').emit('message', {
                 type: 'initialize',

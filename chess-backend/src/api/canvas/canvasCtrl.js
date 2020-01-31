@@ -19,15 +19,6 @@ export const movePiece = (req, res) => {
 
     const { prev, next } = move;
 
-    // console.dir(req.session);
-
-    // const gameObj = gameMap.get(key);
-    // gameObj._winner = gameObj.white;
-    // gameObj._loser = gameObj.white;
-    // // gameObj._loser = gameObj.black;
-    // gameObj._destroy();
-    // return res.status(403).send('test now');
-    
     //  defensive code
     if(!gameMap.has(key)) {
         console.dir(`There's no available Game #${key}`);
@@ -119,6 +110,19 @@ export const movePiece = (req, res) => {
         return res.status(403).send({ error: `validate my safe fail` });
     };
 
+
+    // console.dir(req.session);
+
+    // const gameObj = gameMap.get(key);
+    // gameObj._winner = gameObj.white;
+    // gameObj._loser = gameObj.white;
+    // // gameObj._loser = gameObj.black;
+    // gameObj._destroy();
+    // return res.status(403).send('test now');
+    
+    let endGame = false;
+    let snapshot = {};
+
     //  validate enemy's state
     const enemy = player === 'white' ? 'black' : 'white';
     if(!checkSafeMove(enemy, tempBoard)) {
@@ -132,6 +136,13 @@ export const movePiece = (req, res) => {
                 type: 'change',
                 message: `CheckMate ${player} win`,
             });
+
+            endGame = true;
+            snapshot = {
+                draw: false,
+                winner: game[player],
+                loser: game[enemy],
+            }
         }
     } else {
         if (!checkMovable(enemy, tempBoard)) {
@@ -139,10 +150,13 @@ export const movePiece = (req, res) => {
                 type: 'change',
                 message: `StaleMate. The game is draw`,
             });
+
+            endGame = true;
+            snapshot = {
+                draw: true,
+            }
         }
     }
-
-    //  기본적으로 covered가 중복을 filter하고 가서는 안되는(메이트) 등을 covered해서는 안된다
 
     //  set server board object
     const prevPiece = { ...board[prev.y][prev.x] };
@@ -212,6 +226,10 @@ export const movePiece = (req, res) => {
         type: 'initialize',
         ...instanceSanitizer(game),
     });
+
+    if(endGame) {
+        game._destroy(snapshot);
+    }
     
     return res.status(200).end();
 };

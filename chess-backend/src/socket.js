@@ -306,6 +306,24 @@ export default (server, app, sessionMiddleware) => {
 
             disconnectSocket(app, socket, key, tabKey);
 
+            if(game._init && !game.start) {
+                let winner, loser;
+                if(game.white && !game.black) {
+                    winner = game.white;
+                    loser = game.black;
+                }
+                if(!game.white && game.black) {
+                    winner = game.black;
+                    loser = game.white;
+                }
+
+                game._destroy({
+                    draw: false,
+                    winner,
+                    loser,
+                });
+            }
+        
             console.dir('-------------socketDis(game)--------------');
             console.dir(socket.request.sessionID);
         })
