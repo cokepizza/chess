@@ -22,8 +22,10 @@ export const clearValue = createAction(CLEAR_VALUE);
 
 const CHANGE_REVERSE = 'record/CHANGE_REVERSE';
 const CLEAR_TOOLTIP = 'record/CLEAR_TOOLTIP';
+const INITIALIZE_TOOLTIP = 'record/INITIALIZE_TOOLTIP';
 export const changeReverse = createAction(CHANGE_REVERSE, payload => payload);
 export const clearToolTip = createAction(CLEAR_TOOLTIP, payload => payload);
+export const initializeToolTip = createAction(INITIALIZE_TOOLTIP, payload => payload);
 
 const [ ASKING, ASKING_SUCCESS, ASKING_FAILURE ] = createRequestActionTypes('record/ASKING');
 export const askingThunk = createRequestThunk(ASKING, recordAPI.asking);
@@ -120,5 +122,12 @@ export default handleActions({
     [CLEAR_TOOLTIP]: (state, { payload: { type } }) => ({
         ...state,
         [type]: initialState[type],
+    }),
+    [INITIALIZE_TOOLTIP]: (state, { payload: { type, role } }) => ({
+        ...state,
+        [type]: {
+            ...state[type],
+            role,
+        }
     }),
 }, initialState);

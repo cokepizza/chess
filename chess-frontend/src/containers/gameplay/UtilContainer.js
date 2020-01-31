@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { askingThunk } from '../../modules/record';
 import Util from '../../components/gameplay/Util';
-import { changeReverse } from '../../modules/record';
+import { changeReverse, initializeToolTip } from '../../modules/record';
 
 const UtilContainer = () => {
     const { reversed, socket } = useSelector(({ record }) => ({
@@ -21,6 +21,10 @@ const UtilContainer = () => {
         dispatch(askingThunk({
             socket,
             type: 'surrender'
+        }));
+        dispatch(initializeToolTip({
+            type: 'surrender',
+            role: 'ask',
         }));
     }, [dispatch, socket]);
 

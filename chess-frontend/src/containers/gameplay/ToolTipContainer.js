@@ -31,7 +31,6 @@ const ToolTipContainer = ({ type }) => {
 
     return (
         <ToolTip
-            role={suggestion.role}
             message={suggestion.message}
         />
     )
