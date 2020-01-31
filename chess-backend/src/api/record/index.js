@@ -3,6 +3,6 @@ import * as recordCtrl from './recordCtrl';
 
 const record = express.Router();
 
-record.post('/sendSurrender', recordCtrl.sendSurrender);
+record.post('/asking', recordCtrl.asking);
 
 export default record;

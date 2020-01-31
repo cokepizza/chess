@@ -21,10 +21,12 @@ export const updateValue = createAction(UPDATE_VALUE, payload => payload);
 export const clearValue = createAction(CLEAR_VALUE);
 
 const CHANGE_REVERSE = 'record/CHANGE_REVERSE';
+const CLEAR_TOOLTIP = 'record/CLEAR_TOOLTIP';
 export const changeReverse = createAction(CHANGE_REVERSE, payload => payload);
+export const clearToolTip = createAction(CLEAR_TOOLTIP, payload => payload);
 
-const [ SEND_SURRENDER, SEND_SURRENDER_SUCCESS, SEND_SURRENDER_FAILURE ] = createRequestActionTypes('record/SEND_SURRENDER');
-export const sendSurrenderThunk = createRequestThunk(SEND_SURRENDER, recordAPI.sendSurrender);
+const [ ASKING, ASKING_SUCCESS, ASKING_FAILURE ] = createRequestActionTypes('record/ASKING');
+export const askingThunk = createRequestThunk(ASKING, recordAPI.asking);
 
 export const updateValueThunk = params => ( dispatch, getState ) => {
     const { record } = getState();
@@ -77,6 +79,18 @@ const initialState = {
     blackRatio: 0,
     pieceMove: [],
     reversed: false,
+    excuse: {
+        message: null,
+        role: null,
+    },
+    tie: {
+        message: null,
+        role: null,
+    },
+    surrender: {
+        message: null,
+        role: null,
+    },
 }
 
 export default handleActions({
@@ -99,5 +113,12 @@ export default handleActions({
     [CHANGE_REVERSE]: (state, { payload: { reversed } }) => ({
         ...state,
         reversed,
-    })
+    }),
+    [ASKING]: state => state,
+    [ASKING_SUCCESS]: state => state,
+    [ASKING_FAILURE]: state => state,
+    [CLEAR_TOOLTIP]: (state, { payload: { type } }) => ({
+        ...state,
+        [type]: initialState[type],
+    }),
 }, initialState);

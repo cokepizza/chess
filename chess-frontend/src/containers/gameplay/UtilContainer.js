@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { sendSurrenderThunk } from '../../modules/record';
+import { askingThunk } from '../../modules/record';
 import Util from '../../components/gameplay/Util';
 import { changeReverse } from '../../modules/record';
 
@@ -18,8 +18,9 @@ const UtilContainer = () => {
     }, [dispatch, reversed]);
 
     const onSurrender = useCallback(() => {
-        dispatch(sendSurrenderThunk({
+        dispatch(askingThunk({
             socket,
+            type: 'surrender'
         }));
     }, [dispatch, socket]);
 

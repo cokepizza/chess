@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FaExchangeAlt, FaFlag, FaHandRock } from 'react-icons/fa';
 import { TiArrowBack } from 'react-icons/ti';
 import { IconContext } from 'react-icons';
+import ToolTipContainer from '../../containers/gameplay/ToolTipContainer';
 
 const UtilBlock = styled.div`
     position: absolute;
@@ -19,6 +20,7 @@ const ButtonBlock = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     width: 25%;
     height: 100%;
     cursor: pointer;
@@ -59,6 +61,7 @@ const Util = ({ onReverse, onSurrender }) => {
                 <IconContext.Provider value={buttonStyle}>
                     <FaFlag />
                 </IconContext.Provider>
+                <ToolTipContainer type='surrender' />
             </ButtonBlock>
         </UtilBlock>
     )
