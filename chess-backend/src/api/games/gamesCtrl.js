@@ -7,6 +7,7 @@ import uuid from 'uuid/v1';
 import Game from '../../models/game';
 import User from '../../models/user';
 import instanceSanitizer from '../../lib/util/instanceSanitizer';
+import binarySearch from '../../lib/util/binarySearch';
 
 export const createGame = (req, res, next) => {
     const io = req.app.get('io');
@@ -133,10 +134,11 @@ export const createGame = (req, res, next) => {
             
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
 
-            const ranking = req.app.get('ranking');
-            ranking.list.findIndex(user => {
-                
-            });
+            //  memory caching
+            if(!this.draw) {
+                const ranking = req.app.get('ranking');
+                ranking._register({ winner, loser });
+            }
         },
         _destroy: async function(snapshot) {
             if(snapshot) {

@@ -1,5 +1,22 @@
 import User from './models/user';
 
+export const compare = (a, b) => {
+    if(a.elo === b.elo) {
+        if(a.ratio === b.ratio) {
+            if(a.win === b.win) {
+                //  test 필요 숫자로 바꿔서 비교해줘야함
+                return b.createdAt - a.createdAt;
+            } else {
+                return b.win - a.win;
+            }
+        } else {
+            return b.ratio - a.ratio;
+        }
+    } else {
+        return b.elo - a.elo;
+    }
+}
+
 const cache = async () => {
     const users = await User.find();
     const sortedUsers = users 
@@ -8,29 +25,12 @@ const cache = async () => {
             ...user,
             ratio: (user.win === 0
                 ? 0
-                : (user.lose === 0 
+                : ((user.win + user.lose === 0)
                         ? 100
-                        : user.win / user.lose
+                        : user.win / (user.win + user.lose)
                     )
             ).toFixed(2)}))
-        .sort((a, b) => {
-            if(a.elo === b.elo) {
-                if(a.ratio === b.ratio) {
-                    if(a.win === b.win) {
-                        //  test 필요 숫자로 바꿔서 비교해줘야함
-                        return b.createdAt - a.createdAt;
-                    } else {
-                        return b.win - a.win;
-                    }
-                } else {
-                    return b.ratio - a.ratio;
-                }
-            } else {
-                return b.elo - a.elo;
-            }
-        });
-    
-
+        .sort(compare);
     const data = {
         ranking: {
             limit: 15,
