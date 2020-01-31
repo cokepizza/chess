@@ -7,7 +7,6 @@ import uuid from 'uuid/v1';
 import Game from '../../models/game';
 import User from '../../models/user';
 import instanceSanitizer from '../../lib/util/instanceSanitizer';
-import binarySearch from '../../lib/util/binarySearch';
 
 export const createGame = (req, res, next) => {
     const io = req.app.get('io');

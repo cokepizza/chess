@@ -37,7 +37,7 @@ const buttonStyle = {
     }
 };
 
-const Util = ({ onReverse }) => {
+const Util = ({ onReverse, onSurrender }) => {
     return (
         <UtilBlock>
             <ButtonBlock onClick={onReverse} >
@@ -55,7 +55,7 @@ const Util = ({ onReverse }) => {
                     <FaHandRock />
                 </IconContext.Provider>
             </ButtonBlock>
-            <ButtonBlock>
+            <ButtonBlock onClick={onSurrender} >
                 <IconContext.Provider value={buttonStyle}>
                     <FaFlag />
                 </IconContext.Provider>

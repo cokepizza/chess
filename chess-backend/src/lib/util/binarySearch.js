@@ -9,6 +9,7 @@ const binarySearch = (s, e, list, user) => {
     } else {
 
     }
+    return 0;
 };
 
 export default binarySearch;

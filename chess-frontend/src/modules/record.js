@@ -1,6 +1,8 @@
 import { createAction, handleActions } from 'redux-actions';
 import { takeEvery, fork, take, cancel } from 'redux-saga/effects';
 import { connectNamespace } from '../lib/websocket/websocket';
+import createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
+import * as recordAPI from '../lib/api/record';
 
 const CONNECT_WEBSOCKET = 'record/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'record/DISCONNECT_WEBSOCKET';
@@ -20,6 +22,9 @@ export const clearValue = createAction(CLEAR_VALUE);
 
 const CHANGE_REVERSE = 'record/CHANGE_REVERSE';
 export const changeReverse = createAction(CHANGE_REVERSE, payload => payload);
+
+const [ SEND_SURRENDER, SEND_SURRENDER_SUCCESS, SEND_SURRENDER_FAILURE ] = createRequestActionTypes('record/SEND_SURRENDER');
+export const sendSurrenderThunk = createRequestThunk(SEND_SURRENDER, recordAPI.sendSurrender);
 
 export const updateValueThunk = params => ( dispatch, getState ) => {
     const { record } = getState();
