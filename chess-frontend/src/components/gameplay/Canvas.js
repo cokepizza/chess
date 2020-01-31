@@ -188,10 +188,10 @@ const CanvasContent = ({ board, blocked, cellSize, onClick }) => {
     )
 }
 
-const Canvas = props => {
+const Canvas = ({ onContextMenu, ...rest }) => {
     return (
-        <CanvasBlock>
-            <CanvasContent {...props} />
+        <CanvasBlock onContextMenu={onContextMenu}>
+            <CanvasContent {...rest} />
         </CanvasBlock>
     )
 };

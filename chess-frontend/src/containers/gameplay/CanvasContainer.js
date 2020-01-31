@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Canvas from '../../components/gameplay/Canvas';
-import { clickPieceThunk, initializeBlocked } from '../../modules/canvas';
+import { clickPieceThunk, initializeBlocked , clearClickedThunk } from '../../modules/canvas';
 import { clearValue } from '../../modules/canvas';
 
 const CanvasContainer = ({ cellSize }) => {
@@ -39,6 +39,11 @@ const CanvasContainer = ({ cellSize }) => {
         dispatch(clickPieceThunk({ y, x }));
     }, [dispatch]);
 
+    const onContextMenu = useCallback(e => {
+        e.preventDefault();
+        dispatch(clearClickedThunk());
+    }, [dispatch])
+
     let reversal = false;
     if(((role === 'white' || role === 'spectator') && reversed) || (role === 'black' && !reversed)) {
         reversal = true;
@@ -54,6 +59,7 @@ const CanvasContainer = ({ cellSize }) => {
             board={servedBoard}
             blocked={blocked}
             onClick={onClick}
+            onContextMenu={onContextMenu}
             cellSize={cellSize}
         />
     )

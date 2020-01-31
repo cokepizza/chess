@@ -29,6 +29,7 @@ export const clearValue = createAction(CLEAR_VALUE);
 export const initializeBlocked = createAction(INITIALIZE_BLOCKED, payload => payload);
 export const changeBlocked = createAction(CHANGE_BLOCKED, payload => payload);
 
+
 const [ SET_MOVE_PIECE, SET_MOVE_PIECE_SUCCESS, SET_MOVE_PIECE_FAILURE ] = createRequestActionTypes('canvas/SET_MOVE_PIECE');
 export const setMovePieceThunk = createRequestThunk(SET_MOVE_PIECE, canvasCtrl.movePiece);
 
@@ -72,6 +73,22 @@ const updateReverseBoard = (prevReverseBoard, nextOriginBoard) => {
 
     return prevReverseBoard;
 };
+
+export const clearClickedThunk = () => (dispatch, getState) => {
+    const { canvas: { board, reverseBoard } } = getState();
+    const clearBoard = genClearBoard([...board], [
+        'covered',
+        'clicked',
+    ]);
+
+    const nextReverseBoard = updateReverseBoard(reverseBoard, clearBoard);
+    
+    dispatch(changeValue({
+        board: clearBoard,
+        reverseBoard: nextReverseBoard,
+        clicked: null
+    }));
+}
 
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
