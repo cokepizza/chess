@@ -18,7 +18,9 @@ const ToolTipContainer = ({ type }) => {
     useEffect(() => {
         if(suggestion.message && suggestion.role) {
             clearTimeout(setTimeoutRef.current);
+            console.dir('ask 클리어 전');
             setTimeoutRef.current = setTimeout(() => {
+                console.dir('ask 클리어 후');
                 setRace(false);
                 dispatch(clearToolTip({ type }));
             }, 3000);

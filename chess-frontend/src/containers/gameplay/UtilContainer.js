@@ -24,6 +24,7 @@ const UtilContainer = () => {
     const onClick = useCallback(type => {
         if(start) {
             if(!undo.role && !draw.role && !surrender.role) {
+                console.dir('리퀘스트 보냄');
                 dispatch(askingThunk({
                     socket,
                     type,
