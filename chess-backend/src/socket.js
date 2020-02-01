@@ -468,6 +468,7 @@ export default (server, app, sessionMiddleware) => {
                 whiteRatio: null,
                 pieceMove: [],
                 _setTimeRef: null,
+                _setTimeRequestRef: null,
                 _initialize: function() {
                     const game = app.get('game').get(key);
                     this.blackTime = game.defaultTime;

@@ -86,7 +86,9 @@ const TimeLineBlock = styled.div`
     width: 84px;
     height: 2px;
     background-color: blue;
+    visibility: hidden;
     ${props => props.race && css`
+        visibility: visible;
         transition: all 5s linear;
         width: 0px;
     `}
@@ -127,7 +129,7 @@ const ToolTip = ({ type, message, role, race, onClick }) => {
             message={message}
             role={role}
         >
-            {role === 'answer' ? <TimeLineBlock race={race} /> : null}
+            <TimeLineBlock race={race} />
             <TitleBlock>
                 {type}
             </TitleBlock>

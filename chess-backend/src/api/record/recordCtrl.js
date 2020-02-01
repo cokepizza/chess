@@ -21,7 +21,8 @@ export const asking = (req, res) => {
         return res.status(403).send({ error: `You're just a spectator` });
     }
 
-    setTimeout(() => {
+    clearTimeout(game._record._setTimeRequestRef);
+    game._record._setTimeRequestRef = setTimeout(() => {
         const playerSocketSet = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
         [ ...playerSocketSet ].forEach(socket => {
             socket.emit('message', {
@@ -62,6 +63,8 @@ export const answering = (req, res) => {
         return res.status(403).send({ error: `You're just a spectator` });
     }
 
+    clearTimeout(game._record._setTimeRequestRef);
+    
     const enemy = player === 'white' ? 'black' : 'white';
 
     const socketSet = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');

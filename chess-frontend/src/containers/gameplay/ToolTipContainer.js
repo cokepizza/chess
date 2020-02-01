@@ -18,8 +18,8 @@ const ToolTipContainer = ({ type }) => {
     useEffect(() => {
         if(suggestion.message && suggestion.role) {
             clearTimeout(setTimeoutRef.current);
-            setRace(false);
             setTimeoutRef.current = setTimeout(() => {
+                setRace(false);
                 dispatch(clearToolTip({ type }));
             }, 3000);
         }
