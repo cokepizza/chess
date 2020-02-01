@@ -18,6 +18,7 @@ const ToolTipContainer = ({ type }) => {
     useEffect(() => {
         if(suggestion.message && suggestion.role) {
             clearTimeout(setTimeoutRef.current);
+            setRace(false);
             setTimeoutRef.current = setTimeout(() => {
                 dispatch(clearToolTip({ type }));
             }, 3000);
@@ -30,7 +31,10 @@ const ToolTipContainer = ({ type }) => {
             clearTimeout(setTimeoutRef.current);
             setTimeoutRef.current = setTimeout(() => {
                 setRace(false);
-                dispatch(clearToolTip({ type }))
+                dispatch(setRequestMessage({
+                    type,
+                    message: `response: null`,
+                }));
             }, 5000);
         }
     }, [dispatch, suggestion.role, type]);

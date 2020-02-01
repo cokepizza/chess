@@ -38,7 +38,9 @@ export const notifyRequestThunk = ({ ask, answer, message }) => ( dispatch, getS
     if(ask) {
         const { record } = getState();
         const modal = record[ask];
+        console.dir('answer진입 전~');
         if(!modal.role && !modal.message) {
+            console.dir('answer진입 후~');
             dispatch(setRequestRole({
                 type: ask,
                 role: 'answer',

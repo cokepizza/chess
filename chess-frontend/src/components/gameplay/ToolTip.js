@@ -81,12 +81,13 @@ const ButtonBlock = styled.button`
 
 const TimeLineBlock = styled.div`
     position: absolute;
-    top: -1px;
+    top: -2px;
+    left: 0px;
     width: 84px;
-    height: 1px;
+    height: 2px;
     background-color: blue;
-    transition: all 5s linear;
     ${props => props.race && css`
+        transition: all 5s linear;
         width: 0px;
     `}
 `;
