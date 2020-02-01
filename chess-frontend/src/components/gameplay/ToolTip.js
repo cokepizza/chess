@@ -16,6 +16,12 @@ const ToolTipBlock = styled.div`
         opacity: 1;
         visibility: visible;
     `}
+    ${props => props.message && css`
+        transition: 2s;
+        transition-timing-function: ease-in;
+        top: -90px;
+        opacity: 0;
+    `}
     transition: 1s;
     display: flex;
     flex-direction: column;
@@ -30,6 +36,7 @@ const MessageBlock = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 11px;
 `;
 
 const SpinnerFrameBlock = styled.div`
@@ -97,7 +104,10 @@ const ToolTip = ({ type, message, role }) => {
     }
 
     return (
-        <ToolTipBlock role={role}>
+        <ToolTipBlock
+            message={message}
+            role={role}
+        >
             <TitleBlock>
                 {type}
             </TitleBlock>

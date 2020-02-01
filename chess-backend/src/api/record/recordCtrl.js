@@ -22,7 +22,7 @@ export const asking = (req, res) => {
             socket.emit('message', {
                 type: 'notify',
                 answer: type,
-                message: 'Your request has been declined',
+                message: 'Rejected',
             })
         });
     }, 5000);
@@ -61,9 +61,9 @@ export const answering = (req, res) => {
     console.dir(socketSet);
     let message= '';
     if(answer) {
-        message = 'Your request has been accepted';
+        message = 'Accepted';
     } else {
-        message = `Your request has been declined`;
+        message = `Rejected`;
     }
 
     [ ...socketSet ].forEach(socket => {

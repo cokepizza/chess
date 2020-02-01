@@ -29,7 +29,7 @@ const UtilContainer = () => {
                 role: 'ask',
             }));
         }
-    }, [dispatch, socket]);
+    }, [dispatch, start, socket]);
 
     return (
         <Util

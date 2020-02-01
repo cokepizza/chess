@@ -16,21 +16,21 @@ const ToolTipContainer = ({ type }) => {
         if(suggestion.message && suggestion.role === 'ask') {
             setTimeout(() => {
                 dispatch(clearToolTip({ type }));
-            }, 1000);
+            }, 2000);
         }
-    }, [suggestion.message]);
+    }, [dispatch, suggestion.role, suggestion.message, type]);
 
     useEffect(() => {
         if(!start) {
             dispatch(clearToolTip({ type }));
         }
-    }, [start])
+    }, [dispatch, start, type])
 
     useEffect(() => {
         return () => {
             dispatch(clearToolTip({ type }));
         }
-    }, [])
+    }, [dispatch, type])
 
     return (
         <ToolTip

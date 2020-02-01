@@ -69,6 +69,7 @@ export function* connectNamespace(params) {
                     break;
                 case 'notify':
                     yield put(notifyRequest(message))
+                    break;
                 default:
                     console.dir(message);
             }
