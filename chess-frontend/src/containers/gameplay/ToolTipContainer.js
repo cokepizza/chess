@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import ToolTip from '../../components/gameplay/ToolTip';
@@ -12,14 +12,28 @@ const ToolTipContainer = ({ type }) => {
     }));
 
     const dispatch = useDispatch();
+    const setTimeoutRef = useRef();
+    const [ race, setRace ] = useState(false);
 
     useEffect(() => {
-        if(suggestion.message && suggestion.role === 'ask') {
-            setTimeout(() => {
+        if(suggestion.message && suggestion.role) {
+            clearTimeout(setTimeoutRef.current);
+            setTimeoutRef.current = setTimeout(() => {
                 dispatch(clearToolTip({ type }));
             }, 3000);
         }
     }, [dispatch, suggestion.role, suggestion.message, type]);
+
+    useEffect(() => {
+        if(suggestion.role === 'answer') {
+            setRace(true);
+            clearTimeout(setTimeoutRef.current);
+            setTimeoutRef.current = setTimeout(() => {
+                setRace(false);
+                dispatch(clearToolTip({ type }))
+            }, 5000);
+        }
+    }, [dispatch, suggestion.role, type]);
 
     useEffect(() => {
         if(!start) {
@@ -50,6 +64,7 @@ const ToolTipContainer = ({ type }) => {
             type={type}
             role={suggestion.role}
             message={suggestion.message}
+            race={race}
             onClick={onClick}
         />
     )

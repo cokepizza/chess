@@ -51,11 +51,13 @@ const Util = ({ onReverse, onClick }) => {
                 <IconContext.Provider value={{ style: { ...buttonStyle.style, width: '80%', height:'80%' }} }>
                     <TiArrowBack />
                 </IconContext.Provider>
+                <ToolTipContainer type='undo' />
             </ButtonBlock>
             <ButtonBlock onClick={() => onClick('draw')}>
                 <IconContext.Provider value={buttonStyle}>
                     <FaHandRock />
                 </IconContext.Provider>
+                <ToolTipContainer type='draw' />
             </ButtonBlock>
             <ButtonBlock onClick={() => onClick('surrender')}>
                 <IconContext.Provider value={buttonStyle}>

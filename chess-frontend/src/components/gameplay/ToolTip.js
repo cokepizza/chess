@@ -63,6 +63,9 @@ const TitleBlock = styled.div`
 
 const ButtonBlock = styled.button`
     background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
     width: 30px;
     height: 30px;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
@@ -76,16 +79,28 @@ const ButtonBlock = styled.button`
     }
 `;
 
-const ToolTip = ({ type, message, role, onClick }) => {
+const TimeLineBlock = styled.div`
+    position: absolute;
+    top: -1px;
+    width: 84px;
+    height: 1px;
+    background-color: blue;
+    transition: all 5s linear;
+    ${props => props.race && css`
+        width: 0px;
+    `}
+`;
+
+const ToolTip = ({ type, message, role, race, onClick }) => {
     let content;
 
     if(role === 'answer') {
         content = (
             <MessageBlock>
-                <ButtonBlock>
+                <ButtonBlock onClick={() => onClick(true)}>
                     Y
                 </ButtonBlock>
-                <ButtonBlock>
+                <ButtonBlock onClick={() => onClick(false)}>
                     N
                 </ButtonBlock>
             </MessageBlock>
@@ -111,6 +126,7 @@ const ToolTip = ({ type, message, role, onClick }) => {
             message={message}
             role={role}
         >
+            {role === 'answer' ? <TimeLineBlock race={race} /> : null}
             <TitleBlock>
                 {type}
             </TitleBlock>
