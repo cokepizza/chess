@@ -35,6 +35,7 @@ const MessageBlock = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 40px;
     font-size: 11px;
 `;
 
@@ -67,39 +68,42 @@ const ButtonBlock = styled.button`
     box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
 
     &+& {
-        margin-left: 1px solid black;
-        
+        margin-left: 10px;
+    }
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
     }
 `;
 
-const ToolTip = ({ type, message, role }) => {
+const ToolTip = ({ type, message, role, onClick }) => {
     let content;
 
-    if(message) {
-        if(role === 'ask') {
+    if(role === 'answer') {
+        content = (
+            <MessageBlock>
+                <ButtonBlock>
+                    Y
+                </ButtonBlock>
+                <ButtonBlock>
+                    N
+                </ButtonBlock>
+            </MessageBlock>
+        )
+    } else if(role === 'ask') {
+        if(message) {
             content = (
                 <MessageBlock>
                     {message}
                 </MessageBlock>
             );
-        } else if(role === 'answer') {
+        } else {
             content = (
-                <MessageBlock>
-                    <ButtonBlock>
-                        Y
-                    </ButtonBlock>
-                    <ButtonBlock>
-                        N
-                    </ButtonBlock>
-                </MessageBlock>
+                <SpinnerFrameBlock>
+                    <SpinnerBlock src={Spinner} />
+                </SpinnerFrameBlock>
             )
         }
-    } else {
-        content = (
-            <SpinnerFrameBlock>
-                <SpinnerBlock src={Spinner} />
-            </SpinnerFrameBlock>
-        )
     }
 
     return (

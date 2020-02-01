@@ -21,15 +21,15 @@ const UtilContainer = () => {
         dispatch(changeReverse({ reversed: !reversed }));
     }, [dispatch, reversed]);
 
-    const onSurrender = useCallback(() => {
+    const onClick = useCallback(type => {
         if(start) {
             if(!undo.role && !draw.role && !surrender.role) {
                 dispatch(askingThunk({
                     socket,
-                    type: 'surrender'
+                    type,
                 }));
                 dispatch(setRequestRole({
-                    type: 'surrender',
+                    type,
                     role: 'ask',
                 }));
             }
@@ -39,7 +39,7 @@ const UtilContainer = () => {
     return (
         <Util
             onReverse={onReverse}
-            onSurrender={onSurrender}
+            onClick={onClick}
         />
     )
 };

@@ -39,7 +39,7 @@ const buttonStyle = {
     }
 };
 
-const Util = ({ onReverse, onSurrender }) => {
+const Util = ({ onReverse, onClick }) => {
     return (
         <UtilBlock>
             <ButtonBlock onClick={onReverse} >
@@ -47,17 +47,17 @@ const Util = ({ onReverse, onSurrender }) => {
                     <FaExchangeAlt />
                 </IconContext.Provider>
             </ButtonBlock>
-            <ButtonBlock>
+            <ButtonBlock onClick={() => onClick('undo')}>
                 <IconContext.Provider value={{ style: { ...buttonStyle.style, width: '80%', height:'80%' }} }>
                     <TiArrowBack />
                 </IconContext.Provider>
             </ButtonBlock>
-            <ButtonBlock>
+            <ButtonBlock onClick={() => onClick('draw')}>
                 <IconContext.Provider value={buttonStyle}>
                     <FaHandRock />
                 </IconContext.Provider>
             </ButtonBlock>
-            <ButtonBlock onClick={onSurrender} >
+            <ButtonBlock onClick={() => onClick('surrender')}>
                 <IconContext.Provider value={buttonStyle}>
                     <FaFlag />
                 </IconContext.Provider>

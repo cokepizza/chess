@@ -45,7 +45,7 @@ export const asking = (req, res) => {
 };
 
 export const answering = (req, res) => {
-    const { socket: socketId, type, answer } = req.body;
+    const { socket: socketId, type, response } = req.body;
     const socketToKeyMap = req.app.get('socketToKey');
     const key = socketToKeyMap.get(socketId);
     const gameMap = req.app.get('game');
@@ -65,9 +65,9 @@ export const answering = (req, res) => {
     const enemy = player === 'white' ? 'black' : 'white';
 
     const socketSet = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
-    console.dir(socketSet);
+    
     let message= '';
-    if(answer) {
+    if(response) {
         message = 'accepted';
     } else {
         message = `rejected`;

@@ -30,12 +30,20 @@ export const setRequestRole = createAction(SET_REQUEST_ROLE, payload => payload)
 export const setRequestMessage = createAction(SET_REQUEST_MESSAGE, payload => payload);
 
 const [ ASKING, ASKING_SUCCESS, ASKING_FAILURE ] = createRequestActionTypes('record/ASKING');
+const [ ANSWERING, ANSWERING_SUCCESS, ANSWERING_FAILURE ] = createRequestActionTypes('record/ANSWERING');
 export const askingThunk = createRequestThunk(ASKING, recordAPI.asking);
+export const answeringThunk = createRequestThunk(ANSWERING, recordAPI.answering);
 
 export const notifyRequestThunk = ({ ask, answer, message }) => ( dispatch, getState ) => {
     if(ask) {
         const { record } = getState();
-        
+        const modal = record[ask];
+        if(!modal.role && !modal.message) {
+            dispatch(setRequestRole({
+                type: ask,
+                role: 'answer',
+            }));
+        }
     } else if(answer) {
         const { record } = getState();
         const modal = record[answer];
@@ -138,6 +146,9 @@ export default handleActions({
     [ASKING]: state => state,
     [ASKING_SUCCESS]: state => state,
     [ASKING_FAILURE]: state => state,
+    [ANSWERING]: state => state,
+    [ANSWERING_SUCCESS]: state => state,
+    [ANSWERING_FAILURE]: state => state,
     [CLEAR_TOOLTIP]: (state, { payload: { type } }) => ({
         ...state,
         [type]: initialState[type],
