@@ -237,8 +237,9 @@ export default (server, app, sessionMiddleware) => {
         if(!key) return;
 
         const gameMap = app.get('game');
+        if(!gameMap.has(key)) return;
+
         const game = gameMap.get(key);
-        if(!game) return;
 
         const sessionId = socket.request.sessionID;
         const { nickname, passport } = socket.request.session;
@@ -342,6 +343,9 @@ export default (server, app, sessionMiddleware) => {
         const tabKey = socket.handshake.query['tabKey'];
         if(!key) return;
 
+        const gameMap = app.get('game');
+        if(!gameMap.has(key)) return;
+
         connectSocket(app, socket, key, tabKey);
         
         const { nickname, color } = socket.request.session;
@@ -410,6 +414,9 @@ export default (server, app, sessionMiddleware) => {
         const tabKey = socket.handshake.query['tabKey'];
         if(!key) return;
 
+        const gameMap = app.get('game');
+        if(!gameMap.has(key)) return;
+
         connectSocket(app, socket, key, tabKey);
 
         //  canvas initialize
@@ -444,6 +451,9 @@ export default (server, app, sessionMiddleware) => {
         const key = socket.handshake.query['gameKey'];
         const tabKey = socket.handshake.query['tabKey'];
         if(!key) return;
+
+        const gameMap = app.get('game');
+        if(!gameMap.has(key)) return;
 
         const recordMap = app.get('record');
         if(!recordMap.has(key)) {
