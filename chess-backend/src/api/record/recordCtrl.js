@@ -16,11 +16,20 @@ export const asking = (req, res) => {
         return res.status(403).send({ error: `You're just a spectator` });
     }
 
-    const enemy = player === 'white' ? 'black' : 'white';
+    setTimeout(() => {
+        const playerSocketSet = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
+        [ ...playerSocketSet ].forEach(socket => {
+            socket.emit('message', {
+                type: 'notify',
+                answer: type,
+                message: 'Your request has been declined',
+            })
+        });
+    }, 5000);
 
-    const socketSet = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
-    console.dir(socketSet);
-    [ ...socketSet ].forEach(socket => {
+    const enemy = player === 'white' ? 'black' : 'white';
+    const enemySocketSet = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+    [ ...enemySocketSet ].forEach(socket => {
         socket.emit('message', {
             type: 'notify',
             ask: type,

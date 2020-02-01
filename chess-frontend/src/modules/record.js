@@ -22,13 +22,31 @@ export const clearValue = createAction(CLEAR_VALUE);
 
 const CHANGE_REVERSE = 'record/CHANGE_REVERSE';
 const CLEAR_TOOLTIP = 'record/CLEAR_TOOLTIP';
-const INITIALIZE_TOOLTIP = 'record/INITIALIZE_TOOLTIP';
+const SET_REQUEST_ROLE = 'record/SET_REQUEST_ROLE';
+const SET_REQUEST_MESSAGE = 'record/SET_REQUEST_MESSAGE';
 export const changeReverse = createAction(CHANGE_REVERSE, payload => payload);
 export const clearToolTip = createAction(CLEAR_TOOLTIP, payload => payload);
-export const initializeToolTip = createAction(INITIALIZE_TOOLTIP, payload => payload);
+export const setRequestRole = createAction(SET_REQUEST_ROLE, payload => payload);
+export const setRequestMessage = createAction(SET_REQUEST_MESSAGE, payload => payload);
 
 const [ ASKING, ASKING_SUCCESS, ASKING_FAILURE ] = createRequestActionTypes('record/ASKING');
 export const askingThunk = createRequestThunk(ASKING, recordAPI.asking);
+
+export const notifyRequestThunk = ({ ask, answer, message }) => ( dispatch, getState ) => {
+    if(ask) {
+        const { record } = getState();
+        
+    } else if(answer) {
+        const { record } = getState();
+        const modal = record[answer];
+        if(modal.role && modal.role === 'ask') {
+            dispatch(setRequestMessage({
+                type: answer,
+                message,
+            }));
+        }
+    }
+};
 
 export const updateValueThunk = params => ( dispatch, getState ) => {
     const { record } = getState();
@@ -57,6 +75,7 @@ function* connectWebsocketSaga (action) {
         initializeValue,
         changeValue,
         updateValue: updateValueThunk,
+        notifyRequest: notifyRequestThunk,
         query,
     });
     
@@ -81,11 +100,11 @@ const initialState = {
     blackRatio: 0,
     pieceMove: [],
     reversed: false,
-    excuse: {
+    undo: {
         message: null,
         role: null,
     },
-    tie: {
+    draw: {
         message: null,
         role: null,
     },
@@ -123,11 +142,18 @@ export default handleActions({
         ...state,
         [type]: initialState[type],
     }),
-    [INITIALIZE_TOOLTIP]: (state, { payload: { type, role } }) => ({
+    [SET_REQUEST_ROLE]: (state, { payload: { type, role } }) => ({
         ...state,
         [type]: {
             ...state[type],
             role,
+        }
+    }),
+    [SET_REQUEST_MESSAGE]: (state, { payload: { type, message } }) => ({
+        ...state,
+        [type]: {
+            ...state[type],
+            message,
         }
     }),
 }, initialState);

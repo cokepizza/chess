@@ -29,12 +29,13 @@ export function* connectNamespace(params) {
 
     const {
         url,
+        query,
         initializeSocket,
         initializeValue,
         changeValue,
         updateValue,
         clearValue,
-        query,
+        notifyRequest,
     } = params;
 
     try {
@@ -66,6 +67,8 @@ export function* connectNamespace(params) {
                 case 'clear':
                     yield put(clearValue(message));
                     break;
+                case 'notify':
+                    yield put(notifyRequest(message))
                 default:
                     console.dir(message);
             }

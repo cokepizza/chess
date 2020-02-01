@@ -5,8 +5,9 @@ import ToolTip from '../../components/gameplay/ToolTip';
 import { clearToolTip } from '../../modules/record';
 
 const ToolTipContainer = ({ type }) => {
-    const { suggestion } = useSelector(({ record }) => ({
+    const { suggestion, start } = useSelector(({ record, game }) => ({
         suggestion: record[type],
+        start: game.start,
     }));
 
     const dispatch = useDispatch();
@@ -20,17 +21,21 @@ const ToolTipContainer = ({ type }) => {
     }, [suggestion.message]);
 
     useEffect(() => {
+        if(!start) {
+            dispatch(clearToolTip({ type }));
+        }
+    }, [start])
+
+    useEffect(() => {
         return () => {
             dispatch(clearToolTip({ type }));
         }
     }, [])
 
-    if(!suggestion.role) {
-        return null;
-    }
-
     return (
         <ToolTip
+            type={type}
+            role={suggestion.role}
             message={suggestion.message}
         />
     )

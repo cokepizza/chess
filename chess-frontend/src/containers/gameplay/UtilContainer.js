@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { askingThunk } from '../../modules/record';
 import Util from '../../components/gameplay/Util';
-import { changeReverse, initializeToolTip } from '../../modules/record';
+import { changeReverse, setRequestRole } from '../../modules/record';
 
 const UtilContainer = () => {
-    const { reversed, socket } = useSelector(({ record }) => ({
+    const { reversed, socket, start } = useSelector(({ record, game }) => ({
         socket: record.socket,
         reversed: record.reversed,
+        start: game.start,
     }));
 
     const dispatch = useDispatch();
@@ -18,14 +19,16 @@ const UtilContainer = () => {
     }, [dispatch, reversed]);
 
     const onSurrender = useCallback(() => {
-        dispatch(askingThunk({
-            socket,
-            type: 'surrender'
-        }));
-        dispatch(initializeToolTip({
-            type: 'surrender',
-            role: 'ask',
-        }));
+        if(start) {
+            dispatch(askingThunk({
+                socket,
+                type: 'surrender'
+            }));
+            dispatch(setRequestRole({
+                type: 'surrender',
+                role: 'ask',
+            }));
+        }
     }, [dispatch, socket]);
 
     return (
