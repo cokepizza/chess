@@ -17,8 +17,7 @@ const ToolTipBlock = styled.div`
         visibility: visible;
     `}
     ${props => props.message && css`
-        transition: 2s;
-        transition-timing-function: ease-in;
+        transition: all 3s cubic-bezier(1.000, 0.015, 1.000, 0.030);
         top: -90px;
         opacity: 0;
     `}

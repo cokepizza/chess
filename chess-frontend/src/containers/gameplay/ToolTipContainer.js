@@ -16,7 +16,7 @@ const ToolTipContainer = ({ type }) => {
         if(suggestion.message && suggestion.role === 'ask') {
             setTimeout(() => {
                 dispatch(clearToolTip({ type }));
-            }, 2000);
+            }, 3000);
         }
     }, [dispatch, suggestion.role, suggestion.message, type]);
 

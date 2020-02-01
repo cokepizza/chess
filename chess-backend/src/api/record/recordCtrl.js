@@ -3,8 +3,13 @@ export const asking = (req, res) => {
     const socketToKeyMap = req.app.get('socketToKey');
     const key = socketToKeyMap.get(socketId);
     const gameMap = req.app.get('game');
-    const game = gameMap.get(key);
 
+    if(!gameMap.has(key)) {
+        console.dir(`There's no available Game #${key}`);
+        return res.status(403).send({ error: `There's no available Game #${key}` });
+    }
+
+    const game = gameMap.get(key);
     if(!game.start) {
         console.dir(`The game is not running now`);
         return res.status(403).send({ error: `The game is not running now` });
@@ -22,7 +27,7 @@ export const asking = (req, res) => {
             socket.emit('message', {
                 type: 'notify',
                 answer: type,
-                message: 'Rejected',
+                message: 'rejected',
             })
         });
     }, 5000);
@@ -61,9 +66,9 @@ export const answering = (req, res) => {
     console.dir(socketSet);
     let message= '';
     if(answer) {
-        message = 'Accepted';
+        message = 'accepted';
     } else {
-        message = `Rejected`;
+        message = `rejected`;
     }
 
     [ ...socketSet ].forEach(socket => {
