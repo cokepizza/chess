@@ -238,6 +238,7 @@ export default (server, app, sessionMiddleware) => {
 
         const gameMap = app.get('game');
         const game = gameMap.get(key);
+        if(!game) return;
 
         const sessionId = socket.request.sessionID;
         const { nickname, passport } = socket.request.session;

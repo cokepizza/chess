@@ -40,6 +40,8 @@ export const asking = (req, res) => {
             ask: type,
         })
     });
+
+    return res.status(202).end();
 };
 
 export const answering = (req, res) => {
@@ -78,4 +80,6 @@ export const answering = (req, res) => {
             message,
         })
     });
+    
+    return res.status(202).end();
 }
