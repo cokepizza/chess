@@ -26,7 +26,14 @@ export const asking = (req, res) => {
         return res.status(403).send({ error: `Modal is already Open` });
     }
 
+    if(game._record._asking) {
+        console.dir(`This request(asking) is still processing`);
+        return res.status(403).send({ error: `This request(asking) is still processing` });
+    }
+
     const enemy = player === 'white' ? 'black' : 'white';
+    
+    game._record._asking = true;
 
     game._record._modalOpen({
         sender: player,
@@ -50,6 +57,8 @@ export const asking = (req, res) => {
         game._record._setTimeRequestCloseRef[type] = setTimeout(() => {
             const game = gameMap.get(key);
             if(game && game.start) {
+                game._record._asking = false;
+                game._record._answering = false;
                 game._record._modalClose({
                     sender: player,
                     receiver: enemy,
@@ -84,8 +93,15 @@ export const answering = (req, res) => {
         return res.status(403).send({ error: `Modal is already Closed` });
     }
 
+    if(game._record._answering) {
+        console.dir(`This request(answer) is still processing`);
+        return res.status(403).send({ error: `This request(asking) is still processing` });
+    }
+
     const enemy = player === 'white' ? 'black' : 'white';
     const message = response ? 'accepted' : 'rejected';
+
+    game._record._answering = true;
     
     clearTimeout(game._record._setTimeRequestMessageRef[type]);
     clearTimeout(game._record._setTimeRequestCloseRef[type]);
@@ -100,6 +116,8 @@ export const answering = (req, res) => {
     game._record._setTimeRequestCloseRef[type] = setTimeout(() => {
         const game = gameMap.get(key);
         if(game && game.start) {
+            game._record._asking = false;
+            game._record._answering = false;
             game._record._modalClose({
                 sender: player,
                 receiver: enemy,

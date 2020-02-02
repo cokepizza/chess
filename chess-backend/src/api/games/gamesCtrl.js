@@ -70,9 +70,12 @@ export const createGame = (req, res, next) => {
             } else {
                 this.start = false;
                 this._record._stop();
-
-                //  Util container UI
+                
                 this._record.blocked = false;
+                this._record._asking = false;
+                this._record._answering = false;
+                
+                //  Util Modal 쪽 UI 업데이트 중단
                 clearTimeout(this._record._setTimeRequestMessageRef['undo']);
                 clearTimeout(this._record._setTimeRequestMessageRef['draw']);
                 clearTimeout(this._record._setTimeRequestMessageRef['surrender']);
