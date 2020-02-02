@@ -494,7 +494,7 @@ export default (server, app, sessionMiddleware) => {
                     this._start(game.order, true);
                 },
                 _stop: function() {
-                    this._modalClose({ player: 'white', enemy: 'black' });
+                    // this._modalClose({ player: 'white', enemy: 'black' });
                     clearTimeout(this._setTimeRef);
                 },
                 _recharge: function(order) {
@@ -545,8 +545,8 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _modalOpen: function({ player, enemy, genre }) {
                     const game = app.get('game').get(key);
-                    const askSocket = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
-                    const answerSocket = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+                    const askSocket = app.get('session').get(game[`_${player}`]).get(key).get('/record');
+                    const answerSocket = app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
                     
                     game._record.blocked = true;
 
@@ -569,8 +569,8 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _modalMessage: function({ player, enemy, genre, message }) {
                     const game = app.get('game').get(key);
-                    const askSocket = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
-                    const answerSocket = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+                    const askSocket = app.get('session').get(game[`_${player}`]).get(key).get('/record');
+                    const answerSocket = app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
                    
                     [ ...askSocket ].forEach(socket => {
                         socket.emit('message', {
@@ -591,8 +591,13 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _modalClose: function({ player, enemy }) {
                     const game = app.get('game').get(key);
-                    const askSocket = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
-                    const answerSocket = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+
+                   if(!game.start || !game[`_${player}`] || !game[`_${enemy}`]) {
+                       return;
+                   }
+
+                    const askSocket = app.get('session').get(game[`_${player}`]).get(key).get('/record');
+                    const answerSocket = app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
 
                     game._record.blocked = false;
 

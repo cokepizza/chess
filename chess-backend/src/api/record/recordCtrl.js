@@ -85,7 +85,7 @@ export const asking = (req, res) => {
     // const enemySocketSet = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
     // const playerSocketSet = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
 
-    game._record_modalOpen({
+    game._record._modalOpen({
         player,
         enemy,
         genre: type,
@@ -93,14 +93,14 @@ export const asking = (req, res) => {
 
     clearTimeout(game._record._setTimeRequestRef[type]);
     game._record._setTimeRequestRef[type] = setTimeout(() => {
-        game._record_modalMessage({
+        game._record._modalMessage({
             player,
             enemy,
             genre: type,
             message: 'rejected',
         });
         setTimeout(() => {
-            game._record_modalClose({
+            game._record._modalClose({
                 player,
                 enemy,
             });
@@ -148,7 +148,7 @@ export const answering = (req, res) => {
     
     clearTimeout(game._record._setTimeRequestRef[type]);
 
-    game._record_modalMessage({
+    game._record._modalMessage({
         player,
         enemy,
         genre: type,
@@ -156,7 +156,7 @@ export const answering = (req, res) => {
     });
 
     setTimeout(() => {
-        game._record_modalClose({
+        game._record._modalClose({
             player,
             enemy,
         });
