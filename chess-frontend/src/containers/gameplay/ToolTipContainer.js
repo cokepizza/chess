@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import ToolTip from '../../components/gameplay/ToolTip';
-import { clearToolTip, setRequestMessage, answeringThunk } from '../../modules/record';
+import { clearToolTip, answeringThunk } from '../../modules/record';
 
 const ToolTipContainer = ({ type }) => {
     const { socket, suggestion, start } = useSelector(({ record, game }) => ({
@@ -47,13 +47,10 @@ const ToolTipContainer = ({ type }) => {
     }, [suggestion.message])
 
     useEffect(() => {
-        if(!start) {
-            dispatch(setRequestMessage({
-                type,
-                message: 'rejected',
-            }));
+        if(!start && suggestion.modal) {
+            dispatch(clearToolTip());
         }
-    }, [dispatch, start, type])
+    }, [dispatch, start, suggestion.modal, type])
 
     useEffect(() => {
         return () => {
