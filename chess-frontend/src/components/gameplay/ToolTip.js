@@ -11,7 +11,7 @@ const ToolTipBlock = styled.div`
     width: 84px;
     opacity: 0;
     visibility: hidden;
-    ${props => props.role && css`
+    ${props => props.modal && css`
         top: -70px;
         opacity: 1;
         visibility: visible;
@@ -94,10 +94,10 @@ const TimeLineBlock = styled.div`
     `}
 `;
 
-const ToolTip = ({ type, message, role, race, onClick }) => {
+const ToolTip = ({ type, message, modal, race, onClick }) => {
     let content;
 
-    if(role === 'answer') {
+    if(modal === 'answer') {
         content = (
             <MessageBlock>
                 <ButtonBlock onClick={() => onClick(true)}>
@@ -108,7 +108,7 @@ const ToolTip = ({ type, message, role, race, onClick }) => {
                 </ButtonBlock>
             </MessageBlock>
         )
-    } else if(role === 'ask') {
+    } else if(modal === 'ask') {
         if(message) {
             content = (
                 <MessageBlock>
@@ -127,7 +127,7 @@ const ToolTip = ({ type, message, role, race, onClick }) => {
     return (
         <ToolTipBlock
             message={message}
-            role={role}
+            modal={modal}
         >
             <TimeLineBlock race={race} />
             <TitleBlock>

@@ -3,16 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { askingThunk } from '../../modules/record';
 import Util from '../../components/gameplay/Util';
-import { changeReverse, setRequestRole } from '../../modules/record';
+import { changeReverse } from '../../modules/record';
 
 const UtilContainer = () => {
-    const { reversed, socket, start, undo, draw, surrender } = useSelector(({ record, game }) => ({
+    const { reversed, socket, start, blocked } = useSelector(({ record, game }) => ({
         socket: record.socket,
         reversed: record.reversed,
         start: game.start,
-        undo: record.undo,
-        draw: record.draw,
-        surrender: record.surrender,
+        blocked: record.blocked,
     }));
 
     const dispatch = useDispatch();
@@ -22,20 +20,13 @@ const UtilContainer = () => {
     }, [dispatch, reversed]);
 
     const onClick = useCallback(type => {
-        if(start) {
-            if(!undo.role && !draw.role && !surrender.role) {
-                console.dir('리퀘스트 보냄');
-                dispatch(askingThunk({
-                    socket,
-                    type,
-                }));
-                dispatch(setRequestRole({
-                    type,
-                    role: 'ask',
-                }));
-            }
+        if(start && !blocked) {
+            dispatch(askingThunk({
+                socket,
+                type,
+            }));
         }
-    }, [dispatch, start, socket, undo.role, draw.role, surrender.role]);
+    }, [dispatch, start, socket, blocked]);
 
     return (
         <Util

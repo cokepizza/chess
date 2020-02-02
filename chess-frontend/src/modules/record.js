@@ -22,11 +22,11 @@ export const clearValue = createAction(CLEAR_VALUE);
 
 const CHANGE_REVERSE = 'record/CHANGE_REVERSE';
 const CLEAR_TOOLTIP = 'record/CLEAR_TOOLTIP';
-const SET_REQUEST_ROLE = 'record/SET_REQUEST_ROLE';
+const SET_REQUEST_MODAL = 'record/SET_REQUEST_MODAL';
 const SET_REQUEST_MESSAGE = 'record/SET_REQUEST_MESSAGE';
 export const changeReverse = createAction(CHANGE_REVERSE, payload => payload);
-export const clearToolTip = createAction(CLEAR_TOOLTIP, payload => payload);
-export const setRequestRole = createAction(SET_REQUEST_ROLE, payload => payload);
+export const clearToolTip = createAction(CLEAR_TOOLTIP);
+export const setRequestModal = createAction(SET_REQUEST_MODAL, payload => payload);
 export const setRequestMessage = createAction(SET_REQUEST_MESSAGE, payload => payload);
 
 const [ ASKING, ASKING_SUCCESS, ASKING_FAILURE ] = createRequestActionTypes('record/ASKING');
@@ -34,28 +34,37 @@ const [ ANSWERING, ANSWERING_SUCCESS, ANSWERING_FAILURE ] = createRequestActionT
 export const askingThunk = createRequestThunk(ASKING, recordAPI.asking);
 export const answeringThunk = createRequestThunk(ANSWERING, recordAPI.answering);
 
-export const notifyRequestThunk = ({ ask, answer, message }) => ( dispatch, getState ) => {
-    if(ask) {
-        const { record } = getState();
-        const modal = record[ask];
-        console.dir('answer진입 전~');
-        if(!modal.role && !modal.message) {
-            console.dir('answer진입 후~');
-            dispatch(setRequestRole({
-                type: ask,
-                role: 'answer',
+export const notifyRequestThunk = ({ genre: type, modal, open, message }) => ( dispatch, getState ) => {
+    if(open) {
+        if(!message) {
+            //  modal open
+            // const { record } = getState();
+            // const type = record[genre];
+            // if(!type.role && !type.message) {
+                
+            // }
+            dispatch(setRequestModal({
+                type,
+                modal,
             }));
-        }
-    } else if(answer) {
-        const { record } = getState();
-        const modal = record[answer];
-        if(modal.role && modal.role === 'ask') {
+        } else {
+            //  modal message
+            // const { record } = getState();
+            // const type = record[genre];
+            // if(!type.role && !type.message) {
+                
+            // }
             dispatch(setRequestMessage({
-                type: answer,
+                type,
                 message,
             }));
         }
+        
+    } else {
+        //  modal close
+        dispatch(clearToolTip());
     }
+    
 };
 
 export const updateValueThunk = params => ( dispatch, getState ) => {
@@ -110,17 +119,18 @@ const initialState = {
     blackRatio: 0,
     pieceMove: [],
     reversed: false,
+    blocked: false,
     undo: {
         message: null,
-        role: null,
+        modal: null,
     },
     draw: {
         message: null,
-        role: null,
+        modal: null,
     },
     surrender: {
         message: null,
-        role: null,
+        modal: null,
     },
 }
 
@@ -151,22 +161,27 @@ export default handleActions({
     [ANSWERING]: state => state,
     [ANSWERING_SUCCESS]: state => state,
     [ANSWERING_FAILURE]: state => state,
-    [CLEAR_TOOLTIP]: (state, { payload: { type } }) => ({
+    [CLEAR_TOOLTIP]: (state) => ({
         ...state,
-        [type]: initialState[type],
+        undo: initialState['undo'],
+        draw: initialState['draw'],
+        surrender: initialState['surrender'],
+        blocked: false,
     }),
-    [SET_REQUEST_ROLE]: (state, { payload: { type, role } }) => ({
+    [SET_REQUEST_MODAL]: (state, { payload: { type, modal } }) => ({
         ...state,
         [type]: {
             ...state[type],
-            role,
-        }
+            modal,
+        },
+        blocked: true,
     }),
     [SET_REQUEST_MESSAGE]: (state, { payload: { type, message } }) => ({
         ...state,
         [type]: {
             ...state[type],
             message,
-        }
+        },
+        blocked: true,
     }),
 }, initialState);

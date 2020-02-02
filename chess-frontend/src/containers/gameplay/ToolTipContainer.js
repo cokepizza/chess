@@ -15,41 +15,41 @@ const ToolTipContainer = ({ type }) => {
     const setTimeoutRef = useRef();
     const [ race, setRace ] = useState(false);
 
-    useEffect(() => {
-        if(suggestion.message && suggestion.role) {
-            clearTimeout(setTimeoutRef.current);
-            console.dir('ask 클리어 전');
-            setTimeoutRef.current = setTimeout(() => {
-                console.dir('ask 클리어 후');
-                setRace(false);
-                dispatch(clearToolTip({ type }));
-            }, 3000);
-        }
-    }, [dispatch, suggestion.role, suggestion.message, type]);
+    // useEffect(() => {
+    //     if(suggestion.message && suggestion.role) {
+    //         clearTimeout(setTimeoutRef.current);
+    //         console.dir('ask 클리어 전');
+    //         setTimeoutRef.current = setTimeout(() => {
+    //             console.dir('ask 클리어 후');
+    //             setRace(false);
+    //             dispatch(clearToolTip({ type }));
+    //         }, 3000);
+    //     }
+    // }, [dispatch, suggestion.role, suggestion.message, type]);
 
     useEffect(() => {
-        if(suggestion.role === 'answer') {
+        if(suggestion.modal) {
             setRace(true);
-            clearTimeout(setTimeoutRef.current);
-            setTimeoutRef.current = setTimeout(() => {
-                setRace(false);
-                dispatch(setRequestMessage({
-                    type,
-                    message: `response: null`,
-                }));
-            }, 5000);
+            // clearTimeout(setTimeoutRef.current);
+            // setTimeoutRef.current = setTimeout(() => {
+            //     setRace(false);
+            //     dispatch(setRequestMessage({
+            //         type,
+            //         message: `response: null`,
+            //     }));
+            // }, 5000);
         }
-    }, [dispatch, suggestion.role, type]);
+    }, [dispatch, suggestion.modal]);
 
     useEffect(() => {
-        if(!start) {
-            dispatch(clearToolTip({ type }));
+        if(suggestion.message) {
+            setRace(false);
         }
-    }, [dispatch, start, type])
+    }, [suggestion.message])
 
     useEffect(() => {
         return () => {
-            dispatch(clearToolTip({ type }));
+            dispatch(clearToolTip());
         }
     }, [dispatch, type])
 
@@ -59,16 +59,12 @@ const ToolTipContainer = ({ type }) => {
             type,
             response,
         }));
-        dispatch(setRequestMessage({
-            type,
-            message: `response: ${response}`,
-        }));
     }, [dispatch, socket, type]);
 
     return (
         <ToolTip
             type={type}
-            role={suggestion.role}
+            modal={suggestion.modal}
             message={suggestion.message}
             race={race}
             onClick={onClick}

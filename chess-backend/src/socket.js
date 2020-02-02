@@ -467,8 +467,9 @@ export default (server, app, sessionMiddleware) => {
                 blackRatio: null,
                 whiteRatio: null,
                 pieceMove: [],
+                blocked: false,
                 _setTimeRef: null,
-                _setTimeRequestRef: null,
+                _setTimeRequestRef: {},
                 _initialize: function() {
                     const game = app.get('game').get(key);
                     this.blackTime = game.defaultTime;
@@ -493,6 +494,7 @@ export default (server, app, sessionMiddleware) => {
                     this._start(game.order, true);
                 },
                 _stop: function() {
+                    this._modalClose({ player: 'white', enemy: 'black' });
                     clearTimeout(this._setTimeRef);
                 },
                 _recharge: function(order) {
@@ -541,6 +543,72 @@ export default (server, app, sessionMiddleware) => {
                         ...instanceSanitizer(this),
                     })
                 },
+                _modalOpen: function({ player, enemy, genre }) {
+                    const game = app.get('game').get(key);
+                    const askSocket = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
+                    const answerSocket = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+                    
+                    game._record.blocked = true;
+
+                    [ ...askSocket ].forEach(socket => {
+                        socket.emit('message', {
+                            type: 'notify',
+                            genre,
+                            modal: 'ask',
+                            open: true,
+                        })
+                    }); 
+                    [ ...answerSocket ].forEach(socket => {
+                        socket.emit('message', {
+                            type: 'notify',
+                            genre,
+                            modal: 'answer',
+                            open: true,
+                        })
+                    }); 
+                },
+                _modalMessage: function({ player, enemy, genre, message }) {
+                    const game = app.get('game').get(key);
+                    const askSocket = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
+                    const answerSocket = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+                   
+                    [ ...askSocket ].forEach(socket => {
+                        socket.emit('message', {
+                            type: 'notify',
+                            genre,
+                            open: true,
+                            message,
+                        })
+                    }); 
+                    [ ...answerSocket ].forEach(socket => {
+                        socket.emit('message', {
+                            type: 'notify',
+                            genre,
+                            open: true,
+                            message: 'delivered',
+                        })
+                    });    
+                },
+                _modalClose: function({ player, enemy }) {
+                    const game = app.get('game').get(key);
+                    const askSocket = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
+                    const answerSocket = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+
+                    game._record.blocked = false;
+
+                    [ ...askSocket ].forEach(socket => {
+                        socket.emit('message', {
+                            type: 'notify',
+                            open: false,
+                        })
+                    }); 
+                    [ ...answerSocket ].forEach(socket => {
+                        socket.emit('message', {
+                            type: 'notify',
+                            open: false,
+                        })
+                    }); 
+                }
             };
 
             recordSkeleton._initialize();
