@@ -494,7 +494,7 @@ export default (server, app, sessionMiddleware) => {
                     this._start(game.order, true);
                 },
                 _stop: function() {
-                    // this._modalClose({ player: 'white', enemy: 'black' });
+                    this.blocked = false;
                     clearTimeout(this._setTimeRef);
                 },
                 _recharge: function(order) {
@@ -543,14 +543,14 @@ export default (server, app, sessionMiddleware) => {
                         ...instanceSanitizer(this),
                     })
                 },
-                _modalOpen: function({ player, enemy, genre }) {
+                _modalOpen: function({ sender, receiver, genre }) {
                     const game = app.get('game').get(key);
-                    const askSocket = app.get('session').get(game[`_${player}`]).get(key).get('/record');
-                    const answerSocket = app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+                    const senderSocket = app.get('session').get(game[`_${sender}`]).get(key).get('/record');
+                    const receiverSocket = app.get('session').get(game[`_${receiver}`]).get(key).get('/record');
                     
                     game._record.blocked = true;
 
-                    [ ...askSocket ].forEach(socket => {
+                    [ ...senderSocket ].forEach(socket => {
                         socket.emit('message', {
                             type: 'notify',
                             genre,
@@ -558,7 +558,7 @@ export default (server, app, sessionMiddleware) => {
                             open: true,
                         })
                     }); 
-                    [ ...answerSocket ].forEach(socket => {
+                    [ ...receiverSocket ].forEach(socket => {
                         socket.emit('message', {
                             type: 'notify',
                             genre,
@@ -567,47 +567,42 @@ export default (server, app, sessionMiddleware) => {
                         })
                     }); 
                 },
-                _modalMessage: function({ player, enemy, genre, message }) {
+                _modalMessage: function({ sender, receiver, genre, message }) {
                     const game = app.get('game').get(key);
-                    const askSocket = app.get('session').get(game[`_${player}`]).get(key).get('/record');
-                    const answerSocket = app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+                    const senderSocket = app.get('session').get(game[`_${sender}`]).get(key).get('/record');
+                    const receiverSocket = app.get('session').get(game[`_${receiver}`]).get(key).get('/record');
                    
-                    [ ...askSocket ].forEach(socket => {
-                        socket.emit('message', {
-                            type: 'notify',
-                            genre,
-                            open: true,
-                            message,
-                        })
-                    }); 
-                    [ ...answerSocket ].forEach(socket => {
+                    [ ...senderSocket ].forEach(socket => {
                         socket.emit('message', {
                             type: 'notify',
                             genre,
                             open: true,
                             message: 'delivered',
                         })
+                    }); 
+                    [ ...receiverSocket ].forEach(socket => {
+                        socket.emit('message', {
+                            type: 'notify',
+                            genre,
+                            open: true,
+                            message,
+                        })
                     });    
                 },
-                _modalClose: function({ player, enemy }) {
+                _modalClose: function({ sender, receiver }) {
                     const game = app.get('game').get(key);
-
-                   if(!game.start || !game[`_${player}`] || !game[`_${enemy}`]) {
-                       return;
-                   }
-
-                    const askSocket = app.get('session').get(game[`_${player}`]).get(key).get('/record');
-                    const answerSocket = app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
+                    const senderSocket = app.get('session').get(game[`_${sender}`]).get(key).get('/record');
+                    const receiverSocket = app.get('session').get(game[`_${receiver}`]).get(key).get('/record');
 
                     game._record.blocked = false;
 
-                    [ ...askSocket ].forEach(socket => {
+                    [ ...senderSocket ].forEach(socket => {
                         socket.emit('message', {
                             type: 'notify',
                             open: false,
                         })
                     }); 
-                    [ ...answerSocket ].forEach(socket => {
+                    [ ...receiverSocket ].forEach(socket => {
                         socket.emit('message', {
                             type: 'notify',
                             open: false,

@@ -12,7 +12,6 @@ const ToolTipContainer = ({ type }) => {
     }));
 
     const dispatch = useDispatch();
-    const setTimeoutRef = useRef();
     const [ race, setRace ] = useState(false);
 
     // useEffect(() => {
@@ -46,6 +45,15 @@ const ToolTipContainer = ({ type }) => {
             setRace(false);
         }
     }, [suggestion.message])
+
+    useEffect(() => {
+        if(!start) {
+            dispatch(setRequestMessage({
+                type,
+                message: 'rejected',
+            }));
+        }
+    }, [dispatch, start, type])
 
     useEffect(() => {
         return () => {

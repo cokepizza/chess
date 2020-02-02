@@ -1,58 +1,3 @@
-// const modalOpen = ({ askSocket, answerSocket, genre }) => {
-//     [ ...askSocket ].forEach(socket => {
-//         socket.emit('message', {
-//             type: 'notify',
-//             genre,
-//             modal: 'ask',
-//             open: true,
-//         })
-//     }); 
-//     [ ...answerSocket ].forEach(socket => {
-//         socket.emit('message', {
-//             type: 'notify',
-//             genre,
-//             modal: 'answer',
-//             open: true,
-//         })
-//     }); 
-// };
-
-// const modalMessage = ({ askSocket, answerSocket, genre, message }) => {
-//     [ ...askSocket ].forEach(socket => {
-//         socket.emit('message', {
-//             type: 'notify',
-//             genre,
-//             open: true,
-//             message,
-//         })
-//     }); 
-//     [ ...answerSocket ].forEach(socket => {
-//         socket.emit('message', {
-//             type: 'notify',
-//             genre,
-//             open: true,
-//             message: 'delivered',
-//         })
-//     }); 
-// };
-
-// const modalClose = ({ askSocket, answerSocket, genre }) => {
-//     [ ...askSocket ].forEach(socket => {
-//         socket.emit('message', {
-//             type: 'notify',
-//             genre,
-//             open: false,
-//         })
-//     }); 
-//     [ ...answerSocket ].forEach(socket => {
-//         socket.emit('message', {
-//             type: 'notify',
-//             genre,
-//             open: false,
-//         })
-//     }); 
-// };
-
 export const asking = (req, res) => {
     const { socket: socketId, type } = req.body;
     const socketToKeyMap = req.app.get('socketToKey');
@@ -82,32 +27,28 @@ export const asking = (req, res) => {
     }
 
     const enemy = player === 'white' ? 'black' : 'white';
-    // const enemySocketSet = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
-    // const playerSocketSet = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
 
     game._record._modalOpen({
-        player,
-        enemy,
+        sender: player,
+        receiver: enemy,
         genre: type,
     })
 
     clearTimeout(game._record._setTimeRequestRef[type]);
     game._record._setTimeRequestRef[type] = setTimeout(() => {
         game._record._modalMessage({
-            player,
-            enemy,
+            sender: enemy,
+            receiver: player,
             genre: type,
             message: 'rejected',
         });
         setTimeout(() => {
             game._record._modalClose({
-                player,
-                enemy,
+                sender: player,
+                receiver: enemy,
             });
         }, 3000);
     }, 5000);
-
-   
 
     return res.status(202).end();
 };
@@ -136,29 +77,21 @@ export const answering = (req, res) => {
     }
 
     const enemy = player === 'white' ? 'black' : 'white';
-    // const playerSocketSet = req.app.get('session').get(game[`_${player}`]).get(key).get('/record');
-    // const enemySocketSet = req.app.get('session').get(game[`_${enemy}`]).get(key).get('/record');
-    
-    let message= '';
-    if(response) {
-        message = 'accepted';
-    } else {
-        message = `rejected`;
-    }
+    const message = response ? 'accepted' : 'rejected';
     
     clearTimeout(game._record._setTimeRequestRef[type]);
 
     game._record._modalMessage({
-        player,
-        enemy,
+        sender: player,
+        receiver: enemy,
         genre: type,
         message,
     });
 
     setTimeout(() => {
         game._record._modalClose({
-            player,
-            enemy,
+            sender: player,
+            receiver: enemy,
         });
     }, 3000);
     
