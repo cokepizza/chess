@@ -13,30 +13,12 @@ const ToolTipContainer = ({ type }) => {
 
     const dispatch = useDispatch();
     const [ race, setRace ] = useState(false);
-
-    // useEffect(() => {
-    //     if(suggestion.message && suggestion.role) {
-    //         clearTimeout(setTimeoutRef.current);
-    //         console.dir('ask 클리어 전');
-    //         setTimeoutRef.current = setTimeout(() => {
-    //             console.dir('ask 클리어 후');
-    //             setRace(false);
-    //             dispatch(clearToolTip({ type }));
-    //         }, 3000);
-    //     }
-    // }, [dispatch, suggestion.role, suggestion.message, type]);
+    const [ restrict, setRestrict ] = useState(false);
 
     useEffect(() => {
         if(suggestion.modal) {
+            setRestrict(false);
             setRace(true);
-            // clearTimeout(setTimeoutRef.current);
-            // setTimeoutRef.current = setTimeout(() => {
-            //     setRace(false);
-            //     dispatch(setRequestMessage({
-            //         type,
-            //         message: `response: null`,
-            //     }));
-            // }, 5000);
         }
     }, [dispatch, suggestion.modal]);
 
@@ -48,6 +30,7 @@ const ToolTipContainer = ({ type }) => {
 
     useEffect(() => {
         if(!start && suggestion.modal) {
+            setRace(false);
             dispatch(clearToolTip());
         }
     }, [dispatch, start, suggestion.modal, type])
@@ -64,6 +47,7 @@ const ToolTipContainer = ({ type }) => {
             type,
             response,
         }));
+        setRestrict(true);
     }, [dispatch, socket, type]);
 
     return (
@@ -72,6 +56,7 @@ const ToolTipContainer = ({ type }) => {
             modal={suggestion.modal}
             message={suggestion.message}
             race={race}
+            restrict={restrict}
             onClick={onClick}
         />
     )

@@ -70,6 +70,10 @@ const ButtonBlock = styled.button`
     height: 30px;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
 
+    ${props => props.restrict && css`
+        pointer-events: none;
+    `}
+
     &+& {
         margin-left: 10px;
     }
@@ -94,16 +98,22 @@ const TimeLineBlock = styled.div`
     `}
 `;
 
-const ToolTip = ({ type, message, modal, race, onClick }) => {
+const ToolTip = ({ type, message, modal, race, restrict, onClick }) => {
     let content;
 
     if(modal === 'answer') {
         content = (
             <MessageBlock>
-                <ButtonBlock onClick={() => onClick(true)}>
+                <ButtonBlock
+                    restrict={restrict}
+                    onClick={() => onClick(true)}
+                >
                     Y
                 </ButtonBlock>
-                <ButtonBlock onClick={() => onClick(false)}>
+                <ButtonBlock
+                    restrict={restrict}
+                    onClick={() => onClick(false)}
+                >
                     N
                 </ButtonBlock>
             </MessageBlock>
