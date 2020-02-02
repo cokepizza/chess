@@ -70,6 +70,7 @@ export const createGame = (req, res, next) => {
             } else {
                 this.start = false;
                 this._record._stop();
+                this._record.blocked = false;
             }
             
             this._broadcast();

@@ -494,7 +494,6 @@ export default (server, app, sessionMiddleware) => {
                     this._start(game.order, true);
                 },
                 _stop: function() {
-                    this.blocked = false;
                     clearTimeout(this._setTimeRef);
                 },
                 _recharge: function(order) {
@@ -545,6 +544,8 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _modalOpen: function({ sender, receiver, genre }) {
                     const game = app.get('game').get(key);
+                    if(!game.start) return;
+
                     const senderSocket = app.get('session').get(game[`_${sender}`]).get(key).get('/record');
                     const receiverSocket = app.get('session').get(game[`_${receiver}`]).get(key).get('/record');
                     
@@ -569,6 +570,8 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _modalMessage: function({ sender, receiver, genre, message }) {
                     const game = app.get('game').get(key);
+                    if(!game.start) return;
+
                     const senderSocket = app.get('session').get(game[`_${sender}`]).get(key).get('/record');
                     const receiverSocket = app.get('session').get(game[`_${receiver}`]).get(key).get('/record');
                    
@@ -591,6 +594,8 @@ export default (server, app, sessionMiddleware) => {
                 },
                 _modalClose: function({ sender, receiver }) {
                     const game = app.get('game').get(key);
+                    if(!game.start) return;
+                    
                     const senderSocket = app.get('session').get(game[`_${sender}`]).get(key).get('/record');
                     const receiverSocket = app.get('session').get(game[`_${receiver}`]).get(key).get('/record');
 

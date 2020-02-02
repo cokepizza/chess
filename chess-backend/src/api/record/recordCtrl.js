@@ -36,17 +36,23 @@ export const asking = (req, res) => {
 
     clearTimeout(game._record._setTimeRequestRef[type]);
     game._record._setTimeRequestRef[type] = setTimeout(() => {
-        game._record._modalMessage({
-            sender: enemy,
-            receiver: player,
-            genre: type,
-            message: 'rejected',
-        });
-        setTimeout(() => {
-            game._record._modalClose({
-                sender: player,
-                receiver: enemy,
+        const game = gameMap.get(key);
+        if(game && game.start) {
+            game._record._modalMessage({
+                sender: enemy,
+                receiver: player,
+                genre: type,
+                message: 'rejected',
             });
+        }
+        setTimeout(() => {
+            const game = gameMap.get(key);
+            if(game && game.start) {
+                game._record._modalClose({
+                    sender: player,
+                    receiver: enemy,
+                });
+            }
         }, 3000);
     }, 5000);
 
@@ -70,7 +76,7 @@ export const answering = (req, res) => {
         console.dir(`You're just a spectator`);
         return res.status(403).send({ error: `You're just a spectator` });
     }
-
+    
     if(!game._record.blocked) {
         console.dir(`Modal is already Closed`);
         return res.status(403).send({ error: `Modal is already Closed` });
@@ -89,10 +95,13 @@ export const answering = (req, res) => {
     });
 
     setTimeout(() => {
-        game._record._modalClose({
-            sender: player,
-            receiver: enemy,
-        });
+        const game = gameMap.get(key);
+        if(game && game.start) {
+            game._record._modalClose({
+                sender: player,
+                receiver: enemy,
+            });
+        }
     }, 3000);
     
     return res.status(202).end();
