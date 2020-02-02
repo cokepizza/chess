@@ -34,8 +34,10 @@ export const asking = (req, res) => {
         genre: type,
     })
 
-    clearTimeout(game._record._setTimeRequestRef[type]);
-    game._record._setTimeRequestRef[type] = setTimeout(() => {
+    clearTimeout(game._record._setTimeRequestMessageRef[type]);
+    clearTimeout(game._record._setTimeRequestCloseRef[type]);
+
+    game._record._setTimeRequestMessageRef[type] = setTimeout(() => {
         const game = gameMap.get(key);
         if(game && game.start) {
             game._record._modalMessage({
@@ -45,7 +47,7 @@ export const asking = (req, res) => {
                 message: 'rejected',
             });
         }
-        setTimeout(() => {
+        game._record._setTimeRequestCloseRef[type] = setTimeout(() => {
             const game = gameMap.get(key);
             if(game && game.start) {
                 game._record._modalClose({
@@ -85,7 +87,8 @@ export const answering = (req, res) => {
     const enemy = player === 'white' ? 'black' : 'white';
     const message = response ? 'accepted' : 'rejected';
     
-    clearTimeout(game._record._setTimeRequestRef[type]);
+    clearTimeout(game._record._setTimeRequestMessageRef[type]);
+    clearTimeout(game._record._setTimeRequestCloseRef[type]);
 
     game._record._modalMessage({
         sender: player,
@@ -94,7 +97,7 @@ export const answering = (req, res) => {
         message,
     });
 
-    setTimeout(() => {
+    game._record._setTimeRequestCloseRef[type] = setTimeout(() => {
         const game = gameMap.get(key);
         if(game && game.start) {
             game._record._modalClose({

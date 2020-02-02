@@ -469,7 +469,8 @@ export default (server, app, sessionMiddleware) => {
                 pieceMove: [],
                 blocked: false,
                 _setTimeRef: null,
-                _setTimeRequestRef: {},
+                _setTimeRequestMessageRef: {},
+                _setTimeRequestCloseRef: {},
                 _initialize: function() {
                     const game = app.get('game').get(key);
                     this.blackTime = game.defaultTime;
@@ -595,7 +596,7 @@ export default (server, app, sessionMiddleware) => {
                 _modalClose: function({ sender, receiver }) {
                     const game = app.get('game').get(key);
                     if(!game.start) return;
-                    
+
                     const senderSocket = app.get('session').get(game[`_${sender}`]).get(key).get('/record');
                     const receiverSocket = app.get('session').get(game[`_${receiver}`]).get(key).get('/record');
 

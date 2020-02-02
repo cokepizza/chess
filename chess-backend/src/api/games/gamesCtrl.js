@@ -70,7 +70,15 @@ export const createGame = (req, res, next) => {
             } else {
                 this.start = false;
                 this._record._stop();
+
+                //  Util container UI
                 this._record.blocked = false;
+                clearTimeout(this._record._setTimeRequestMessageRef[undo]);
+                clearTimeout(this._record._setTimeRequestMessageRef[draw]);
+                clearTimeout(this._record._setTimeRequestMessageRef[surrender]);
+                clearTimeout(this._record._setTimeRequestCloseRef[undo]);
+                clearTimeout(this._record._setTimeRequestCloseRef[draw]);
+                clearTimeout(this._record._setTimeRequestCloseRef[surrender]);
             }
             
             this._broadcast();
