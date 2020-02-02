@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { askingThunk } from '../../modules/record';
 import Util from '../../components/gameplay/Util';
-import { changeReverse } from '../../modules/record';
+import { changeReverse, setBanClick } from '../../modules/record';
 
 const UtilContainer = () => {
-    const { reversed, socket, start, blocked } = useSelector(({ record, game }) => ({
+    const { reversed, socket, start, blocked, banClick } = useSelector(({ record, game }) => ({
         socket: record.socket,
         reversed: record.reversed,
         start: game.start,
         blocked: record.blocked,
+        banClick: record.banClick,
     }));
 
     const dispatch = useDispatch();
@@ -20,11 +21,12 @@ const UtilContainer = () => {
     }, [dispatch, reversed]);
 
     const onClick = useCallback(type => {
-        if(start && !blocked) {
+        if(start && !blocked && !banClick) {
             dispatch(askingThunk({
                 socket,
                 type,
             }));
+            dispatch(setBanClick());
         }
     }, [dispatch, start, socket, blocked]);
 

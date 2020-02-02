@@ -24,10 +24,12 @@ const CHANGE_REVERSE = 'record/CHANGE_REVERSE';
 const CLEAR_TOOLTIP = 'record/CLEAR_TOOLTIP';
 const SET_REQUEST_MODAL = 'record/SET_REQUEST_MODAL';
 const SET_REQUEST_MESSAGE = 'record/SET_REQUEST_MESSAGE';
+const SET_BANCLICK = 'record/SET_BANCLICK';
 export const changeReverse = createAction(CHANGE_REVERSE, payload => payload);
 export const clearToolTip = createAction(CLEAR_TOOLTIP);
 export const setRequestModal = createAction(SET_REQUEST_MODAL, payload => payload);
 export const setRequestMessage = createAction(SET_REQUEST_MESSAGE, payload => payload);
+export const setBanClick = createAction(SET_BANCLICK);
 
 const [ ASKING, ASKING_SUCCESS, ASKING_FAILURE ] = createRequestActionTypes('record/ASKING');
 const [ ANSWERING, ANSWERING_SUCCESS, ANSWERING_FAILURE ] = createRequestActionTypes('record/ANSWERING');
@@ -38,22 +40,12 @@ export const notifyRequestThunk = ({ genre: type, modal, open, message }) => ( d
     if(open) {
         if(!message) {
             //  modal open
-            // const { record } = getState();
-            // const type = record[genre];
-            // if(!type.role && !type.message) {
-                
-            // }
             dispatch(setRequestModal({
                 type,
                 modal,
             }));
         } else {
             //  modal message
-            // const { record } = getState();
-            // const type = record[genre];
-            // if(!type.role && !type.message) {
-                
-            // }
             dispatch(setRequestMessage({
                 type,
                 message,
@@ -120,6 +112,7 @@ const initialState = {
     pieceMove: [],
     reversed: false,
     blocked: false,
+    banClick: false,
     undo: {
         message: null,
         modal: null,
@@ -167,6 +160,11 @@ export default handleActions({
         draw: initialState['draw'],
         surrender: initialState['surrender'],
         blocked: false,
+        banClick: false,
+    }),
+    [SET_BANCLICK]: (state) => ({
+        ...state,
+        banClick: true,
     }),
     [SET_REQUEST_MODAL]: (state, { payload: { type, modal } }) => ({
         ...state,
