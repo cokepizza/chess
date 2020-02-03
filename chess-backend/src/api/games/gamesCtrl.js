@@ -189,7 +189,7 @@ export const createGame = (req, res, next) => {
 
             console.dir(`${this.key} Game destroy`);
             
-            io.of('/chat').to(key).emit('message', {
+            io.of('/chat').to(this.key).emit('message', {
                 type: 'change',
                 message: 'Game is over',
             });
