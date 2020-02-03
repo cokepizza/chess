@@ -177,12 +177,12 @@ export const createGame = (req, res, next) => {
             
             let message;
             if(this._draw) {
-                message = `Nobody won the game.` + saveFlag ? ' Game saved' : '';
+                message = `Nobody won the game.` + (saveFlag ? ' Game saved' : '');
             } else {
-                message = `Player ${this._winner} won the game.` + saveFlag ? ' Game saved' : '';
+                message = `Player ${this._winner} won the game.` + (saveFlag ? ' Game saved' : '');
             }
 
-            io.of('/chat').to(key).emit('message', {
+            io.of('/chat').to(this.key).emit('message', {
                 type: 'change',
                 message,
             });

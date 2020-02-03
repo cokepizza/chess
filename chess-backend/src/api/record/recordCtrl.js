@@ -126,28 +126,30 @@ export const answering = (req, res) => {
         }
     }, 3000);
 
-    if(type === 'surrender') {
-        io.of('/chat').to(key).emit('message', {
-            type: 'change',
-            message: `Request for surrender has been accepted`,
-        });
-        game._destroy({
-            draw: false,
-            winner: game[enemy],
-            loser: game[player],
-        })
-    } else if(type === 'draw') {
-        io.of('/chat').to(key).emit('message', {
-            type: 'change',
-            message: `Request for draw has been accepted`,
-        });
-        game._destroy({
-            draw: true,
-            winner: game[enemy],
-            loser: game[player],
-        })
-    } else if(type === 'undo') {
-
+    if(response) {
+        if(type === 'surrender') {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `Request for surrender has been accepted`,
+            });
+            game._destroy({
+                draw: false,
+                winner: game[enemy],
+                loser: game[player],
+            })
+        } else if(type === 'draw') {
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: `Request for draw has been accepted`,
+            });
+            game._destroy({
+                draw: true,
+                winner: game[enemy],
+                loser: game[player],
+            })
+        } else if(type === 'undo') {
+    
+        }
     }
     
     return res.status(202).end();

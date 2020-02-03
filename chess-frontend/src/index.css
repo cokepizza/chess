@@ -24,3 +24,11 @@ body {
   /* box-sizing: border-box; */
   user-select: none;
 }
+
+input, textarea {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
