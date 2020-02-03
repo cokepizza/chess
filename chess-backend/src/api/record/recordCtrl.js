@@ -124,6 +124,22 @@ export const answering = (req, res) => {
             });
         }
     }, 3000);
+
+    if(type === 'surrender') {
+        game._destroy({
+            draw: false,
+            winner: game[enemy],
+            loser: game[player],
+        })
+    } else if(type === 'draw') {
+        game._destroy({
+            draw: true,
+            winner: game[enemy],
+            loser: game[player],
+        })
+    } else if(type === 'undo') {
+
+    }
     
     return res.status(202).end();
 }

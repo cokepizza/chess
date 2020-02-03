@@ -1,4 +1,4 @@
-import cache from './cache';
+import cache, { compare } from './cache';
 
 const registerCache = app => {
     const ranking = app.get('ranking');
@@ -23,10 +23,9 @@ const registerCache = app => {
         const loserObj = loser.toJSON();
         const length = this.list.length;
 
-        const winnerIndex = binarySearch(0, length, this.list, {
-            ...winnerObj,
-            win: winnerObj.win-1,
-        });
+        this.addWinUser(winnerObj);
+        this.addLoseUser(loserObj);
+
         const loserIndex = binarySearch(0, length, this.list, {
             ...loserObj,
             lose: loserObj.lose-1,
@@ -34,15 +33,13 @@ const registerCache = app => {
 
         if(0 <= winnerIndex && winnerIndex < length && 0 <= loserIndex && loserIndex < length) {
             if(winnerIndex > loserIndex) {
-                this.list.splice(winnerIndex);
+            
                 this.list.splice(loserIndex);
             } else {
                 this.list.splice(loserIndex);
                 this.list.splice(winnerIndex);
             }
             
-            ranking.addUser(winner);
-            ranking.addUser(loser);
         } else if(!this._acting) {
             console.dir('error emerge! reset ranking');
             await this._reset();
@@ -53,8 +50,27 @@ const registerCache = app => {
             this._acting = false;
         }
     };
-    ranking.addUser = function(user) {
-        console.dir(user);
+    ranking.addWinUser = function(obj) {
+        const index = binarySearch(0, length, this.list, {
+            ...obj,
+            win: obj.win-1,
+        });
+        
+        if(0 <= index && index < length) {
+            let i;
+            for(i=index; i>=0; --i) {
+                if(compare(this.list[i], obj) < 0) {
+                    break;
+                }
+            }
+            this.list.splice(i+1, 0, obj);
+            this.list.splice(index + 1);
+            console.dir(list);
+        }
+
+    };
+    ranking.addLoseUser = function(index, obj) {
+
     };
 };
 

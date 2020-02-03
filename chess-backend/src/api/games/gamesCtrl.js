@@ -145,6 +145,18 @@ export const createGame = (req, res, next) => {
             }
             
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
+            
+            let message;
+            if(this._draw) {
+                message = `Nobody won the game. Game saved`;
+            } else {
+                message = `Player ${this._winner} won the game. Game saved`;
+            }
+
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message,
+            });
 
             //  memory caching
             if(!this.draw) {
@@ -153,6 +165,11 @@ export const createGame = (req, res, next) => {
             }
         },
         _destroy: async function(snapshot) {
+            //  stop current game
+            this.start = false;
+            this._broadcast();
+
+            //  get game stat
             if(snapshot) {
                 snapshot.draw && (this._draw = true);
                 snapshot.winner && (this._winner = snapshot.winner);
@@ -171,6 +188,11 @@ export const createGame = (req, res, next) => {
             gameMap.delete(this.key);
 
             console.dir(`${this.key} Game destroy`);
+            
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message: 'Game is over',
+            });
 
             io.of('/games').emit('message', {
                 type: 'initialize',
