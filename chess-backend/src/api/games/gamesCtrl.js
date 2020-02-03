@@ -145,18 +145,6 @@ export const createGame = (req, res, next) => {
             }
             
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
-            
-            let message;
-            if(this._draw) {
-                message = `Nobody won the game. Game saved`;
-            } else {
-                message = `Player ${this._winner} won the game. Game saved`;
-            }
-
-            io.of('/chat').to(key).emit('message', {
-                type: 'change',
-                message,
-            });
 
             //  memory caching
             if(!this.draw) {
@@ -176,15 +164,29 @@ export const createGame = (req, res, next) => {
                 snapshot.loser && (this._loser = snapshot.loser);
             }
 
+            let saveFlag = false;
             if(this.mode === 'rank') {
                 try {
                     await this._save();
+                    saveFlag = true;
                     console.dir('save complete');
                 } catch(e) {
                     console.dir('save error emerge');
                 }
             }
             
+            let message;
+            if(this._draw) {
+                message = `Nobody won the game.` + saveFlag ? ' Game saved' : '';
+            } else {
+                message = `Player ${this._winner} won the game.` + saveFlag ? ' Game saved' : '';
+            }
+
+            io.of('/chat').to(key).emit('message', {
+                type: 'change',
+                message,
+            });
+
             gameMap.delete(this.key);
 
             console.dir(`${this.key} Game destroy`);

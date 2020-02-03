@@ -76,6 +76,7 @@ export const answering = (req, res) => {
     const key = socketToKeyMap.get(socketId);
     const gameMap = req.app.get('game');
     const game = gameMap.get(key);
+    const io = req.app.get('io');
 
     if(!game.start) {
         console.dir(`The game is not running now`);
