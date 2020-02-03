@@ -28,7 +28,7 @@ const UtilContainer = () => {
             }));
             dispatch(setBanClick());
         }
-    }, [dispatch, start, socket, blocked]);
+    }, [dispatch, start, socket, blocked, banClick]);
 
     return (
         <Util
