@@ -468,6 +468,8 @@ export default (server, app, sessionMiddleware) => {
                 whiteRatio: null,
                 pieceMove: [],
                 blocked: false,
+                _asking: false,
+                _answering: false,
                 _setTimeRef: null,
                 _setTimeRequestMessageRef: {},
                 _setTimeRequestCloseRef: {},

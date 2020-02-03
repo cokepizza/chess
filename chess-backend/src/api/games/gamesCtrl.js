@@ -71,11 +71,12 @@ export const createGame = (req, res, next) => {
                 this.start = false;
                 this._record._stop();
                 
+                //  Util modal Request(asking, answering) acting 제어
                 this._record.blocked = false;
                 this._record._asking = false;
                 this._record._answering = false;
-                
-                //  Util Modal 쪽 UI 업데이트 중단
+
+                //  Util Modal UI 업데이트 중단
                 clearTimeout(this._record._setTimeRequestMessageRef['undo']);
                 clearTimeout(this._record._setTimeRequestMessageRef['draw']);
                 clearTimeout(this._record._setTimeRequestMessageRef['surrender']);
