@@ -5,7 +5,7 @@ export const compare = (a, b) => {
         if(a.ratio === b.ratio) {
             if(a.win === b.win) {
                 //  test 필요 숫자로 바꿔서 비교해줘야함
-                return b.createdAt - a.createdAt;
+                return b.createdAt.getTime() - a.createdAt.getTime();
             } else {
                 return b.win - a.win;
             }

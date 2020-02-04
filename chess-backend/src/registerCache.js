@@ -1,4 +1,5 @@
 import cache, { compare } from './cache';
+import binarySearch from './lib/util/binarySearch';
 
 const registerCache = app => {
     const ranking = app.get('ranking');
