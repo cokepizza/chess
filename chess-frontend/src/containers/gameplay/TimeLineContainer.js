@@ -3,12 +3,11 @@ import { useSelector } from 'react-redux';
 import TimeLine from '../../components/gameplay/TimeLine';
 
 const TimeLineContainer = ({ white, black }) => {
-    const { whiteRatio, blackRatio, whiteNick, blackNick, start, participant } = useSelector(({ record, game }) => ({
+    const { whiteRatio, blackRatio, whiteNick, blackNick, participant } = useSelector(({ record, game }) => ({
         whiteRatio: record.whiteRatio,
         blackRatio: record.blackRatio,
         whiteNick: game.white,
         blackNick: game.black,
-        start: game.start,
         participant: game.participant,
     }));
 
@@ -17,14 +16,14 @@ const TimeLineContainer = ({ white, black }) => {
     //  default 0으로 초기 렌더링을 진행한 후 redux 값이 들어왔을 때 리렌더링 하는 방식
     useEffect(() => {
         const participantSet = new Set(participant);
-        if((start && white && participantSet.has(whiteNick)) || (start && black && participantSet.has(blackNick))) {
+        if((white && participantSet.has(whiteNick)) || (black && participantSet.has(blackNick))) {
             let nextTime = white ? whiteRatio : blackRatio;
             nextTime = Math.min(nextTime, 1);
             setTime(nextTime);
         } else {
             setTime(0);
         }
-    }, [white, black, whiteNick, blackNick, whiteRatio, blackRatio, start, participant]);
+    }, [white, black, whiteNick, blackNick, whiteRatio, blackRatio, participant]);
 
     //  role값이 들어온 다음에는 다른 redux값이 들어온 경우도 있어 timeline bar가 완성된 상태로 렌더링 되버림
     // let time = 0;

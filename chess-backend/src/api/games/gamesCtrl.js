@@ -85,6 +85,7 @@ export const createGame = (req, res, next) => {
                 clearTimeout(this._record._setTimeRequestCloseRef['surrender']);
             }
             
+            console.dir('game broadcast');
             this._broadcast();
             this._multicast();
         },
