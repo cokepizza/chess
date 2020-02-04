@@ -17,19 +17,22 @@ export const compare = (a, b) => {
     }
 }
 
+export const getRatio = user => ({ 
+    ...user,
+    ratio: (user.win === 0
+        ? 0
+        : ((user.win + user.lose === 0)
+                ? 100
+                : user.win / (user.win + user.lose)
+            )
+    ).toFixed(2)
+})
+
 const cache = async () => {
     const users = await User.find();
     const sortedUsers = users 
         .map(user => user.serialize())
-        .map(user => ({ 
-            ...user,
-            ratio: (user.win === 0
-                ? 0
-                : ((user.win + user.lose === 0)
-                        ? 100
-                        : user.win / (user.win + user.lose)
-                    )
-            ).toFixed(2)}))
+        .map(getRatio)
         .sort(compare);
     const data = {
         ranking: {

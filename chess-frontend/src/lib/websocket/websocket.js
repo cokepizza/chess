@@ -13,8 +13,9 @@ function* createEventChannel(io) {
         });
 
         //  reconnect 전에 session연결을 위한 http call 추가 예정
-        // io.on('reconnect', () => {
-        // })
+        io.on('reconnect', () => {
+            console.dir(`socketio reconnect`);
+        })
 
         io.on('message', message => {
             emit(message);

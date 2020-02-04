@@ -7,6 +7,7 @@ import uuid from 'uuid/v1';
 import Game from '../../models/game';
 import User from '../../models/user';
 import instanceSanitizer from '../../lib/util/instanceSanitizer';
+import { getRatio } from '../../cache';
 
 export const createGame = (req, res, next) => {
     const io = req.app.get('io');
@@ -141,8 +142,10 @@ export const createGame = (req, res, next) => {
             } else {
                 winner.game.win.push(game._id);
                 winner.win += 1;
+                winner.ratio = getRatio(winner.toJSON());
                 loser.game.lose.push(game._id);
                 loser.lose += 1;
+                loser.ratio = getRatio(loser.toJSON());
             }
             
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
@@ -151,6 +154,7 @@ export const createGame = (req, res, next) => {
             if(!this.draw) {
                 const ranking = req.app.get('ranking');
                 ranking._register({ winner, loser });
+                ranking._broadcast();
             }
         },
         _destroy: async function(snapshot) {

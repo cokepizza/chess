@@ -1,16 +1,17 @@
 import { compare } from '../../cache';
 
 const binarySearch = (s, e, list, user) => {
+    if(s > e) return -1;
     const m = parseInt((s + e) / 2);
     
-    console.dir(list);
-    console.dir(user);
-    console.dir(list[m]);
-    
+    if(list[m].username === user.username) {
+        return m;
+    }
+
     if(compare(list[m], user) > 0) {
-        return binarySearch(m, e, list, user);
+        return binarySearch(m+1, e, list, user);
     } else {
-        return binarySearch(s, m, list, user);
+        return binarySearch(s, m-1, list, user);
     }
 };
 

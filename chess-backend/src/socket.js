@@ -178,25 +178,25 @@ export default (server, app, sessionMiddleware) => {
         ranking._unicast(socket);
 
         // test
-        setTimeout(() => {
-            const copiedRanking = JSON.parse(JSON.stringify(ranking.list.slice(0, 15)));
-            const wait = copiedRanking[0];
-            copiedRanking[0] = copiedRanking[5];
-            copiedRanking[5] = wait;
-            copiedRanking.splice(6, 1, {
-                username: 'hahah@yahoo.com',
-                elo: 1600,
-                win: 500,
-                lose: 300,
-                ratio: '37',
-                index: 6,
-            });
+        // setTimeout(() => {
+        //     const copiedRanking = JSON.parse(JSON.stringify(ranking.list.slice(0, 15)));
+        //     const wait = copiedRanking[0];
+        //     copiedRanking[0] = copiedRanking[5];
+        //     copiedRanking[5] = wait;
+        //     copiedRanking.splice(6, 1, {
+        //         username: 'hahah@yahoo.com',
+        //         elo: 1600,
+        //         win: 500,
+        //         lose: 300,
+        //         ratio: '37',
+        //         index: 6,
+        //     });
 
-            socket.emit('message', {
-                type: 'initialize',
-                ranking: copiedRanking,
-            });
-        }, 1000);
+        //     socket.emit('message', {
+        //         type: 'initialize',
+        //         ranking: copiedRanking,
+        //     });
+        // }, 1000);
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(ranking)--------------');
