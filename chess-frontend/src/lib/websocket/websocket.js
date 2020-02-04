@@ -10,9 +10,11 @@ function* createEventChannel(io) {
                 type: 'socket',
                 socket: io.id
             });
-        })
+        });
 
         //  reconnect 전에 session연결을 위한 http call 추가 예정
+        // io.on('reconnect', () => {
+        // })
 
         io.on('message', message => {
             emit(message);
@@ -41,7 +43,7 @@ export function* connectNamespace(params) {
     try {
         const io = SocketIo(url, {
             query,
-            reconnection: false,
+            // reconnection: false,
             secure: true,
         });
         
