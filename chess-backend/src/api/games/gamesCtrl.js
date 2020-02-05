@@ -142,10 +142,12 @@ export const createGame = (req, res, next) => {
             } else {
                 winner.game.win.push(game._id);
                 winner.win += 1;
-                winner.ratio = getRatio(winner.toJSON());
+                console.dir(getRatio(winner.toJSON()).ratio);
+                winner.ratio = getRatio(winner.toJSON()).ratio;
                 loser.game.lose.push(game._id);
                 loser.lose += 1;
-                loser.ratio = getRatio(loser.toJSON());
+                loser.ratio = getRatio(loser.toJSON()).ratio;
+                console.dir(getRatio(loser.toJSON()).ratio);
             }
             
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
@@ -176,6 +178,7 @@ export const createGame = (req, res, next) => {
                     saveFlag = true;
                     console.dir('save complete');
                 } catch(e) {
+                    console.dir(e);
                     console.dir('save error emerge');
                 }
             }
