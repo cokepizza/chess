@@ -6,7 +6,7 @@ const registerCache = app => {
     const io = app.get('io');
 
     ranking._broadcast = function() {
-        io.of('/ranking').emit({
+        io.of('/ranking').emit('message', {
             type: 'initialize',
             ranking: this.list.slice(0, this.limit),
         });
@@ -55,11 +55,12 @@ const registerCache = app => {
 
         let i;
         for(i=index-1; i>=0; --i) {
-            if(compare(this.list[i], obj) < 0) {
+            if(compare(obj, this.list[i]) > 0) {
                 break;
             }
         }
 
+        console.dir(obj);
         this.list.splice(i+1, 0, obj);
         this.list.splice(index + 1, 1);
     };
@@ -81,11 +82,12 @@ const registerCache = app => {
 
         let i;
         for(i=index+1; i<length; ++i) {
-            if(compare(this.list[i], obj) > 0) {
+            if(compare(obj, this.list[i]) < 0) {
                 break;
             }
         }
 
+        console.dir(obj);
         this.list.splice(i-1, 0, obj);
         this.list.splice(index, 1);
     };
