@@ -1,5 +1,6 @@
 import User from './models/user';
 
+//  decending
 export const compare = (a, b) => {
     if(a.elo === b.elo) {
         if(a.ratio === b.ratio) {

@@ -277,7 +277,10 @@ export default (server, app, sessionMiddleware) => {
             game._heartbeat();
             //  clean up function
             return () => {
-                game._heartbeat();
+                const game = app.get('game').get(key);
+                if(game) {
+                    game._heartbeat();
+                }
             }
         }
         
@@ -289,41 +292,46 @@ export default (server, app, sessionMiddleware) => {
             const { nickname, passport } = socket.request.session;
             const passportUser = passport ? passport.user : null;
             const username = (passportUser && passportUser.username) ? passportUser.username : nickname;
+            const game = app.get('game').get(key);
 
             //  game._leave
-            if(game._participant.has(sessionId)) {
-                const socketSet = game._participant.get(sessionId);
-                socketSet.delete(socket.id);
-        
-                if(socketSet.size === 0) {
-                    game._participant.delete(sessionId);
-        
-                    const index = game.participant.findIndex(ele => ele === username);
-        
-                    if(index >= 0) {
-                        game.participant.splice(index, 1);
-                    };
+            if(game) {
+                if(game._participant.has(sessionId)) {
+                    const socketSet = game._participant.get(sessionId);
+                    socketSet.delete(socket.id);
+            
+                    if(socketSet.size === 0) {
+                        game._participant.delete(sessionId);
+            
+                        const index = game.participant.findIndex(ele => ele === username);
+            
+                        if(index >= 0) {
+                            game.participant.splice(index, 1);
+                        };
+                    }
                 }
             }
 
             disconnectSocket(app, socket, key, tabKey);
-
-            if(game._init && !game.start) {
-                let winner, loser;
-                if(game.white && !game.black) {
-                    winner = game.white;
-                    loser = game.black;
+            
+            if(game) {
+                const participantSet = new Set(game.participant);
+                if(game._init && (!participantSet.has(game.white) || !participantSet.has(game.black))) {
+                    if(!participantSet.has(game.white)) {
+                        game._destroy({
+                            draw: false,
+                            winner: game.black,
+                            loser: game.white,
+                        });
+                    }
+                    if(!participantSet.has(game.black)) {
+                        game._destroy({
+                            draw: false,
+                            winner: game.white,
+                            loser: game.black,
+                        });
+                    }
                 }
-                if(!game.white && game.black) {
-                    winner = game.black;
-                    loser = game.white;
-                }
-
-                game._destroy({
-                    draw: false,
-                    winner,
-                    loser,
-                });
             }
         
             console.dir('-------------socketDis(game)--------------');

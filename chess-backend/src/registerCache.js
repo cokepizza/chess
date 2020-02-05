@@ -3,6 +3,8 @@ import binarySearch from './lib/util/binarySearch';
 
 const registerCache = app => {
     const ranking = app.get('ranking');
+    const io = app.get('io');
+
     ranking._broadcast = function() {
         io.of('/ranking').emit({
             type: 'initialize',
@@ -59,8 +61,7 @@ const registerCache = app => {
         }
 
         this.list.splice(i+1, 0, obj);
-        this.list.splice(index + 1);
-        console.dir(list);
+        this.list.splice(index + 1, 1);
     };
     ranking.addLoseUser = function(obj) {
         const length = this.list.length;
@@ -86,7 +87,7 @@ const registerCache = app => {
         }
 
         this.list.splice(i-1, 0, obj);
-        this.list.splice(index);
+        this.list.splice(index, 1);
     };
 };
 

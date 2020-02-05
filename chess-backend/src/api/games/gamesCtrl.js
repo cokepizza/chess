@@ -64,11 +64,15 @@ export const createGame = (req, res, next) => {
         },
         _heartbeat: function() {
             const participantSet = new Set(this.participant);
-            if(this.white && participantSet.has(this.white) && this.black && participantSet.has(this.black)) {
+            if(!this.start && this.white && participantSet.has(this.white) && this.black && participantSet.has(this.black)) {
                 this._init = true;
                 this.start = true;
                 this._record._start(this.order);
-            } else {
+                
+                console.dir('heartbeat run again');
+                this._broadcast();
+                this._multicast();
+            } else if(this.start && ((this.white && !participantSet.has(this.white)) || (this.black && !participantSet.has(this.black)))) {
                 this.start = false;
                 this._record._stop();
                 
@@ -84,11 +88,11 @@ export const createGame = (req, res, next) => {
                 clearTimeout(this._record._setTimeRequestCloseRef['undo']);
                 clearTimeout(this._record._setTimeRequestCloseRef['draw']);
                 clearTimeout(this._record._setTimeRequestCloseRef['surrender']);
+
+                console.dir('heartbeat cool off');
+                this._broadcast();
+                this._multicast();
             }
-            
-            console.dir('game broadcast');
-            this._broadcast();
-            this._multicast();
         },
         _broadcast: function() {
             io.of('/game').to(this.key).emit('message', {
@@ -161,8 +165,9 @@ export const createGame = (req, res, next) => {
         },
         _destroy: async function(snapshot) {
             //  stop current game
-            this.start = false;
-            this._broadcast();
+            this.participant = [];
+            this._participant = new Map();
+            this._heartbeat();
 
             //  get game stat
             if(snapshot) {

@@ -7,8 +7,8 @@ const binarySearch = (s, e, list, user) => {
     if(list[m].username === user.username) {
         return m;
     }
-
-    if(compare(list[m], user) > 0) {
+    
+    if(compare(user, list[m]) > 0) {
         return binarySearch(m+1, e, list, user);
     } else {
         return binarySearch(s, m-1, list, user);
