@@ -22,11 +22,9 @@ const registerCache = app => {
         this.list = config.ranking.list;
     };
     ranking._register = function({ winner, loser }) {
-        const winnerObj = winner.toJSON();
-        const loserObj = loser.toJSON();
-
-        this.addWinUser(winnerObj);
-        this.addLoseUser(loserObj);
+        this.addWinUser(winner);
+        this.addLoseUser(loser);
+        
         // if(!this._acting) {
         //     console.dir('error emerge! reset ranking');
         //     await this._reset();

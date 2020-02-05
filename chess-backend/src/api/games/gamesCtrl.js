@@ -144,20 +144,26 @@ export const createGame = (req, res, next) => {
             } else {
                 winner.game.win.push(game._id);
                 winner.win += 1;
-                console.dir(getRatio(winner.toJSON()).ratio);
-                winner.ratio = getRatio(winner.toJSON()).ratio;
                 loser.game.lose.push(game._id);
                 loser.lose += 1;
-                loser.ratio = getRatio(loser.toJSON()).ratio;
-                console.dir(getRatio(loser.toJSON()).ratio);
             }
             
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
 
             //  memory caching
             if(!this.draw) {
+                console.dir(winner.toJSON());
                 const ranking = req.app.get('ranking');
-                ranking._register({ winner, loser });
+                ranking._register({
+                    winner: {
+                        ...winner.toJSON(),
+                        ratio: getRatio(winner.toJSON()).ratio,
+                    },
+                    loser: {
+                        ...loser.toJSON(),
+                        ratio: getRatio(loser.toJSON()).ratio,
+                    }
+                });
                 ranking._broadcast();
             }
         },
