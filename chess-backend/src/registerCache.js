@@ -43,7 +43,7 @@ const registerCache = app => {
             ratio: getRatio({
                 win: obj.win-1,
                 lose: obj.lose,
-            })
+            }).ratio,
         });
         
         if(index < 0) {
@@ -70,7 +70,7 @@ const registerCache = app => {
             ratio: getRatio({
                 win: obj.win,
                 lose: obj.lose-1,
-            })
+            }).ratio,
         });
         
         if(index < 0) {
