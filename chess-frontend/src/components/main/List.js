@@ -46,7 +46,7 @@ const TextBlock = styled.div`
     `};
 
 `;
-
+// {cell.ratio * 100} %
 const ListCell = React.memo(({ cell }) => {
     return (
         <ListCellBlock index={cell.index}>
@@ -60,7 +60,7 @@ const ListCell = React.memo(({ cell }) => {
                 {cell.elo}
             </TextBlock>
             <TextBlock>
-                {cell.ratio * 100} %
+                {cell.ratio}
             </TextBlock>
             <TextBlock>
                 {cell.win}

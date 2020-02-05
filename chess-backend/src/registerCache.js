@@ -8,13 +8,13 @@ const registerCache = app => {
     ranking._broadcast = function() {
         io.of('/ranking').emit({
             type: 'initialize',
-            ranking: ranking.list.slice(0, this.limit),
+            ranking: this.list.slice(0, this.limit),
         });
     };
     ranking._unicast = function(socket) {
         socket.emit('message', {
             type: 'initialize',
-            ranking: ranking.list.slice(0, this.limit),
+            ranking: this.list.slice(0, this.limit),
         })
     };
     ranking._reset = async function() {

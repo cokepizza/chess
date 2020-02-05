@@ -70,8 +70,6 @@ export const createGame = (req, res, next) => {
                 this._record._start(this.order);
                 
                 console.dir('heartbeat run again');
-                this._broadcast();
-                this._multicast();
             } else if(this.start && ((this.white && !participantSet.has(this.white)) || (this.black && !participantSet.has(this.black)))) {
                 this.start = false;
                 this._record._stop();
@@ -90,9 +88,9 @@ export const createGame = (req, res, next) => {
                 clearTimeout(this._record._setTimeRequestCloseRef['surrender']);
 
                 console.dir('heartbeat cool off');
-                this._broadcast();
-                this._multicast();
             }
+            this._broadcast();
+            this._multicast();
         },
         _broadcast: function() {
             io.of('/game').to(this.key).emit('message', {
