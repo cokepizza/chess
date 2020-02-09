@@ -49,9 +49,49 @@ export const genBoard = (board, prev, next) => {
     return tempBoard;
 };
 
+export const genClearBoard = (board, params) => {
+    const arr = [];
+
+    const leng = board.length;
+    for(let i=0; i<leng; ++i) {
+        for(let j=0; j<leng; ++j) {
+            let pass = false;
+            params.forEach(param => {
+                pass |= board[i][j][param];
+            });
+            if(pass) {
+                arr.push({
+                    y: i,
+                    x: j,
+                })
+            }
+        }
+    }
+
+    arr.forEach(cell => {
+        board[cell.y] = [ ...board[cell.y]];
+        const popedCell = board[cell.y][cell.x];
+        const newCell = {
+            ...popedCell,
+        };
+        params.forEach(param => {
+            newCell[param] = false;
+        });
+
+        board[cell.y].splice(cell.x, 1, newCell);
+    });
+
+    return board;
+}
+
 export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
     //  board should be reflect prevIndex pieceMove
-    const nextBoard = [ ...board ];
+    const nextBoard = genClearBoard([...board], [
+        'covered',
+        'clicked',
+        'tracked',
+    ]);
+    
     if(prevIndex < nextIndex) {
         for(let i=prevIndex+1; i<=nextIndex; ++i) {
             const beforeIndex = pieceMove[i].prev;
@@ -63,7 +103,7 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
             nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
             nextBoard[afterIndex.y][afterIndex.x] = { ...afterPiece };
 
-            if(i === nextIndex) {
+            if(i === nextIndex-1) {
                 nextBoard[beforeIndex.y][beforeIndex.x] = {
                     ...nextBoard[beforeIndex.y][beforeIndex.x],
                     tracked: true,
@@ -84,7 +124,7 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
             nextBoard[beforeIndex.y][beforeIndex.x] = { ...beforePiece };
             nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
             nextBoard[afterIndex.y][afterIndex.x] = { ...afterPiece };
-            if(i === nextIndex+1) {
+            if(i === nextIndex+2) {
                 nextBoard[beforeIndex.y][beforeIndex.x] = {
                     ...nextBoard[beforeIndex.y][beforeIndex.x],
                     tracked: true,

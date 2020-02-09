@@ -9,7 +9,7 @@ import * as canvasCtrl from '../lib/api/canvas';
 // import rules from '../lib/base/rules';
 import board from '../lib/base/board';
 import { checkCovered, checkSafeMove } from '../lib/base/validation';
-import { genBoard, genReplayBoard } from '../lib/base/genBoard';
+import { genBoard, genClearBoard, genReplayBoard } from '../lib/base/genBoard';
 import { setShowIndex } from './record';
 
 const CONNECT_WEBSOCKET = 'canvas/CONNECT_WEBSOCKET';
@@ -207,41 +207,6 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
         clicked: null
     }));
     dispatch(setShowIndex({ showIndex: showIndex+1 }));
-}
-
-const genClearBoard = (board, params) => {
-    const arr = [];
-
-    const leng = board.length;
-    for(let i=0; i<leng; ++i) {
-        for(let j=0; j<leng; ++j) {
-            let pass = false;
-            params.forEach(param => {
-                pass |= board[i][j][param];
-            });
-            if(pass) {
-                arr.push({
-                    y: i,
-                    x: j,
-                })
-            }
-        }
-    }
-
-    arr.forEach(cell => {
-        board[cell.y] = [ ...board[cell.y]];
-        const popedCell = board[cell.y][cell.x];
-        const newCell = {
-            ...popedCell,
-        };
-        params.forEach(param => {
-            newCell[param] = false;
-        });
-
-        board[cell.y].splice(cell.x, 1, newCell);
-    });
-
-    return board;
 }
 
 function* connectWebsocketSaga (action) {
