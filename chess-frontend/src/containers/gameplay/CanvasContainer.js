@@ -18,12 +18,15 @@ const CanvasContainer = ({ cellSize }) => {
     const dispatch = useDispatch();
     
     useEffect(() => {
-        if((role === 'white' && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
-            dispatch(initializeBlocked({ blocked: false }));
-        } else {
-            dispatch(initializeBlocked({ blocked: true }));
+        if(!replayMode) {
+            // if((role === 'white' && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
+            if(((role === 'white' || role === 'spectator') && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
+                dispatch(initializeBlocked({ blocked: false }));
+            } else {
+                dispatch(initializeBlocked({ blocked: true }));
+            }
         }
-    }, [dispatch, turn, role]);
+    }, [dispatch, turn, role, replayMode]);
     
     useEffect(() => {
         return () => {

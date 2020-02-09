@@ -145,11 +145,11 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
 
     if(replayMode) return;
     
-    if(((role === 'white' || role === 'spectator') && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
-        dispatch(changeBlocked({ blocked: false }));
-    } else {
-        dispatch(changeBlocked({ blocked: true }));
-    };
+    // if(((role === 'white' || role === 'spectator') && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
+    //     dispatch(changeBlocked({ blocked: false }));
+    // } else {
+    //     dispatch(changeBlocked({ blocked: true }));
+    // };
 
     const cell = board[prev.y][prev.x];
     const clearBoard = genClearBoard([...board], [
