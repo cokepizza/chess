@@ -7,8 +7,9 @@ const PieceMoveListContainer = () => {
     
     const dispatch = useDispatch();
 
-    const { pieceMove } = useSelector(({ record }) => ({
+    const { pieceMove, showIndex } = useSelector(({ record }) => ({
         pieceMove: record.pieceMove,
+        showIndex: record.showIndex,
     }));
 
     const onClickBlock = useCallback(index => {
@@ -19,6 +20,7 @@ const PieceMoveListContainer = () => {
         <PieceMoveList
             onClickBlock = {onClickBlock}
             pieceMove={pieceMove}
+            showIndex={showIndex}
         />
     )
 };

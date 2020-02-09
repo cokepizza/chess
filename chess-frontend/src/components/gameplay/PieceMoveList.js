@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { IconContext } from 'react-icons';
 import { IoIosArrowRoundForward } from 'react-icons/io';
 import { pieceMapper } from '../../lib/base/pieceConverter';
@@ -42,9 +42,15 @@ const MoveBlock = styled.div`
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    &:hover {
-        background-color: rgb(209, 228, 246);
-    }
+    ${props => props.checked && css`
+        background-color: rgba(209, 228, 246, 1);
+    `}
+
+    ${props => !props.checked && css`
+        &:hover {
+            background-color: rgba(209, 228, 246, 0.5);
+        }
+    `}
 `;
 
 const TextBlock = styled.div`
@@ -65,7 +71,7 @@ const IndexBlock = styled.div`
     background-color: rgb(247, 246, 245);
 `
 
-const PieceMove = React.memo(({ move, index, onClickBlock }) => {
+const PieceMove = React.memo(({ move, index, onClickBlock, checked }) => {
     console.dir('PieceMove');
     console.dir(move);
     const PrevComponent = pieceMapper[move.prevPiece.piece];
@@ -111,7 +117,10 @@ const PieceMove = React.memo(({ move, index, onClickBlock }) => {
             <IndexBlock>
                 {index + 1}
             </IndexBlock>
-            <MoveBlock onClick={onClickBlock}>
+            <MoveBlock
+                onClick={onClickBlock}
+                checked={checked}
+            >
                 {prevPiece}
                 <TextBlock>
                     {moveConverter(move.prev)}
@@ -129,7 +138,7 @@ const PieceMove = React.memo(({ move, index, onClickBlock }) => {
 });
 
 
-const PieceMoveList = ({ pieceMove, onClickBlock }) => {
+const PieceMoveList = ({ pieceMove, onClickBlock, showIndex }) => {
     const ref = useRef();
     useEffect(() => {
         ref.current.scrollTop = ref.current.scrollHeight;
@@ -143,6 +152,7 @@ const PieceMoveList = ({ pieceMove, onClickBlock }) => {
                         onClick={e => onClickBlock(index)}
                         move={move}
                         index={index}
+                        checked={index === showIndex}
                     />
                 ))}
             </PieceMoveListBlock>

@@ -110,7 +110,7 @@ export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
     const nextBoard = genReplayBoard(board, pieceMove, showIndex, showIndex+diff);
     const nextReverseBoard = updateReverseBoard(reverseBoard, nextBoard);
 
-    if(showIndex+diff-1 === pieceMove.length) {
+    if(showIndex+diff+1 === pieceMove.length) {
         if(((role === 'white' || role === 'spectator') && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
             dispatch(changeBlocked({ blocked: false }));
         } else {
@@ -124,7 +124,7 @@ export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
         reverseBoard: nextReverseBoard,
         clicked: null
     }));
-    dispatch(setShowIndex({ showIndex }));
+    dispatch(setShowIndex({ showIndex: showIndex+diff }));
 };
 
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
