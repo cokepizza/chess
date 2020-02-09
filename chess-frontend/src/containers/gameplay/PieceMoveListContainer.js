@@ -15,18 +15,12 @@ const PieceMoveListContainer = () => {
     const listRef = useRef();
     
     useEffect(() => {
-        
         if(showIndex >= 0) {
-            // listRef.current.scrollTop = listRef.current.scrollHeight;
-            if(listRef.current.scrollTop <= showIndex * 30 && showIndex*30 <= listRef.current.scrollTop + 210) {
-
-            } else {
-                if(listRef.current.scrollTop > showIndex * 30) {
-                    listRef.current.scrollTop = showIndex * 30;
-                }
-                if(showIndex*30 > listRef.current.scrollTop + 210) {
-                    listRef.current.scrollTop = showIndex * 30 - 210;
-                }
+            if(listRef.current.scrollTop > showIndex * 30) {
+                listRef.current.scrollTop = showIndex * 30;
+            }
+            if(showIndex * 30 > listRef.current.scrollTop + 210) {
+                listRef.current.scrollTop = showIndex * 30 - 210;
             }
         } else {
             listRef.current.scrollTop = 0;

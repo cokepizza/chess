@@ -99,9 +99,48 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
             const afterIndex = pieceMove[i].next;
             const afterPiece = pieceMove[i].nextPiece;
             nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
-            nextBoard[beforeIndex.y][beforeIndex.x] = { ...afterPiece };
+            nextBoard[beforeIndex.y][beforeIndex.x] = { covered: false };
             nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
             nextBoard[afterIndex.y][afterIndex.x] = { ...beforePiece };
+
+            //  promotion
+            const { owner, piece } = nextBoard[afterIndex.y][afterIndex.x];
+            if((owner === 'white' && piece === 'pawn' && afterIndex.y === 0) || (owner === 'black' && piece === 'pawn' && afterIndex.y === 7)) {
+                nextBoard[afterIndex.y][afterIndex.x] = {
+                    ...nextBoard[afterIndex.y][afterIndex.x],
+                    piece: 'queen',
+                }
+            };
+
+            //  castling
+            if(nextBoard[afterIndex.y][afterIndex.x].piece === 'king') {
+                if(afterIndex.x - beforeIndex.x === 2) {
+                    nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
+                    
+                    const pieceStore = { ...nextBoard[beforeIndex.y][beforeIndex.x+3] };
+                    nextBoard[beforeIndex.y][beforeIndex.x+3] = {
+                        covered: false
+                    };
+                    nextBoard[beforeIndex.y][beforeIndex.x+1] = {
+                        ...pieceStore,
+                        dirty: true,
+                    };
+                }
+
+                if(afterIndex.x - beforeIndex.x === -2) {
+                    nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
+
+                    const pieceStore = { ...nextBoard[beforeIndex.y][beforeIndex.x-4] };
+                    nextBoard[beforeIndex.y][beforeIndex.x-4] = {
+                        covered: false
+                    };
+                    nextBoard[beforeIndex.y][beforeIndex.x-1] = {
+                        ...pieceStore,
+                        dirty: true,
+                    };
+                }
+            };
+
         }
     } else {
         for(let i=prevIndex; i>nextIndex; --i) {
