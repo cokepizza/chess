@@ -116,6 +116,7 @@ const initialState = {
     blocked: false,
     banClick: false,
     showIndex: null,
+    replayMode: false,
     undo: {
         message: null,
         modal: null,
@@ -152,9 +153,10 @@ export default handleActions({
         ...state,
         reversed,
     }),
-    [SET_SHOWINDEX]: (state , { payload: { showIndex }}) => ({
+    [SET_SHOWINDEX]: (state , { payload: { showIndex, replayMode }}) => ({
         ...state,
         showIndex,
+        replayMode,
     }),
     [ASKING]: state => state,
     [ASKING_SUCCESS]: state => state,

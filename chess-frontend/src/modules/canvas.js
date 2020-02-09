@@ -91,7 +91,7 @@ export const clearClickedThunk = () => (dispatch, getState) => {
     }));
 }
 
-export const replayValueThunk = ({ diff: diffVal, index }) => ( dispatch, getState ) => {
+export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
     const {
         canvas: { board, reverseBoard },
         record: { showIndex, pieceMove },
@@ -99,9 +99,7 @@ export const replayValueThunk = ({ diff: diffVal, index }) => ( dispatch, getSta
         game: { turn }
     } = getState();
 
-    let diff = diffVal;
-    
-    if(index) {
+    if(!diff) {
         diff = index - showIndex;
     }
 
@@ -118,24 +116,34 @@ export const replayValueThunk = ({ diff: diffVal, index }) => ( dispatch, getSta
         } else {
             dispatch(changeBlocked({ blocked: true }));
         };
+        dispatch(setShowIndex({
+            showIndex: showIndex+diff,
+            replayMode: false,
+        }));
     } else {
-        dispatch(changeBlocked({ blocked: false }));    
+        dispatch(changeBlocked({ blocked: false }));
+        dispatch(setShowIndex({
+            showIndex: showIndex+diff,
+            replayMode: true,
+        }));
     }
     dispatch(changeValue({
         board: nextBoard,
         reverseBoard: nextReverseBoard,
         clicked: null
     }));
-    dispatch(setShowIndex({ showIndex: showIndex+diff }));
+    
 };
 
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board, reverseBoard },
-            record: { showIndex },
+            record: { showIndex, replayMode },
             socketAuth: { role },
             game: { turn }
         } = getState();
+
+    if(replayMode) return;
     
     if(((role === 'white' || role === 'spectator') && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
         dispatch(changeBlocked({ blocked: false }));
