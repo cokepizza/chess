@@ -154,8 +154,8 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
             nextBoard[afterIndex.y][afterIndex.x] = { ...afterPiece };
 
             //  castling
-            if(nextBoard[afterIndex.y][afterIndex.x].piece === 'king') {
-                if(afterIndex.x - beforeIndex.x === 2) {
+            if(nextBoard[beforeIndex.y][beforeIndex.x].piece === 'king') {
+                if(beforeIndex.x - afterIndex.x === 2) {
                     nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
                     
                     const pieceStore = { ...nextBoard[beforeIndex.y][beforeIndex.x+1] };
@@ -168,7 +168,7 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
                     };
                 }
 
-                if(afterIndex.x - beforeIndex.x === -2) {
+                if(beforeIndex.x - afterIndex.x === -2) {
                     nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
 
                     const pieceStore = { ...nextBoard[beforeIndex.y][beforeIndex.x-1] };
