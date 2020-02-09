@@ -130,6 +130,7 @@ export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board, reverseBoard },
+            record: { showIndex },
             socketAuth: { role },
             game: { turn }
         } = getState();
@@ -205,6 +206,7 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
         reverseBoard: nextReverseBoard,
         clicked: null
     }));
+    dispatch(setShowIndex({ showIndex: showIndex+1 }));
 }
 
 const genClearBoard = (board, params) => {
