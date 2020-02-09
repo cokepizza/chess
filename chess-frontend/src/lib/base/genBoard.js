@@ -49,7 +49,7 @@ export const genBoard = (board, prev, next) => {
     return tempBoard;
 };
 
-export const genReplayBoard = (pieceMove, board, prevIndex, nextIndex) => {
+export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
     //  board should be reflect prevIndex pieceMove
     const nextBoard = [ ...board ];
     if(prevIndex < nextIndex) {
