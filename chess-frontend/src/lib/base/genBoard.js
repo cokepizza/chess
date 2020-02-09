@@ -99,20 +99,9 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
             const afterIndex = pieceMove[i].next;
             const afterPiece = pieceMove[i].nextPiece;
             nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
-            nextBoard[beforeIndex.y][beforeIndex.x] = { ...beforePiece };
+            nextBoard[beforeIndex.y][beforeIndex.x] = { ...afterPiece };
             nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
-            nextBoard[afterIndex.y][afterIndex.x] = { ...afterPiece };
-
-            if(i === nextIndex-1) {
-                nextBoard[beforeIndex.y][beforeIndex.x] = {
-                    ...nextBoard[beforeIndex.y][beforeIndex.x],
-                    tracked: true,
-                };
-                nextBoard[afterIndex.y][afterIndex.x] = {
-                    ...nextBoard[afterIndex.y][afterIndex.x],
-                    tracked: true,
-                };
-            }
+            nextBoard[afterIndex.y][afterIndex.x] = { ...beforePiece };
         }
     } else {
         for(let i=prevIndex; i>nextIndex; --i) {
@@ -124,17 +113,22 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
             nextBoard[beforeIndex.y][beforeIndex.x] = { ...beforePiece };
             nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
             nextBoard[afterIndex.y][afterIndex.x] = { ...afterPiece };
-            if(i === nextIndex+2) {
-                nextBoard[beforeIndex.y][beforeIndex.x] = {
-                    ...nextBoard[beforeIndex.y][beforeIndex.x],
-                    tracked: true,
-                };
-                nextBoard[afterIndex.y][afterIndex.x] = {
-                    ...nextBoard[afterIndex.y][afterIndex.x],
-                    tracked: true,
-                };
-            }
         }
+    }
+    if(0 <= nextIndex && nextIndex < pieceMove.length) {
+        const {
+            prev: { y: prevY, x: prevX },
+            next: { y: nextY, x: nextX }
+        } = pieceMove[nextIndex];
+
+        nextBoard[prevY][prevX] = {
+            ...nextBoard[prevY][prevX],
+            tracked: true,
+        };
+        nextBoard[nextY][nextX] = {
+            ...nextBoard[nextY][nextX],
+            tracked: true,
+        };
     }
 
     console.dir(nextBoard);
