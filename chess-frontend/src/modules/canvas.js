@@ -91,7 +91,7 @@ export const clearClickedThunk = () => (dispatch, getState) => {
     }));
 }
 
-export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
+export const replayValueThunk = ({ diff: diffVal, index }) => ( dispatch, getState ) => {
     const {
         canvas: { board, reverseBoard },
         record: { showIndex, pieceMove },
@@ -99,6 +99,8 @@ export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
         game: { turn }
     } = getState();
 
+    let diff = diffVal;
+    
     if(index) {
         diff = index - showIndex;
     }

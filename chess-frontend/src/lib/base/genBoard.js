@@ -121,10 +121,13 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
             next: { y: nextY, x: nextX }
         } = pieceMove[nextIndex];
 
+        nextBoard[prevY] = [ ...nextBoard[prevY] ];
         nextBoard[prevY][prevX] = {
             ...nextBoard[prevY][prevX],
             tracked: true,
         };
+
+        nextBoard[nextY] = [ ...nextBoard[nextY] ];
         nextBoard[nextY][nextX] = {
             ...nextBoard[nextY][nextX],
             tracked: true,
