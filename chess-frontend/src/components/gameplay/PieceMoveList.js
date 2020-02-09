@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { IconContext } from 'react-icons';
 import { IoIosArrowRoundForward } from 'react-icons/io';
@@ -138,15 +138,10 @@ const PieceMove = React.memo(({ move, index, onClick, checked }) => {
 });
 
 
-const PieceMoveList = ({ pieceMove, onClick, showIndex }) => {
-    const ref = useRef();
-    useEffect(() => {
-        ref.current.scrollTop = ref.current.scrollHeight;
-    }, [pieceMove]);
-
+const PieceMoveList = ({ pieceMove, onClick, showIndex, listRef }) => {
     return (
         <PieceMoveListHiddenBlock>
-            <PieceMoveListBlock ref={ref}>
+            <PieceMoveListBlock ref={listRef}>
                 {pieceMove.map((move, index) => (
                     <PieceMove 
                         onClick={onClick}

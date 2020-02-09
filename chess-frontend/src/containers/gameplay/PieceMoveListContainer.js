@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PieceMoveList from '../../components/gameplay/PieceMoveList';
 import { replayValueThunk } from '../../modules/canvas';
@@ -12,6 +12,12 @@ const PieceMoveListContainer = () => {
         showIndex: record.showIndex,
     }));
 
+    const listRef = useRef();
+    
+    useEffect(() => {
+        listRef.current.scrollTop = listRef.current.scrollHeight;
+    }, [pieceMove]);
+
     const onClick = useCallback(index => {
         dispatch(replayValueThunk({ index }));
     }, [dispatch]);
@@ -21,6 +27,7 @@ const PieceMoveListContainer = () => {
             onClick = {onClick}
             pieceMove={pieceMove}
             showIndex={showIndex}
+            listRef={listRef}
         />
     )
 };

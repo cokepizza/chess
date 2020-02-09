@@ -44,9 +44,10 @@ const pieceConverter = ({ piece, owner, covered, cellNum }) => {
 const CanvasBlock = styled.div`
     position: relative;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    transition: 0.5;
 
     ${props => props.replayMode && css`
-        opacity: 0.7;
+        opacity: 0.8;
     `}
 `;
 
@@ -196,15 +197,23 @@ const CanvasContent = ({ board, blocked, cellSize, onClick }) => {
 const ReplayBlock = styled.div`
     position: absolute;
     top: 0;
-    left: calc(100% + 10px);
-    width: 200px;
-    height: 100px;
+    left: calc(100% + 17px);
+    width: 80px;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: white;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
     font-size: 12px;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.5;
+
+    ${props => props.replayMode && css`
+        visibility: visible;
+        opacity: 1;
+    `}
 `;
 
 const Canvas = ({ onContextMenu, replayMode, ...rest }) => {
@@ -215,7 +224,7 @@ const Canvas = ({ onContextMenu, replayMode, ...rest }) => {
             onContextMenu={onContextMenu}
         >
             <CanvasContent {...rest} />
-            {replayMode && <ReplayBlock>Replay</ReplayBlock>}
+            <ReplayBlock replayMode={replayMode}>Replay</ReplayBlock>
         </CanvasBlock>
     )
 };

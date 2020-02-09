@@ -40,24 +40,24 @@ const UndoRedo = ({ onStepUndo, onStepRedo, onFastUndo, onFastRedo}) => {
     
     return (
         <UndoRedoBlock>
-            <ButtonBlock>
+            <ButtonBlock onClick={onFastUndo}>
                 <IconContext.Provider value={buttonStyle}>
-                    <FaFastBackward onClick={onFastUndo} />
+                    <FaFastBackward/>
                 </IconContext.Provider>
             </ButtonBlock>
-            <ButtonBlock>
+            <ButtonBlock onClick={onStepUndo}>
                 <IconContext.Provider value={buttonStyle}>
-                    <FaStepBackward onClick={onStepUndo} />
+                    <FaStepBackward/>
                 </IconContext.Provider>
             </ButtonBlock>
-            <ButtonBlock>
+            <ButtonBlock onClick={onStepRedo}>
                 <IconContext.Provider value={buttonStyle}>
-                    <FaStepForward onClick={onStepRedo} />
+                    <FaStepForward/>
                 </IconContext.Provider>
             </ButtonBlock>
-            <ButtonBlock>
+            <ButtonBlock onClick={onFastRedo}>
                 <IconContext.Provider value={buttonStyle}>
-                    <FaFastForward onClick={onFastRedo} />
+                    <FaFastForward/>
                 </IconContext.Provider>
             </ButtonBlock>
         </UndoRedoBlock>
