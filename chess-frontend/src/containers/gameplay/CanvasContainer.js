@@ -5,11 +5,12 @@ import { clickPieceThunk, initializeBlocked , clearClickedThunk } from '../../mo
 import { clearValue } from '../../modules/canvas';
 
 const CanvasContainer = ({ cellSize }) => {
-    const { board, reverseBoard, reversed, blocked, turn, role } = useSelector(({ canvas, socketAuth, game, record }) => ({
+    const { board, reverseBoard, blocked, reversed, replayMode, turn, role } = useSelector(({ canvas, socketAuth, game, record }) => ({
         board: canvas.board,
         reverseBoard: canvas.reverseBoard,
-        reversed: record.reversed,
         blocked: canvas.blocked,
+        reversed: record.reversed,
+        replayMode: record.replayMode,
         turn: game.turn,
         role: socketAuth.role,
     }));
@@ -61,6 +62,7 @@ const CanvasContainer = ({ cellSize }) => {
             onClick={onClick}
             onContextMenu={onContextMenu}
             cellSize={cellSize}
+            replayMode={replayMode}
         />
     )
 };

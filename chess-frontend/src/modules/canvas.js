@@ -121,7 +121,7 @@ export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
             replayMode: false,
         }));
     } else {
-        dispatch(changeBlocked({ blocked: false }));
+        dispatch(changeBlocked({ blocked: true }));
         dispatch(setShowIndex({
             showIndex: showIndex+diff,
             replayMode: true,

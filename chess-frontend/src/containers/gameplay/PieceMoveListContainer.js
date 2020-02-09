@@ -12,13 +12,13 @@ const PieceMoveListContainer = () => {
         showIndex: record.showIndex,
     }));
 
-    const onClickBlock = useCallback(index => {
+    const onClick = useCallback(index => {
         dispatch(replayValueThunk({ index }));
     }, [dispatch]);
 
     return (
         <PieceMoveList
-            onClickBlock = {onClickBlock}
+            onClick = {onClick}
             pieceMove={pieceMove}
             showIndex={showIndex}
         />

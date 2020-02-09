@@ -12,7 +12,7 @@ const UndoRedoContainer = () => {
     const dispatch = useDispatch();
  
     const onFastUndo = useCallback(() => {
-        dispatch(replayValueThunk({ index: 0 }));
+        dispatch(replayValueThunk({ index: -1 }));
     }, [dispatch]);
 
     const onStepUndo = useCallback(() => {

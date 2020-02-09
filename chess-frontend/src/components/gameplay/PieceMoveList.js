@@ -71,7 +71,7 @@ const IndexBlock = styled.div`
     background-color: rgb(247, 246, 245);
 `
 
-const PieceMove = React.memo(({ move, index, onClickBlock, checked }) => {
+const PieceMove = React.memo(({ move, index, onClick, checked }) => {
     console.dir('PieceMove');
     console.dir(move);
     const PrevComponent = pieceMapper[move.prevPiece.piece];
@@ -118,7 +118,7 @@ const PieceMove = React.memo(({ move, index, onClickBlock, checked }) => {
                 {index + 1}
             </IndexBlock>
             <MoveBlock
-                onClick={onClickBlock}
+                onClick={() => onClick(index)}
                 checked={checked}
             >
                 {prevPiece}
@@ -138,7 +138,7 @@ const PieceMove = React.memo(({ move, index, onClickBlock, checked }) => {
 });
 
 
-const PieceMoveList = ({ pieceMove, onClickBlock, showIndex }) => {
+const PieceMoveList = ({ pieceMove, onClick, showIndex }) => {
     const ref = useRef();
     useEffect(() => {
         ref.current.scrollTop = ref.current.scrollHeight;
@@ -149,7 +149,7 @@ const PieceMoveList = ({ pieceMove, onClickBlock, showIndex }) => {
             <PieceMoveListBlock ref={ref}>
                 {pieceMove.map((move, index) => (
                     <PieceMove 
-                        onClick={e => onClickBlock(index)}
+                        onClick={onClick}
                         move={move}
                         index={index}
                         checked={index === showIndex}
