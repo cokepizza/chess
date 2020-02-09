@@ -15,8 +15,11 @@ const PieceMoveListContainer = () => {
     const listRef = useRef();
     
     useEffect(() => {
-        listRef.current.scrollTop = listRef.current.scrollHeight;
-    }, [pieceMove]);
+        if(showIndex >= 0) {
+            // listRef.current.scrollTop = listRef.current.scrollHeight;
+            listRef.current.scrollTop = showIndex * 30;
+        }
+    }, [pieceMove, showIndex]);
 
     const onClick = useCallback(index => {
         dispatch(replayValueThunk({ index }));

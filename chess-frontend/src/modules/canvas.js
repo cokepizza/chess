@@ -139,8 +139,8 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
     const { canvas: { board, reverseBoard },
             record: { showIndex, replayMode },
-            socketAuth: { role },
-            game: { turn }
+            // socketAuth: { role },
+            // game: { turn }
         } = getState();
 
     if(replayMode) return;
