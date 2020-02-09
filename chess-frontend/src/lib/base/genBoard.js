@@ -144,14 +144,43 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
         }
     } else {
         for(let i=prevIndex; i>nextIndex; --i) {
-            const beforeIndex = pieceMove[i].next;
-            const beforePiece = pieceMove[i].nextPiece;
-            const afterIndex = pieceMove[i].prev;
-            const afterPiece = pieceMove[i].prevPiece;
+            const beforeIndex = pieceMove[i].prev;
+            const beforePiece = pieceMove[i].prevPiece;
+            const afterIndex = pieceMove[i].next;
+            const afterPiece = pieceMove[i].nextPiece;
             nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
             nextBoard[beforeIndex.y][beforeIndex.x] = { ...beforePiece };
             nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
             nextBoard[afterIndex.y][afterIndex.x] = { ...afterPiece };
+
+            //  castling
+            if(nextBoard[afterIndex.y][afterIndex.x].piece === 'king') {
+                if(afterIndex.x - beforeIndex.x === 2) {
+                    nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
+                    
+                    const pieceStore = { ...nextBoard[beforeIndex.y][beforeIndex.x+1] };
+                    nextBoard[beforeIndex.y][beforeIndex.x+3] = {
+                        ...pieceStore,
+                        dirty: false,
+                    };
+                    nextBoard[beforeIndex.y][beforeIndex.x+1] = {
+                        covered: false
+                    };
+                }
+
+                if(afterIndex.x - beforeIndex.x === -2) {
+                    nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
+
+                    const pieceStore = { ...nextBoard[beforeIndex.y][beforeIndex.x-1] };
+                    nextBoard[beforeIndex.y][beforeIndex.x-4] = {
+                        ...pieceStore,
+                        dirty: false,
+                    };
+                    nextBoard[beforeIndex.y][beforeIndex.x-1] = {
+                        covered: false
+                    };
+                }
+            };
         }
     }
     if(0 <= nextIndex && nextIndex < pieceMove.length) {
