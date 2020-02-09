@@ -9,7 +9,8 @@ import * as canvasCtrl from '../lib/api/canvas';
 // import rules from '../lib/base/rules';
 import board from '../lib/base/board';
 import { checkCovered, checkSafeMove } from '../lib/base/validation';
-import { genBoard } from '../lib/base/genBoard';
+import { genBoard, genReplayBoard } from '../lib/base/genBoard';
+import { setShowIndex } from './record';
 
 const CONNECT_WEBSOCKET = 'canvas/CONNECT_WEBSOCKET';
 const DISCONNECT_WEBSOCKET = 'canvas/DISCONNECT_WEBSOCKET';
@@ -89,6 +90,42 @@ export const clearClickedThunk = () => (dispatch, getState) => {
         clicked: null
     }));
 }
+
+export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
+    const {
+        canvas: { board, reverseBoard },
+        record: { showIndex, pieceMove },
+        socketAuth: { role },
+        game: { turn }
+    } = getState();
+
+    if(index) {
+        diff = index - showIndex;
+    }
+
+    if(diff === 0) return;
+    if(showIndex+diff < -1 || showIndex+diff >= pieceMove.length) return;
+
+    console.dir('replayValueThunk');
+    const nextBoard = genReplayBoard(board, pieceMove, showIndex, showIndex+diff);
+    const nextReverseBoard = updateReverseBoard(reverseBoard, nextBoard);
+
+    if(showIndex+diff-1 === pieceMove.length) {
+        if(((role === 'white' || role === 'spectator') && turn % 2 === 0) || (role === 'black' && turn % 2 === 1)) {
+            dispatch(changeBlocked({ blocked: false }));
+        } else {
+            dispatch(changeBlocked({ blocked: true }));
+        };
+    } else {
+        dispatch(changeBlocked({ blocked: false }));    
+    }
+    dispatch(changeValue({
+        board: nextBoard,
+        reverseBoard: nextReverseBoard,
+        clicked: null
+    }));
+    dispatch(setShowIndex({ showIndex }));
+};
 
 export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;

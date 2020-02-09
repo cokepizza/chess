@@ -35,8 +35,9 @@ const loginMode = req => {
         const keyToChannel = sessionToKey.get(req.sessionID);
         if(keyToChannel) {
             [...keyToChannel.keys()].forEach(key => {
-
                 const game = gameMap.get(key);
+                if(!game) return;
+                
                 const index = game.participant.findIndex(ele => ele === req.session.nickname);
                 if(index >= 0) {
                     game.participant.splice(index, 1, req.user.username);
@@ -87,6 +88,7 @@ const logoutMode = req => {
         if(keyToChannel) {
             [...keyToChannel.keys()].forEach(key => {
                 const game = gameMap.get(key);
+                if(!game) return;
                 const index = game.participant.findIndex(ele => ele === req.user.username);
                 if(index >= 0) {
                     game.participant.splice(index, 1, req.session.nickname);

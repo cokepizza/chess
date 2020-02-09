@@ -48,3 +48,34 @@ export const genBoard = (board, prev, next) => {
     
     return tempBoard;
 };
+
+export const genReplayBoard = (pieceMove, board, prevIndex, nextIndex) => {
+    //  board should be reflect prevIndex pieceMove
+    const nextBoard = [ ...board ];
+    if(prevIndex < nextIndex) {
+        for(let i=prevIndex+1; i<=nextIndex; ++i) {
+            const beforeIndex = pieceMove[i].prev;
+            const beforePiece = pieceMove[i].prevPiece;
+            const afterIndex = pieceMove[i].next;
+            const afterPiece = pieceMove[i].nextPiece;
+            nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
+            nextBoard[beforeIndex.y][beforeIndex.x] = { ...beforePiece };
+            nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
+            nextBoard[afterIndex.y][afterIndex.x] = { ...afterPiece };
+        }
+    } else {
+        for(let i=prevIndex; i>nextIndex; --i) {
+            const beforeIndex = pieceMove[i].next;
+            const beforePiece = pieceMove[i].nextPiece;
+            const afterIndex = pieceMove[i].prev;
+            const afterPiece = pieceMove[i].prevPiece;
+            nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
+            nextBoard[beforeIndex.y][beforeIndex.x] = { ...beforePiece };
+            nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
+            nextBoard[afterIndex.y][afterIndex.x] = { ...afterPiece };
+        }
+    }
+
+    console.dir(nextBoard);
+    return nextBoard;
+}

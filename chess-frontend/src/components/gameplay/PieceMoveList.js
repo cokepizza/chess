@@ -140,7 +140,7 @@ const PieceMoveList = ({ pieceMove, onClickBlock }) => {
             <PieceMoveListBlock ref={ref}>
                 {pieceMove.map((move, index) => (
                     <PieceMove 
-                        onClick={onClickBlock}
+                        onClick={e => onClickBlock(index)}
                         move={move}
                         index={index}
                     />

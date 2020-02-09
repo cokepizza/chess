@@ -25,11 +25,13 @@ const CLEAR_TOOLTIP = 'record/CLEAR_TOOLTIP';
 const SET_REQUEST_MODAL = 'record/SET_REQUEST_MODAL';
 const SET_REQUEST_MESSAGE = 'record/SET_REQUEST_MESSAGE';
 const SET_BANCLICK = 'record/SET_BANCLICK';
+const SET_SHOWINDEX = 'record/SET_SHOWINDEX';
 export const changeReverse = createAction(CHANGE_REVERSE, payload => payload);
 export const clearToolTip = createAction(CLEAR_TOOLTIP);
 export const setRequestModal = createAction(SET_REQUEST_MODAL, payload => payload);
 export const setRequestMessage = createAction(SET_REQUEST_MESSAGE, payload => payload);
 export const setBanClick = createAction(SET_BANCLICK);
+export const setShowIndex = createAction(SET_SHOWINDEX, payload => payload);
 
 const [ ASKING, ASKING_SUCCESS, ASKING_FAILURE ] = createRequestActionTypes('record/ASKING');
 const [ ANSWERING, ANSWERING_SUCCESS, ANSWERING_FAILURE ] = createRequestActionTypes('record/ANSWERING');
@@ -113,6 +115,7 @@ const initialState = {
     reversed: false,
     blocked: false,
     banClick: false,
+    showIndex: null,
     undo: {
         message: null,
         modal: null,
@@ -135,6 +138,7 @@ export default handleActions({
     [INITIALIZE_VALUE]: (state, { payload: { type, ...rest } }) => ({
         ...state,
         ...rest,
+        showIndex: rest.pieceMove.length - 1,
     }),
     [CHANGE_VALUE]: (state, { payload: { type, ...rest } }) => ({
         ...state,
@@ -147,6 +151,10 @@ export default handleActions({
     [CHANGE_REVERSE]: (state, { payload: { reversed } }) => ({
         ...state,
         reversed,
+    }),
+    [SET_SHOWINDEX]: (state , { payload: { showIndex }}) => ({
+        ...state,
+        showIndex,
     }),
     [ASKING]: state => state,
     [ASKING_SUCCESS]: state => state,

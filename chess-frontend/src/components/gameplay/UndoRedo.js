@@ -36,27 +36,28 @@ const buttonStyle = {
     }
 }
 
-const UndoRedo = () => {
+const UndoRedo = ({ onStepUndo, onStepRedo, onFastUndo, onFastRedo}) => {
+    
     return (
         <UndoRedoBlock>
             <ButtonBlock>
                 <IconContext.Provider value={buttonStyle}>
-                    <FaFastBackward />
+                    <FaFastBackward onClick={onFastUndo} />
                 </IconContext.Provider>
             </ButtonBlock>
             <ButtonBlock>
                 <IconContext.Provider value={buttonStyle}>
-                    <FaStepBackward />
+                    <FaStepBackward onClick={onStepUndo} />
                 </IconContext.Provider>
             </ButtonBlock>
             <ButtonBlock>
                 <IconContext.Provider value={buttonStyle}>
-                    <FaStepForward />
+                    <FaStepForward onClick={onStepRedo} />
                 </IconContext.Provider>
             </ButtonBlock>
             <ButtonBlock>
                 <IconContext.Provider value={buttonStyle}>
-                    <FaFastForward />
+                    <FaFastForward onClick={onFastRedo} />
                 </IconContext.Provider>
             </ButtonBlock>
         </UndoRedoBlock>

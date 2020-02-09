@@ -1,18 +1,19 @@
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PieceMoveList from '../../components/gameplay/PieceMoveList';
+import { replayValueThunk } from '../../modules/canvas';
 
 const PieceMoveListContainer = () => {
     
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     const { pieceMove } = useSelector(({ record }) => ({
         pieceMove: record.pieceMove,
     }));
 
-    const onClickBlock = useCallback(() => {
-
-    }, []);
+    const onClickBlock = useCallback(index => {
+        dispatch(replayValueThunk({ index }));
+    }, [dispatch]);
 
     return (
         <PieceMoveList
