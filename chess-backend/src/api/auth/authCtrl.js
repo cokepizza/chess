@@ -42,26 +42,6 @@ const loginMode = req => {
                 if(index >= 0) {
                     game.participant.splice(index, 1, req.user.username);
                 }
-                
-                const participantSet = new Set(game.participant);
-                if(game._init && (!participantSet.has(game.white) || !participantSet.has(game.black))) {
-                    if(!participantSet.has(game.white)) {
-                        game._destroy({
-                            draw: false,
-                            winner: game.black,
-                            loser: game.white,
-                        });
-                    }
-                    if(!participantSet.has(game.black)) {
-                        game._destroy({
-                            draw: false,
-                            winner: game.white,
-                            loser: game.black,
-                        });
-                    }
-                } else {
-                    game._heartbeat();
-                }
 
                 const channelToSocket = keyToChannel.get(key);
                 if(channelToSocket) {
@@ -85,6 +65,26 @@ const loginMode = req => {
                             game._socketAuth._unicast(socket);
                         });
                     }
+                }
+
+                const participantSet = new Set(game.participant);
+                if(game._init && (!participantSet.has(game.white) || !participantSet.has(game.black))) {
+                    if(!participantSet.has(game.white)) {
+                        game._destroy({
+                            draw: false,
+                            winner: game.black,
+                            loser: game.white,
+                        });
+                    }
+                    if(!participantSet.has(game.black)) {
+                        game._destroy({
+                            draw: false,
+                            winner: game.white,
+                            loser: game.black,
+                        });
+                    }
+                } else {
+                    game._heartbeat();
                 }
             });
 
@@ -112,26 +112,6 @@ const logoutMode = req => {
                     game.participant.splice(index, 1, req.session.nickname);
                 }
 
-                const participantSet = new Set(game.participant);
-                if(game._init && (!participantSet.has(game.white) || !participantSet.has(game.black))) {
-                    if(!participantSet.has(game.white)) {
-                        game._destroy({
-                            draw: false,
-                            winner: game.black,
-                            loser: game.white,
-                        });
-                    }
-                    if(!participantSet.has(game.black)) {
-                        game._destroy({
-                            draw: false,
-                            winner: game.white,
-                            loser: game.black,
-                        });
-                    }
-                } else {
-                    game._heartbeat();
-                }
-
                 const channelToSocket = keyToChannel.get(key);
                 if(channelToSocket) {
                     const gameSocketSet = channelToSocket.get('/game');
@@ -150,6 +130,26 @@ const logoutMode = req => {
                             game._socketAuth._unicast(socket);
                         })
                     }
+                }
+
+                const participantSet = new Set(game.participant);
+                if(game._init && (!participantSet.has(game.white) || !participantSet.has(game.black))) {
+                    if(!participantSet.has(game.white)) {
+                        game._destroy({
+                            draw: false,
+                            winner: game.black,
+                            loser: game.white,
+                        });
+                    }
+                    if(!participantSet.has(game.black)) {
+                        game._destroy({
+                            draw: false,
+                            winner: game.white,
+                            loser: game.black,
+                        });
+                    }
+                } else {
+                    game._heartbeat();
                 }
             });
 
