@@ -129,7 +129,7 @@ const rules = {
                     const { board, y, x, owner } = props;
                     const enemy = (owner === 'white') ? 'black' : 'white';
 
-                   //  king dirty check
+                    //  king dirty check
                     if(!board[y][x].piece || board[y][x].dirty) {
                         return false;
                     }
