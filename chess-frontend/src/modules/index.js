@@ -9,6 +9,7 @@ import chat, { chatSaga } from './chat';
 import record, { recordSaga }  from './record';
 import create from './create';
 import ranking, { rankingSaga } from './ranking';
+import billBoard, { billBoardSaga } from './billBoard';
 
 
 const rootReducer = combineReducers({
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
     record,
     create,
     ranking,
+    billBoard,
 })
 
 
@@ -34,6 +36,7 @@ export function* rootSaga() {
         chatSaga(),
         recordSaga(),
         rankingSaga(),
+        billBoardSaga(),
     ]);
 };
 

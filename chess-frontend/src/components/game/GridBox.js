@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import CanvasWrapperContainer from '../../containers/game/CanvasWapperContainer';
+import CanvasWrapperContainer from '../../containers/game/CanvasWrapperContainer';
 
 const GridBoxBlock = styled.div`
     z-index: 1;

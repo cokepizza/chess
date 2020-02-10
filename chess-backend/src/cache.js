@@ -1,4 +1,7 @@
 import User from './models/user';
+import Game from './models/game';
+import board from './lib/base/board';
+import _ from 'lodash';
 
 //  decending order
 export const compare = (a, b) => {
@@ -34,12 +37,23 @@ const cache = async () => {
         .map(user => user.serialize())
         .map(getRatio)
         .sort(compare);
+    
+    // const games = await Game.find({}).sort({ 'destroyAt': -1 }).limit(4);
+    const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
+    const billBoard = games.map(game => (
+        {
+            ...game.serialize(),
+            index: 0,
+            board: _.cloneDeep(board),
+        }));
+
     const data = {
         ranking: {
             limit: 15,
             list: sortedUsers,
         },
-    }
+        billBoard,
+    }    
     
     return data;
 };

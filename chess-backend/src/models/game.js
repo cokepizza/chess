@@ -23,5 +23,10 @@ const GameSchema = new Schema({
     },
 });
 
+GameSchema.methods.serialize = function() {
+    const data = this.toJSON();
+    return data;
+};
+
 const Game = mongoose.model('Game', GameSchema);
 export default Game;

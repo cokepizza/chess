@@ -134,6 +134,7 @@ export const createGame = (req, res, next) => {
                 reasonMessage: this._reasonMessage,
                 pieceMove,
                 createdAt: this.createdAt,
+                destroyAt: new Date(),
             });
 
             if(this._draw) {

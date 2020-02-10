@@ -166,8 +166,26 @@ export default (server, app, sessionMiddleware) => {
     io.use((socket, next) => {
         sessionMiddleware(socket.request, socket.request.res, next);
     });
-
+    
     registerCache(app);
+
+    //  subscribe 'BillBoard' Namespace
+    io.of('/billBoard').on('connect', socket => {
+        console.dir('-------------socket(billBoard)--------------');
+        console.dir(socket.request.sessionID);
+
+        const billBoard = app.get('billBoard');
+
+        socket.emit('message', {
+            type: 'initialize',
+            board: billBoard[0].board,
+        });
+
+        socket.on('disconnect', () => {
+            console.dir('-------------socketDis(billBoard)--------------');
+            console.dir(socket.request.sessionID);
+        });
+    });
 
     //  subscribe 'Ranking' Namespace
     io.of('/ranking').on('connect', socket => {
