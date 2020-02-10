@@ -101,7 +101,6 @@ export const genReplayBoard = (board, pieceMove, prevIndex, nextIndex) => {
             nextBoard[beforeIndex.y] = [ ...nextBoard[beforeIndex.y] ];
             nextBoard[beforeIndex.y][beforeIndex.x] = { covered: false };
             nextBoard[afterIndex.y] = [ ...nextBoard[afterIndex.y] ];
-            // nextBoard[afterIndex.y][afterIndex.x] = { ...beforePiece };
             nextBoard[afterIndex.y][afterIndex.x] = { ...beforePiece, dirty: true };
 
             //  promotion
