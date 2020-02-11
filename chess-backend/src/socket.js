@@ -174,16 +174,24 @@ export default (server, app, sessionMiddleware) => {
         console.dir('-------------socket(billBoard)--------------');
         console.dir(socket.request.sessionID);
 
+        const key = socket.handshake.query['roomKey'];
+        if(!key) return;
+        
         const billBoard = app.get('billBoard');
 
         socket.emit('message', {
             type: 'initialize',
-            board: billBoard[0].board,
+            board: billBoard[key].board,
         });
+
+        billBoard[key].participant.push(socket);
 
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(billBoard)--------------');
             console.dir(socket.request.sessionID);
+
+            const index = billBoard[key].participant.findIndex(soc => soc.id === socket.id);
+            billBoard[key].participant.splice(index, 1);
         });
     });
 

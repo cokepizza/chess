@@ -106,7 +106,6 @@ export const replayValueThunk = ({ diff, index }) => ( dispatch, getState ) => {
     if(diff === 0) return;
     if(showIndex+diff < -1 || showIndex+diff >= pieceMove.length) return;
 
-    console.dir('replayValueThunk');
     const nextBoard = genReplayBoard(board, pieceMove, showIndex, showIndex+diff);
     const nextReverseBoard = updateReverseBoard(reverseBoard, nextBoard);
 

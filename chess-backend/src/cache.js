@@ -35,8 +35,28 @@ const pieceMoveReduce = board => {
     clearTimeout(board.setTimeout);
     if(board.index <= board.turn) {
         board.setTimeout = setTimeout(() => {
+            board.participant.forEach(socket => {
+                socket.emit('message', {
+                    type: 'change',
+                    move: board.pieceMove[board.index],
+                });
+            });
 
-        }, 500);
+            ++board.index;
+            pieceMoveReduce(board);
+        }, 2000);
+    } else {
+        board.index = 0;
+        board.board = _.cloneDeep(board);
+
+        board.participant.forEach(socket => {
+            socket.emit('message', {
+                type: 'initialize',
+                board: board.board,
+            });
+        });
+
+        pieceMoveReduce(board);
     }
 };
 
@@ -55,6 +75,7 @@ const cache = async () => {
             index: 0,
             board: _.cloneDeep(board),
             setTimeout: null,
+            participant: [],
         }));
 
     billBoard.forEach(board => {

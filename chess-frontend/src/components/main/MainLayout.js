@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import RankingContainer from '../../containers/main/RankingContainer';
+import IframeContainer from '../../containers/main/IframeContainer';
 
 const MainLayoutBlock = styled.div`
     width: 100%;
@@ -33,7 +34,7 @@ const MainLayout = () => {
     return (
         <MainLayoutBlock>
             <LeftSideBlock>
-
+                <IframeContainer roomKey={0} />
             </LeftSideBlock>
             <RankingContainer />
             <RightSideBlock>
