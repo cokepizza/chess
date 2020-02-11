@@ -46,6 +46,7 @@ const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
     if(error) return null;
     if(data) {
         if(!board) {
+            //  activity indicator
             return (
                 <div></div>
             )

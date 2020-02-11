@@ -31,6 +31,15 @@ export const getRatio = user => ({
     ).toFixed(2)
 })
 
+const pieceMoveReduce = board => {
+    clearTimeout(board.setTimeout);
+    if(board.index <= board.turn) {
+        board.setTimeout = setTimeout(() => {
+
+        }, 500);
+    }
+};
+
 const cache = async () => {
     const users = await User.find();
     const sortedUsers = users 
@@ -45,7 +54,12 @@ const cache = async () => {
             ...game.serialize(),
             index: 0,
             board: _.cloneDeep(board),
+            setTimeout: null,
         }));
+
+    billBoard.forEach(board => {
+        pieceMoveReduce(board);
+    });
 
     const data = {
         ranking: {

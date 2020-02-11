@@ -1,9 +1,9 @@
 import React from 'react';
 import BillBoard from '../../components/billBoard/BillBoard';
 
-const BillBoardContainer = () => {
+const BillBoardContainer = ({ roomKey }) => {
     return (
-        <BillBoard />
+        <BillBoard roomKey={roomKey}/>
     )
 };
 

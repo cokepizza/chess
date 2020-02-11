@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import BillBoardCanvasWrapperContainer from '../containers/billBoard/BillBoardCanvasWrapperContainer';
+import BillBoardContainer from '../containers/billBoard/BillBoardContainer';
 
 const BillBoardPage = ({ history, match }) => {
     useEffect(() => {
@@ -14,7 +14,7 @@ const BillBoardPage = ({ history, match }) => {
     if(!id) return null;
 
     return (
-        <BillBoardCanvasWrapperContainer roomKey={id}/>
+        <BillBoardContainer roomKey={id}/>
     )
 };
 
