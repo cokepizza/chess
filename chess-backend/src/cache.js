@@ -35,6 +35,8 @@ const pieceMoveReduce = board => {
     clearTimeout(board.setTimeout);
     if(board.index <= board.turn) {
         board.setTimeout = setTimeout(() => {
+            console.dir(`next tick ${board.index}`);
+            console.dir(board.participant);
             board.participant.forEach(socket => {
                 socket.emit('message', {
                     type: 'change',
@@ -44,7 +46,7 @@ const pieceMoveReduce = board => {
 
             ++board.index;
             pieceMoveReduce(board);
-        }, 2000);
+        }, 3000);
     } else {
         board.index = 0;
         board.board = _.cloneDeep(board);
