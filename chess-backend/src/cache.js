@@ -38,10 +38,10 @@ const pieceMoveReduce = game => {
             console.dir(`next tick ${game.index}`);
             game.participant.forEach(socket => {
                 console.dir(socket.id);
-                console.dir(game.pieceMove[game.index]);
+                const pieceMove = JSON.parese(game.pieceMove);
                 socket.emit('message', {
                     type: 'change',
-                    move: game.pieceMove[game.index],
+                    move: pieceMove[game.index],
                 });
             });
 
@@ -50,10 +50,10 @@ const pieceMoveReduce = game => {
         }, 3000);
     } else {
         game.index = 0;
-        game.board = _.cloneDeep(game);
+        game.board = _.cloneDeep(board);
 
+        console.dir(game.board);
         game.participant.forEach(socket => {
-            console.dir(game.board);
             socket.emit('message', {
                 type: 'initialize',
                 board: game.board,
@@ -72,7 +72,8 @@ const cache = async () => {
         .sort(compare);
     
     // const games = await Game.find({}).sort({ 'destroyAt': -1 }).limit(4);
-    const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
+    // const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
+    const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(1);
     const billBoard = games.map(game => (
         {
             ...game.serialize(),
