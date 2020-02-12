@@ -38,7 +38,7 @@ const pieceMoveReduce = game => {
             console.dir(`next tick ${game.index}`);
             game.participant.forEach(socket => {
                 console.dir(socket.id);
-                const pieceMove = JSON.parese(game.pieceMove);
+                const pieceMove = JSON.parse(game.pieceMove);
                 socket.emit('message', {
                     type: 'change',
                     move: pieceMove[game.index],
