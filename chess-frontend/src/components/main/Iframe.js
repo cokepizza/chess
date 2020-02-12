@@ -8,7 +8,7 @@ const IframeBlock = styled.iframe`
 `;
 
 const Iframe = ({ roomKey }) => {
-    const src = `https://cokepizza/billBoard/${roomKey}`
+    const src = `https://chesssup.com/billBoard/${roomKey}`
     return (
         <IframeBlock
             src={src}
