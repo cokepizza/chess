@@ -31,36 +31,36 @@ export const getRatio = user => ({
     ).toFixed(2)
 })
 
-const pieceMoveReduce = board => {
-    clearTimeout(board.setTimeout);
-    if(board.index <= board.turn) {
-        board.setTimeout = setTimeout(() => {
-            console.dir(`next tick ${board.index}`);
-            board.participant.forEach(socket => {
+const pieceMoveReduce = game => {
+    clearTimeout(game.setTimeout);
+    if(game.index <= game.turn) {
+        game.setTimeout = setTimeout(() => {
+            console.dir(`next tick ${game.index}`);
+            game.participant.forEach(socket => {
                 console.dir(socket.id);
-                console.dir(board.pieceMove[board.index]);
+                console.dir(game.pieceMove[game.index]);
                 socket.emit('message', {
                     type: 'change',
-                    move: board.pieceMove[board.index],
+                    move: game.pieceMove[game.index],
                 });
             });
 
-            ++board.index;
-            pieceMoveReduce(board);
+            ++game.index;
+            pieceMoveReduce(game);
         }, 3000);
     } else {
-        board.index = 0;
-        board.board = _.cloneDeep(board);
+        game.index = 0;
+        game.board = _.cloneDeep(game);
 
-        board.participant.forEach(socket => {
-            console.dir(board.board);
+        game.participant.forEach(socket => {
+            console.dir(game.board);
             socket.emit('message', {
                 type: 'initialize',
-                board: board.board,
+                board: game.board,
             });
         });
 
-        pieceMoveReduce(board);
+        pieceMoveReduce(game);
     }
 };
 
@@ -82,8 +82,8 @@ const cache = async () => {
             participant: [],
         }));
 
-    billBoard.forEach(board => {
-        pieceMoveReduce(board);
+    billBoard.forEach(game => {
+        pieceMoveReduce(game);
     });
 
     const data = {
