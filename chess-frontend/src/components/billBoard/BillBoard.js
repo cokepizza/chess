@@ -8,6 +8,7 @@ const BillBoardBlock = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    transform: scale(0.4);
 `;
 
 const BillBoard = ({ roomKey }) => {

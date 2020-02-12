@@ -33,35 +33,35 @@ export const getRatio = user => ({
 
 const pieceMoveReduce = game => {
     clearTimeout(game.setTimeout);
-    if(game.index <= game.turn) {
-        game.setTimeout = setTimeout(() => {
-            console.dir(`next tick ${game.index}`);
+    game.setTimeout = setTimeout(() => {
+        if(game.index < game.turn) {
+                console.dir(`next tick ${game.index}`);
+                game.participant.forEach(socket => {
+                    console.dir(socket.id);
+                    const pieceMove = JSON.parse(game.pieceMove);
+                    socket.emit('message', {
+                        type: 'change',
+                        move: pieceMove[game.index],
+                    });
+                });
+
+                ++game.index;
+                pieceMoveReduce(game);
+        } else {
+            game.index = 0;
+            game.board = _.cloneDeep(board);
+
+            console.dir(game.board);
             game.participant.forEach(socket => {
-                console.dir(socket.id);
-                const pieceMove = JSON.parse(game.pieceMove);
                 socket.emit('message', {
-                    type: 'change',
-                    move: pieceMove[game.index],
+                    type: 'initialize',
+                    board: game.board,
                 });
             });
 
-            ++game.index;
             pieceMoveReduce(game);
-        }, 3000);
-    } else {
-        game.index = 0;
-        game.board = _.cloneDeep(board);
-
-        console.dir(game.board);
-        game.participant.forEach(socket => {
-            socket.emit('message', {
-                type: 'initialize',
-                board: game.board,
-            });
-        });
-
-        pieceMoveReduce(game);
-    }
+        }
+    }, 3000);
 };
 
 const cache = async () => {

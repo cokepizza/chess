@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const IframeBlock = styled.iframe`
-    width: 300px;
-    height: 300px;
+    width: 216px;
+    height: 216px;
     background-color: pink;
 `;
 
