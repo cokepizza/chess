@@ -9,7 +9,6 @@ const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
         board: billBoard.board,
     }));
 
-    console.dir(roomKey);
     const dispatch = useDispatch();
 
     // useEffect(() => {
@@ -47,9 +46,7 @@ const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
     if(data) {
         if(!board) {
             //  activity indicator
-            return (
-                <div></div>
-            )
+            return null;
         }
         return (
             <Canvas
