@@ -61,7 +61,7 @@ const pieceMoveReduce = game => {
 
             pieceMoveReduce(game);
         }
-    }, 3000);
+    }, 1000);
 };
 
 const cache = async () => {
@@ -73,7 +73,7 @@ const cache = async () => {
     
     // const games = await Game.find({}).sort({ 'destroyAt': -1 }).limit(4);
     // const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
-    const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(1);
+    const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
     const billBoard = games.map(game => (
         {
             ...game.serialize(),
