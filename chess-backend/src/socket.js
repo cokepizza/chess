@@ -182,6 +182,7 @@ export default (server, app, sessionMiddleware) => {
         if(billBoard[key]) {
             socket.emit('message', {
                 type: 'initialize',
+                key,
                 board: billBoard[key].board,
             });
     
