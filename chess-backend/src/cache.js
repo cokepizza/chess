@@ -61,7 +61,7 @@ const pieceMoveReduce = game => {
 
             pieceMoveReduce(game);
         }
-    }, 1000);
+    }, 500);
 };
 
 const cache = async () => {
@@ -83,8 +83,10 @@ const cache = async () => {
             participant: [],
         }));
 
-    billBoard.forEach(game => {
-        pieceMoveReduce(game);
+    billBoard.forEach((game, index) => {
+        setTimeout(() => {
+            pieceMoveReduce(game);
+        }, 300 * index);
     });
 
     const data = {

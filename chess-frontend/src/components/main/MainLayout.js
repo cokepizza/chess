@@ -5,6 +5,7 @@ import RankingContainer from '../../containers/main/RankingContainer';
 import IframeContainer from '../../containers/main/IframeContainer';
 
 const MainLayoutBlock = styled.div`
+    height: 800px;
     width: 100%;
     margin-top: 40px;
     display: flex;
@@ -16,18 +17,20 @@ const sideBlockStyle = css`
     height: 90%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     width: 20%;
 `;
 
 const LeftSideBlock = styled.div`
     ${sideBlockStyle}
     margin-right: 1%;
+    align-items: flex-end;
 `;
 
 const RightSideBlock = styled.div`
     ${sideBlockStyle}
     margin-left: 1%;
+    align-items: flex-start;
 `;
 
 const MainLayout = () => {
