@@ -31,7 +31,7 @@ export const getRatio = user => ({
     ).toFixed(2)
 })
 
-const pieceMoveReduce = (game, key) => {
+const pieceMoveReduce = game => {
     clearTimeout(game.setTimeout);
     game.setTimeout = setTimeout(() => {
         if(game.index < game.turn) {
@@ -41,13 +41,12 @@ const pieceMoveReduce = (game, key) => {
                     const pieceMove = JSON.parse(game.pieceMove);
                     socket.emit('message', {
                         type: 'change',
-                        key,
                         move: pieceMove[game.index],
                     });
                 });
 
                 ++game.index;
-                pieceMoveReduce(game, key);
+                pieceMoveReduce(game);
         } else {
             game.index = 0;
             game.board = _.cloneDeep(board);
@@ -56,12 +55,11 @@ const pieceMoveReduce = (game, key) => {
             game.participant.forEach(socket => {
                 socket.emit('message', {
                     type: 'initialize',
-                    key,
                     board: game.board,
                 });
             });
 
-            pieceMoveReduce(game, key);
+            pieceMoveReduce(game);
         }
     }, 1000);
 };
@@ -85,8 +83,8 @@ const cache = async () => {
             participant: [],
         }));
 
-    billBoard.forEach((game, index) => {
-        pieceMoveReduce(game, index);
+    billBoard.forEach(game => {
+        pieceMoveReduce(game);
     });
 
     const data = {

@@ -5,8 +5,8 @@ import Canvas from '../../components/gameplay/Canvas';
 import useAsync from '../../lib/hook/useAsync';
 
 const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
-    const { boards } = useSelector(({ billBoard }) => ({
-        boards: billBoard.boards,
+    const { board } = useSelector(({ billBoard }) => ({
+        board: billBoard.board,
     }));
 
     const dispatch = useDispatch();
@@ -44,13 +44,13 @@ const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
     if(loading) return null;
     if(error) return null;
     if(data) {
-        if(!boards || !boards[roomKey]) {
+        if(!board) {
             //  activity indicator
             return null;
         }
         return (
             <Canvas
-                board={boards[roomKey]}
+                board={board}
                 blocked={true}
                 onContextMenu={onContextMenu}
                 cellSize={cellSize}

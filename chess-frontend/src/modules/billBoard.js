@@ -18,23 +18,10 @@ export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload
 export const clearValue = createAction(CLEAR_VALUE);
 export const changeValue = createAction(CHANGE_VALUE);
 
-export const initializeValueThunk = ({ key, board }) => ( dispatch, getState ) => {
-    const { billBoard: { boards }} = getState();
-    const revisedBoards = [ ...boards ];
-    revisedBoards.splice(key, 1, board);
-    console.dir(revisedBoards);
-
-    dispatch(initializeValue({
-        boards: revisedBoards
-    }));
-}
-
-export const changeValueThunk = ({ key, move }) => ( dispatch, getState ) => {
+export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
-    const { billBoard: { boards },
+    const { billBoard: { board },
         } = getState();
-    const board = boards[key];
-    const revisedBoards = [ ...boards ];
 
     const cell = board[prev.y][prev.x];
     const clearBoard = genClearBoard([...board], [
@@ -87,9 +74,8 @@ export const changeValueThunk = ({ key, move }) => ( dispatch, getState ) => {
         }
     };
 
-    revisedBoards.splice(key, 1, clearBoard);
     dispatch(changeValue({
-        boards: revisedBoards,
+        board: clearBoard,
     }));
 }
 
@@ -99,7 +85,7 @@ function* connectWebsocketSaga (action) {
     const socketTask = yield fork(connectNamespace, { 
         url: '/billBoard',
         initializeSocket,
-        initializeValue: initializeValueThunk,
+        initializeValue,
         changeValue: changeValueThunk,
         query,
     });
@@ -113,7 +99,7 @@ export function* billBoardSaga () {
 }
 
 const initialState = {
-    boards: [null, null, null, null],
+    board: null,
 };
 
 export default handleActions({
@@ -121,13 +107,13 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { boards }}) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { type, ...rest }}) => ({
         ...state,
-        boards,
+        ...rest,
     }),
-    [CHANGE_VALUE]: (state, { payload: { boards } }) => ({
+    [CHANGE_VALUE]: (state, { payload: { board } }) => ({
         ...state,
-        boards,
+        board,
     }),
     [CLEAR_VALUE]: state => initialState,
 }, initialState);
