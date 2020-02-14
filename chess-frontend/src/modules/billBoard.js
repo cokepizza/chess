@@ -22,6 +22,8 @@ export const initializeValueThunk = ({ key, board }) => ( dispatch, getState ) =
     const { billBoard: { boards }} = getState();
     const revisedBoards = [ ...boards ];
     revisedBoards.splice(key, 1, board);
+    console.dir(revisedBoards);
+
     dispatch(initializeValue({
         boards: revisedBoards
     }));
@@ -87,7 +89,7 @@ export const changeValueThunk = ({ key, move }) => ( dispatch, getState ) => {
 
     revisedBoards.splice(key, 1, clearBoard);
     dispatch(changeValue({
-        board: revisedBoards,
+        boards: revisedBoards,
     }));
 }
 
