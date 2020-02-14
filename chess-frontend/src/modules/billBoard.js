@@ -18,8 +18,16 @@ export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload
 export const clearValue = createAction(CLEAR_VALUE);
 export const changeValue = createAction(CHANGE_VALUE);
 
+export const initializeValueThunk = ({ key, board }) => ( dispatch, getState ) => {
+    const { billBoard: { boards }} = getState();
+    const revisedBoards = [ ...boards ];
+    revisedBoards.splice(key, 1, board);
+    dispatch(initializeValue({
+        boards: revisedBoards
+    }));
+}
+
 export const changeValueThunk = ({ key, move }) => ( dispatch, getState ) => {
-    key = 1;
     const { prev, next } = move;
     const { billBoard: { boards },
         } = getState();
@@ -89,7 +97,7 @@ function* connectWebsocketSaga (action) {
     const socketTask = yield fork(connectNamespace, { 
         url: '/billBoard',
         initializeSocket,
-        initializeValue,
+        initializeValue: initializeValueThunk,
         changeValue: changeValueThunk,
         query,
     });
@@ -111,14 +119,13 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { type, key, board }}) => {
-    console.dir([null, null, null, null].slice().splice(key, 1, board)); return {
+    [INITIALIZE_VALUE]: (state, { payload: { boards }}) => ({
         ...state,
-        boards: state.boards.slice().splice(key, 1, board),
-    }},
-    [CLEAR_VALUE]: state => initialState,
+        boards,
+    }),
     [CHANGE_VALUE]: (state, { payload: { boards } }) => ({
         ...state,
         boards,
-    })
+    }),
+    [CLEAR_VALUE]: state => initialState,
 }, initialState);

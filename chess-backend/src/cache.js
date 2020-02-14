@@ -41,6 +41,7 @@ const pieceMoveReduce = (game, key) => {
                     const pieceMove = JSON.parse(game.pieceMove);
                     socket.emit('message', {
                         type: 'change',
+                        key,
                         move: pieceMove[game.index],
                     });
                 });
@@ -55,6 +56,7 @@ const pieceMoveReduce = (game, key) => {
             game.participant.forEach(socket => {
                 socket.emit('message', {
                     type: 'initialize',
+                    key,
                     board: game.board,
                 });
             });
