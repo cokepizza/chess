@@ -31,7 +31,7 @@ export const getRatio = user => ({
     ).toFixed(2)
 })
 
-const pieceMoveReduce = game => {
+const pieceMoveReduce = (game, key) => {
     clearTimeout(game.setTimeout);
     game.setTimeout = setTimeout(() => {
         if(game.index < game.turn) {
@@ -47,7 +47,7 @@ const pieceMoveReduce = game => {
                 });
 
                 ++game.index;
-                pieceMoveReduce(game);
+                pieceMoveReduce(game, key);
         } else {
             game.index = 0;
             game.board = _.cloneDeep(board);
@@ -61,7 +61,7 @@ const pieceMoveReduce = game => {
                 });
             });
 
-            pieceMoveReduce(game);
+            pieceMoveReduce(game, key);
         }
     }, 1000);
 };
@@ -85,8 +85,8 @@ const cache = async () => {
             participant: [],
         }));
 
-    billBoard.forEach(game => {
-        pieceMoveReduce(game);
+    billBoard.forEach((game, index) => {
+        pieceMoveReduce(game, index);
     });
 
     const data = {
