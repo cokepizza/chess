@@ -19,6 +19,7 @@ export const clearValue = createAction(CLEAR_VALUE);
 export const changeValue = createAction(CHANGE_VALUE);
 
 export const changeValueThunk = ({ key, move }) => ( dispatch, getState ) => {
+    key = 1;
     const { prev, next } = move;
     const { billBoard: { boards },
         } = getState();
@@ -110,10 +111,11 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { type, key, board }}) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { type, key, board }}) => {
+    console.dir([null, null, null, null].slice().splice(key, 1, board)); return {
         ...state,
         boards: state.boards.slice().splice(key, 1, board),
-    }),
+    }},
     [CLEAR_VALUE]: state => initialState,
     [CHANGE_VALUE]: (state, { payload: { boards } }) => ({
         ...state,
