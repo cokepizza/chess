@@ -24,7 +24,6 @@ const sideBlockStyle = css`
 const LeftSideBlock = styled.div`
     ${sideBlockStyle}
     margin-right: 1%;
-    
 `;
 
 const RightSideBlock = styled.div`

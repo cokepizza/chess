@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, createGlobalStyle } from 'styled-components';
 import { IconContext } from 'react-icons';
 import { pieceMapper, playerMapper } from '../../lib/base/pieceConverter';
 
@@ -45,10 +45,6 @@ const CanvasBlock = styled.div`
     position: relative;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
     transition: 0.5s;
-
-    ${props => props.billBoard && css`
-        background: rgba(255,255,255,0.5);
-    `}
 
     ${props => props.replayMode && css`
         opacity: 0.8;
@@ -221,17 +217,24 @@ const ReplayBlock = styled.div`
     `}
 `;
 
-const Canvas = ({ onContextMenu, replayMode, billBoard, ...rest }) => {
+const GlobalStyle = createGlobalStyle`
+    body {
+        background: rgba(255,255,255,0.5);
+    }
+`;
 
+const Canvas = ({ onContextMenu, replayMode, billBoard, ...rest }) => {
     return (
-        <CanvasBlock
-            billBoard={billBoard}
-            replayMode={replayMode}
-            onContextMenu={onContextMenu}
-        >
-            <CanvasContent {...rest} />
-            <ReplayBlock replayMode={replayMode}>Replay</ReplayBlock>
-        </CanvasBlock>
+        <>
+            {billBoard && <GlobalStyle />}
+            <CanvasBlock
+                replayMode={replayMode}
+                onContextMenu={onContextMenu}
+            >
+                <CanvasContent {...rest} />
+                <ReplayBlock replayMode={replayMode}>Replay</ReplayBlock>
+            </CanvasBlock>
+        </>
     )
 };
 
