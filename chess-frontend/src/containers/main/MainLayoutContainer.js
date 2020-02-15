@@ -35,14 +35,18 @@ const MainLayoutContainer = () => {
 
     const { loading, data, error } = state;
 
-    if(loading) return null;
-    if(error) return null;
-    if(data) {
-        return (
-            <MainLayout />
-        )
-    }
-    return null;
+    // if(loading) return null;
+    // if(error) return null;
+    // if(data) {
+    //     return (
+    //         <MainLayout />
+    //     )
+    // }
+    // return null;
+
+    return (
+        <MainLayout />
+    )
 };
 
 export default MainLayoutContainer;

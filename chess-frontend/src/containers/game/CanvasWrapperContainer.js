@@ -28,14 +28,19 @@ const CanvasWrapperContainer = ({ gameKey, cellSize }) => {
 
     const { loading, data, error } = state;
 
-    if(loading) return null;
-    if(error) return null;
-    if(data) {
-        return (
-            <CanvasWrapper cellSize={cellSize} />
-        )
-    }
-    return null;
+    // if(loading) return null;
+    // if(error) return null;
+    // if(data) {
+    //     return (
+    //         <CanvasWrapper cellSize={cellSize} />
+    //     )
+    // }
+    // return null;
+
+    return (
+        <CanvasWrapper cellSize={cellSize} />
+    )
+    
 };
 
 export default CanvasWrapperContainer;

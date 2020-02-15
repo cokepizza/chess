@@ -30,14 +30,18 @@ const GameLayoutContainer = () => {
 
     const { loading, data, error } = state;
 
-    if(loading) return null;
-    if(error) return null;
-    if(data) {
-        return (
-            <GameLayout />
-        )
-    }
-    return null;
+    // if(loading) return null;
+    // if(error) return null;
+    // if(data) {
+    //     return (
+    //         <GameLayout />
+    //     )
+    // }
+    // return null;
+    
+    return (
+        <GameLayout />
+    )
 };
 
 export default GameLayoutContainer;

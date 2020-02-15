@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 
 import HeaderContainer from '../containers/common/HeaderContainer';
 import LoginContainer from '../containers/auth/LoginContainer';
+import FooterContainer from '../containers/common/FooterContainer';
 
 const LoginPage = () => {
     return (
@@ -12,6 +13,7 @@ const LoginPage = () => {
             </Helmet>
             <HeaderContainer />
             <LoginContainer />
+            <FooterContainer />
         </>
     )
 };

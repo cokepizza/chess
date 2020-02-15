@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 
 import HeaderContainer from '../containers/common/HeaderContainer';
 import GamePlayLayoutContainer from '../containers/gameplay/GamePlayLayoutContainer';
+import FooterContainer from '../containers/common/FooterContainer';
 
 const GamePlayPage = ({ history, match }) => {
     useEffect(() => {
@@ -23,6 +24,7 @@ const GamePlayPage = ({ history, match }) => {
             </Helmet>
             <HeaderContainer />
             <GamePlayLayoutContainer gameKey={id}/>
+            <FooterContainer />
         </>
     )
 };

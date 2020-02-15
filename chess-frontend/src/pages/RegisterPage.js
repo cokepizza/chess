@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 
 import HeaderContainer from '../containers/common/HeaderContainer';
 import RegisterContainer from '../containers/auth/RegisterContainer';
+import FooterContainer from '../containers/common/FooterContainer';
 
 const RegisterPage = () => {
 
@@ -13,6 +14,7 @@ const RegisterPage = () => {
             </Helmet>
             <HeaderContainer />
             <RegisterContainer />
+            <FooterContainer />
         </>
     )
 };

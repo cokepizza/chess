@@ -67,14 +67,18 @@ const GamePlayLayoutContainer = ({ gameKey }) => {
 
     const { loading, data, error } = state;
 
-    if(loading) return null;
-    if(error) return null;
-    if(data) {
-        return (
-            <GamePlayLayout />
-        )
-    }
-    return null;
+    // if(loading) return null;
+    // if(error) return null;
+    // if(data) {
+    //     return (
+    //         <GamePlayLayout />
+    //     )
+    // }
+    // return null;
+
+    return (
+        <GamePlayLayout />
+    )
 };
 
 export default GamePlayLayoutContainer;

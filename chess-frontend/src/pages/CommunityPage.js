@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 
 import HeaderContainer from '../containers/common/HeaderContainer';
 import CommunityLayoutContainer from '../containers/community/CommunityLayoutContainer';
+import FooterContainer from '../containers/common/FooterContainer';
 
 const CommunityPage = () => {
 
@@ -13,6 +14,7 @@ const CommunityPage = () => {
             </Helmet>
             <HeaderContainer />
             <CommunityLayoutContainer />
+            <FooterContainer />
         </>
     )
 };
