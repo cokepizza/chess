@@ -7,7 +7,6 @@ import IframeContainer from '../../containers/main/IframeContainer';
 const MainLayoutBlock = styled.div`
     height: 800px;
     width: 100%;
-    margin-top: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,18 +18,18 @@ const sideBlockStyle = css`
     flex-direction: column;
     justify-content: space-around;
     width: 20%;
+    align-items: center;
 `;
 
 const LeftSideBlock = styled.div`
     ${sideBlockStyle}
     margin-right: 1%;
-    align-items: flex-end;
+    
 `;
 
 const RightSideBlock = styled.div`
     ${sideBlockStyle}
     margin-left: 1%;
-    align-items: flex-start;
 `;
 
 const MainLayout = () => {

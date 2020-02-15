@@ -51,6 +51,7 @@ const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
         return (
             <Canvas
                 board={board}
+                billBoard={true}
                 blocked={true}
                 onContextMenu={onContextMenu}
                 cellSize={cellSize}

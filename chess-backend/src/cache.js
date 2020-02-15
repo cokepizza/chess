@@ -35,9 +35,7 @@ const pieceMoveReduce = game => {
     clearTimeout(game.setTimeout);
     game.setTimeout = setTimeout(() => {
         if(game.index < game.turn) {
-                console.dir(`next tick ${game.index}`);
                 game.participant.forEach(socket => {
-                    console.dir(socket.id);
                     const pieceMove = JSON.parse(game.pieceMove);
                     socket.emit('message', {
                         type: 'change',
@@ -51,7 +49,6 @@ const pieceMoveReduce = game => {
             game.index = 0;
             game.board = _.cloneDeep(board);
 
-            console.dir(game.board);
             game.participant.forEach(socket => {
                 socket.emit('message', {
                     type: 'initialize',
@@ -74,20 +71,23 @@ const cache = async () => {
     // const games = await Game.find({}).sort({ 'destroyAt': -1 }).limit(4);
     // const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
     const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
-    const billBoard = games.map(game => (
-        {
-            ...game.serialize(),
-            index: 0,
-            board: _.cloneDeep(board),
-            setTimeout: null,
-            participant: [],
-        }));
-
-    billBoard.forEach((game, index) => {
-        setTimeout(() => {
-            pieceMoveReduce(game);
-        }, 300 * index);
-    });
+    let billBoard = [];
+    if(games) {
+        billBoard = games.map(game => (
+            {
+                ...game.serialize(),
+                index: 0,
+                board: _.cloneDeep(board),
+                setTimeout: null,
+                participant: [],
+            }));
+    
+        billBoard.forEach((game, index) => {
+            setTimeout(() => {
+                pieceMoveReduce(game);
+            }, 300 * index);
+        });
+    }
 
     const data = {
         ranking: {
