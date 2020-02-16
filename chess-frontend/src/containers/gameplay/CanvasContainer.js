@@ -24,7 +24,7 @@ const CanvasContainer = ({ cellSize, glanceAt }) => {
         if((role && !init) || (glanceAt && !init)) {
             setInit(true);
         }
-    }, [role, glanceAt]);
+    }, [init, role, glanceAt]);
     
     useEffect(() => {
         if(!replayMode) {

@@ -19,7 +19,7 @@ const RecordContainer = () => {
         if(role && !init) {
             setInit(true);
         }
-    }, [role]);
+    }, [init, role]);
 
     useEffect(() => {
         return () => {

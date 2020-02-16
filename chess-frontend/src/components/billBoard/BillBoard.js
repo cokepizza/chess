@@ -4,12 +4,16 @@ import BillBoardCanvasWrapperContainer from '../../containers/billBoard/BillBoar
 
 const BillBoardFrameBlock = styled.div`
     display: flex;
+    width: 216px;
+    height: 280px;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 `;
 
 const BillBoardBlock = styled.div`
-    width: 100%;
-    height: 100%;
+    width: 216px;
+    height: 216px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,17 +21,31 @@ const BillBoardBlock = styled.div`
 `;
 
 const InformFrameBlock = styled.div`
-    width: 100%;
+    margin-top: 4px;
+    height: 60px;
+    width: 216px;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    align-items: center;
 `;
 
 const PlayerBlock = styled.div`
-  display: flex;
+    height: 40px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    
+
+    & + & {
+        margin-left: 12px;
+    }
 `;
 
 const TextBlock = styled.div`
-  font-size: 12px;
+  font-size: 10px;
 `;
 
 const BillBoard = ({ roomKey, inform }) => {
@@ -37,9 +55,9 @@ const BillBoard = ({ roomKey, inform }) => {
                 <BillBoardCanvasWrapperContainer roomKey={roomKey} />
             </BillBoardBlock>
             <InformFrameBlock>
-                {inform && inform.map(player => (
-                    <PlayerBlock key={roomKey + '_' + player.username}>
-                        <TextBlock>{player.username}</TextBlock>
+                {inform && inform.map((player, index) => (
+                    <PlayerBlock key={roomKey + '_' + index + '_' + player.username}>
+                        <TextBlock>{player.username.split('@')[0]}</TextBlock>
                         <TextBlock>{player.elo}</TextBlock>
                     </PlayerBlock>
                 ))}

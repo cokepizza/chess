@@ -17,7 +17,7 @@ const IframeCoverBlock = styled.div`
 
 const IframeFrameBlock = styled.div`
     width: 216px;
-    height: 216px;
+    height: 280px;
     position: relative;
 `;
 
@@ -59,8 +59,8 @@ const IframeBlock = styled.iframe`
 `;
 
 const Iframe = ({ roomKey, open }) => {
-    const src = `https://chesssup.com/billBoard/${roomKey}`;
-    // const src = `./billBoard/${roomKey}`;
+    // const src = `https://chesssup.com/billBoard/${roomKey}`;
+    const src = `./billBoard/${roomKey}`;
 
     return (
         <IframeCoverBlock>
