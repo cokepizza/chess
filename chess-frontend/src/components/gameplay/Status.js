@@ -36,7 +36,7 @@ const Status = ({ light, name, beneath }) => {
     };
 
     return (
-        <StatusBlock beneath={beneath ? 1 : 0}>
+        <StatusBlock beneath={beneath ? 1 : 0}>            
             {light
                 ? (
                     <IconContext.Provider value={iconStyle}>
@@ -55,5 +55,6 @@ const Status = ({ light, name, beneath }) => {
         </StatusBlock>
     )
 };
+
 
 export default React.memo(Status);

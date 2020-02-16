@@ -37,6 +37,7 @@ const CanvasWrapperContainer = ({ gameKey, cellSize }) => {
     // }
     // return null;
 
+    //  glanceAt라는 flag를 통해 role이 없이도 canvas를 조회할 수 있음
     return (
         <CanvasWrapper
             cellSize={cellSize}

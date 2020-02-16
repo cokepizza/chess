@@ -17,8 +17,8 @@ const TimerContainer = ({ white, init }) => {
     if(init) {
         return (
             <Timer
-              time={time}
-              color={color}
+                time={time}
+                color={color}
             />
         )
     } else {
@@ -26,7 +26,6 @@ const TimerContainer = ({ white, init }) => {
             <Timer />
         )
     }
-    
     
 };
 

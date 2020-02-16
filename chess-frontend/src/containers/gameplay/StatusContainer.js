@@ -23,10 +23,11 @@ const StatusContainer = ({ black, white, beneath, init }) => {
         )
     } else {
         return (
-            <Status />
+            <Status
+                beneath={beneath}
+            />
         )
     }
-    
 };
 
 export default StatusContainer;

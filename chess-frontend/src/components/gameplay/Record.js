@@ -21,23 +21,41 @@ const Record = ({ reversal, init }) => {
         <>
             {reversal ? (
                 <>
-                    <TimerContainer init={init} white />
+                    <TimerContainer
+                        init={init}
+                        white
+                    />
                 </>
             ) : (
                 <>
-                    <TimerContainer init={init} black />
+                    <TimerContainer
+                        init={init}
+                        black
+                    />
                 </>
             )}
             <RecordBlock>
                 {reversal ? (
                     <>
-                        <TimeLineContainer white />
-                        <StatusContainer init={init} white />
+                        <TimeLineContainer
+                            init={init}
+                            white
+                        />
+                        <StatusContainer
+                            init={init}
+                            white
+                        />
                     </>
                 ) : (
                     <>
-                        <TimeLineContainer black />
-                        <StatusContainer init={init} black />
+                        <TimeLineContainer
+                            init={init}
+                            black
+                        />
+                        <StatusContainer
+                            init={init}
+                            black
+                        />
                     </>
                 )}
                 <UtilContainer />
@@ -45,24 +63,44 @@ const Record = ({ reversal, init }) => {
                 <UndoRedoContainer />
                 {reversal ? (
                     <>
-                        <StatusContainer init={init} black beneath/>
-                        <TimeLineContainer black />
+                        <StatusContainer
+                            init={init}
+                            black
+                            beneath
+                        />
+                        <TimeLineContainer
+                            init={init}
+                            black
+                        />
                     </>
                 ) : (
                     <>
-                        <StatusContainer init={init} white beneath/>
-                        <TimeLineContainer white />
+                        <StatusContainer
+                            init={init}
+                            white
+                            beneath
+                        />
+                        <TimeLineContainer
+                            init={init}
+                            white
+                        />
                     </>
                 )}
                 
             </RecordBlock>
             {reversal ? (
                 <>
-                    <TimerContainer init={init} black />
+                    <TimerContainer
+                        init={init}
+                        black
+                    />
                 </>
             ) : (
                 <>
-                    <TimerContainer init={init} white />
+                    <TimerContainer
+                        init={init}
+                        white
+                    />
                 </>
             )}
         </>

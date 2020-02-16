@@ -14,8 +14,9 @@ const RecordContainer = () => {
 
     const [ init, setInit ] = useState(false);
 
+    //  화면 깜박임 없이 렌더링을 한번만 하기 위한 장치
     useEffect(() => {
-        if(!init) {
+        if(role && !init) {
             setInit(true);
         }
     }, [role]);
@@ -37,8 +38,6 @@ const RecordContainer = () => {
             reversal={reversal}
         />
     );
-
-    // return null;
 };
 
 export default RecordContainer;
