@@ -48,10 +48,16 @@ const pieceMoveReduce = game => {
         } else {
             game.index = 0;
             game.board = _.cloneDeep(board);
-
+            
+            const inform = game.player.map(player => ({
+                username: player.username,
+                elo: player.elo,
+            }));
+            
             game.participant.forEach(socket => {
                 socket.emit('message', {
                     type: 'initialize',
+                    inform,
                     board: game.board,
                 });
             });
@@ -70,17 +76,21 @@ const cache = async () => {
     
     // const games = await Game.find({}).sort({ 'destroyAt': -1 }).limit(4);
     // const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
-    const games = await Game.find().sort({ turn: -1, destroyAt: -1 }).limit(4);
+    const games = await Game
+        .find()
+        .sort({ turn: -1, destroyAt: -1 })
+        .limit(4)
+        .populate('player');
+
     let billBoard = [];
     if(games) {
-        billBoard = games.map(game => (
-            {
-                ...game.serialize(),
-                index: 0,
-                board: _.cloneDeep(board),
-                setTimeout: null,
-                participant: [],
-            }));
+        billBoard = games.map(game => ({
+            ...game.serialize(),
+            index: 0,
+            board: _.cloneDeep(board),
+            setTimeout: null,
+            participant: [],
+        }));
     
         billBoard.forEach((game, index) => {
             setTimeout(() => {

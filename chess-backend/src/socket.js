@@ -180,8 +180,14 @@ export default (server, app, sessionMiddleware) => {
         const billBoard = app.get('billBoard');
 
         if(billBoard[key]) {
+            const inform = billBoard[key].player.map(player => ({
+                username: player.username,
+                elo: player.elo,
+            }));
+
             socket.emit('message', {
                 type: 'initialize',
+                inform,
                 board: billBoard[key].board,
             });
     
