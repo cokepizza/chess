@@ -22,11 +22,14 @@ const UnClickableBlock = styled.div`
     /* pointer-events: none; */
 `;
 
-const CanvasWrapper = ({ cellSize }) => {
+const CanvasWrapper = ({ cellSize, glanceAt }) => {
     return (
         <CanvasWrapperBlock>
             <UnClickableBlock>
-                <CanvasContainer cellSize={cellSize} />
+                <CanvasContainer
+                    cellSize={cellSize}
+                    glanceAt={true}
+                />
             </UnClickableBlock>
         </CanvasWrapperBlock>
     )

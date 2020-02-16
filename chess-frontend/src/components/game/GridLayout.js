@@ -48,9 +48,11 @@ const GridLayoutBlock = styled.div`
 
 const GridLayout = ({ games, onGameClick }) => {
    
-    if(!games) return <GridLayoutBlock />;
-
-    const list = [ ...games ];
+    let list = [];
+    
+    if(games) {
+        list = [ ...games ];
+    }
     
     const backgroundStyle = {
         position: 'absolute',

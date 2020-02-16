@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Status from '../../components/gameplay/Status';
 
-const StatusContainer = ({ black, white, beneath }) => {
+const StatusContainer = ({ black, white, beneath, init }) => {
     const { blackNick, whiteNick, participant } = useSelector(({ game }) => ({
         blackNick: game.black,
         whiteNick: game.white,
@@ -13,13 +13,20 @@ const StatusContainer = ({ black, white, beneath }) => {
     const light = (white && participantSet.has(whiteNick)) || (black && participantSet.has(blackNick));
     const name = (white && whiteNick) || (black && blackNick);
 
-    return (
-        <Status
-            light={light}
-            name={name}
-            beneath={beneath}
-        />
-    )
+    if(init) {
+        return (
+            <Status
+                light={light}
+                name={name}
+                beneath={beneath}
+            />
+        )
+    } else {
+        return (
+            <Status />
+        )
+    }
+    
 };
 
 export default StatusContainer;

@@ -16,28 +16,28 @@ const RecordBlock = styled.div`
     box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
-const Record = ({ reversal }) => {
+const Record = ({ reversal, init }) => {
     return (
         <>
             {reversal ? (
                 <>
-                    <TimerContainer white />
+                    <TimerContainer init={init} white />
                 </>
             ) : (
                 <>
-                    <TimerContainer black />
+                    <TimerContainer init={init} black />
                 </>
             )}
             <RecordBlock>
                 {reversal ? (
                     <>
                         <TimeLineContainer white />
-                        <StatusContainer white />
+                        <StatusContainer init={init} white />
                     </>
                 ) : (
                     <>
                         <TimeLineContainer black />
-                        <StatusContainer black />
+                        <StatusContainer init={init} black />
                     </>
                 )}
                 <UtilContainer />
@@ -45,12 +45,12 @@ const Record = ({ reversal }) => {
                 <UndoRedoContainer />
                 {reversal ? (
                     <>
-                        <StatusContainer black beneath/>
+                        <StatusContainer init={init} black beneath/>
                         <TimeLineContainer black />
                     </>
                 ) : (
                     <>
-                        <StatusContainer white beneath/>
+                        <StatusContainer init={init} white beneath/>
                         <TimeLineContainer white />
                     </>
                 )}
@@ -58,11 +58,11 @@ const Record = ({ reversal }) => {
             </RecordBlock>
             {reversal ? (
                 <>
-                    <TimerContainer black />
+                    <TimerContainer init={init} black />
                 </>
             ) : (
                 <>
-                    <TimerContainer white />
+                    <TimerContainer init={init} white />
                 </>
             )}
         </>

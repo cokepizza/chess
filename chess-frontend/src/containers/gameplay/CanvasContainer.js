@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Canvas from '../../components/gameplay/Canvas';
 import { clickPieceThunk, initializeBlocked , clearClickedThunk } from '../../modules/canvas';
 import { clearValue } from '../../modules/canvas';
+import defaultBoard from '../../lib/base/board';
 
-const CanvasContainer = ({ cellSize }) => {
+const CanvasContainer = ({ cellSize, glanceAt }) => {
     const { board, reverseBoard, blocked, reversed, replayMode, turn, role } = useSelector(({ canvas, socketAuth, game, record }) => ({
         board: canvas.board,
         reverseBoard: canvas.reverseBoard,
@@ -16,6 +17,14 @@ const CanvasContainer = ({ cellSize }) => {
     }));
 
     const dispatch = useDispatch();
+
+    const [init, setInit] = useState(false);
+
+    useEffect(() => {
+        if((role && !init) || (glanceAt && !init)) {
+            setInit(true);
+        }
+    }, [role, glanceAt]);
     
     useEffect(() => {
         if(!replayMode) {
@@ -58,6 +67,10 @@ const CanvasContainer = ({ cellSize }) => {
         servedBoard = reverseBoard;
     };
 
+    if(!init) {
+        servedBoard = [ ...defaultBoard ];
+    }
+
     return (
         <Canvas
             board={servedBoard}
@@ -67,7 +80,7 @@ const CanvasContainer = ({ cellSize }) => {
             cellSize={cellSize}
             replayMode={replayMode}
         />
-    )
+    )    
 };
 
 export default CanvasContainer;

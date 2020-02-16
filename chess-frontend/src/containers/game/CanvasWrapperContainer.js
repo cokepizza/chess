@@ -38,7 +38,10 @@ const CanvasWrapperContainer = ({ gameKey, cellSize }) => {
     // return null;
 
     return (
-        <CanvasWrapper cellSize={cellSize} />
+        <CanvasWrapper
+            cellSize={cellSize}
+            glanceAt={true}
+        />
     )
     
 };

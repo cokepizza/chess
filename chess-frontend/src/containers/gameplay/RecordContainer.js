@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Record from '../../components/gameplay/Record';
@@ -12,6 +12,14 @@ const RecordContainer = () => {
 
     const dispatch = useDispatch();
 
+    const [ init, setInit ] = useState(false);
+
+    useEffect(() => {
+        if(!init) {
+            setInit(true);
+        }
+    }, [role]);
+
     useEffect(() => {
         return () => {
             dispatch(clearValue());
@@ -23,15 +31,14 @@ const RecordContainer = () => {
         reversal = true;
     }
 
-    if(role) {
-        return (
-            <Record
-                reversal={reversal}
-            />
-        );
-    }
+    return (
+        <Record
+            init={init}
+            reversal={reversal}
+        />
+    );
 
-    return null;
+    // return null;
 };
 
 export default RecordContainer;
