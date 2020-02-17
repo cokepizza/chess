@@ -1,85 +1,86 @@
-import React, { useState } from 'react';
-import initItem from './testItems';
-import { Route } from 'react-router-dom';
+import React from 'react';
 import styled from 'styled-components';
-import CommunityTableRow from './CommunityTableRow';
-import CommunityHeaderBlock from './CommunityHeader';
-import CommunityFooterBlock from './CommunityFooter';
-import TestBlock from './CommunityContent';
+import BulletinLayoutContainer from '../../containers/community/BulletinLayoutContainer';
 
-const CommunityLayoutBlock = styled.div`
+const CommunityLayoutFrameBlock = styled.div`
     width: 100%;
-    min-height: 700px;
-    background-color:#EDEBE9;
-    display: flex;
-    justify-content: center;
-`;
-
-const CommunityMainBlock = styled.main`
-    width: 80%;
-    min-height: 720px;
-    background-color:lightblue;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: rgba(255, 255, 255);
-    box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
-`;
-
-const CommunityNameBlock = styled.h1`
-    width: 100%;
-    height: 100px;
-    background-color: white;
+    height: 800px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0px 0px 0px 0px;
 `;
 
-// const PageDivBlock = styled.div`
-//     display:flex;
-//     width: 100%;
-//     height: 50px;
-//     background-color: white;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-// `;
-
-const CommunityTableBlock = styled.div`
-    width: 90%;
-    height: auto;
-    align-self:center;
-    justify-content:center;
-    align-items:center;
-    background-color: rgba(255, 255, 255);
-    box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+const CommunityLayoutBlock = styled.div`
+    width: 1200px;
+    height: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
-const CommunityLayout = () => {
-    const [items, setItems] = useState(initItem);
+const HeaderBlock = styled.div`
+    position: relative;
+    display: flex;
+    margin-top: 20px;
+    width: 500px;
+    height: 30px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    background: rgba(0, 0, 0, 0.05);
+`;
+
+const SubTitleBlock = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 125px;
+    height: 30px;
+    font-size: 15px;
+    cursor: pointer;
+`;
+
+const MovingUnderline = styled.div`
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    width: 125px;
+    height: 2px;
+    background: black;
+    transition: 0.5s;
+    left: ${props => (props.checkedIndex * 125) + 'px'};
+`;
+
+const ContentBlock = styled.div`
+    width: 1000px;
+    height: 600px;
+    margin-top: 35px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+`;
+
+
+const CommunityLayout = ({ community, onClick }) => {
+    const checkedIndex = community.findIndex(commun => commun.checked);
+
     return (
-        <>
-        <Route path="/Community"
-        exact
-        render={() => 
-        <CommunityLayoutBlock>
-            <CommunityMainBlock>
-                <CommunityNameBlock>
-                    General Chess Discussion
-                </CommunityNameBlock>
-                <CommunityTableBlock>
-                    <CommunityHeaderBlock />
-                    {items.map(tableRow => (
-                        <CommunityTableRow title={tableRow.title} count={tableRow.count} comments={tableRow.comments} time={tableRow.time} />
+        <CommunityLayoutFrameBlock>
+            <CommunityLayoutBlock>
+                <HeaderBlock>
+                    {community.map((commun, index) => (
+                        <SubTitleBlock
+                            checked={commun.checked}
+                            onClick={() => onClick(index)}
+                        >
+                            {commun.name}
+                        </SubTitleBlock>
                     ))}
-                    <CommunityFooterBlock />
-                </CommunityTableBlock>
-            </CommunityMainBlock>
-        </CommunityLayoutBlock>}
-        />
-        <Route path="/Community/Contents" component={TestBlock}/>
-        </>
+                    <MovingUnderline checkedIndex={checkedIndex} />
+                </HeaderBlock>
+                <ContentBlock>
+                    <BulletinLayoutContainer index={checkedIndex} />
+                </ContentBlock>
+            </CommunityLayoutBlock>
+        </CommunityLayoutFrameBlock>
     )
 };
 

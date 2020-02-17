@@ -10,6 +10,7 @@ import record, { recordSaga }  from './record';
 import create from './create';
 import ranking, { rankingSaga } from './ranking';
 import billBoard, { billBoardSaga } from './billBoard';
+import community from './community';
 
 
 const rootReducer = combineReducers({
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
     create,
     ranking,
     billBoard,
+    community,
 })
 
 
