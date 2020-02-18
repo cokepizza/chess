@@ -9,12 +9,12 @@ const ContentBlock = styled.div`
 
 `;
 
-const BulletinLayout = ({ board }) => {
+const BulletinLayout = ({ list }) => {
     return (
         <BulletinLayoutBlock>
-            {board && board.content.map(content => (
+            {list && list.summary.map(title => (
                 <ContentBlock>
-                    {content}
+                    {title}
                 </ContentBlock>
             ))}
         </BulletinLayoutBlock>

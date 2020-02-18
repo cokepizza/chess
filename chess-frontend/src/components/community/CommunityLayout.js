@@ -2,7 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { FaPencilAlt } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
+
 import BulletinLayoutContainer from '../../containers/community/BulletinLayoutContainer';
+import WriteContainer from '../../containers/community/WriteContainer';
+import PostContainer from '../../containers/community/PostContainer';
 
 const CommunityLayoutFrameBlock = styled.div`
     width: 100%;
@@ -69,6 +72,8 @@ const WriteFrameBlock = styled.div`
 
 const WriteEventBlock = styled.div`
     display: flex;
+    align-items: center;
+    justify-content: center;
     color: rgba(0, 0, 0, 0.4);
 
     &:hover {
@@ -77,33 +82,41 @@ const WriteEventBlock = styled.div`
 `;
 
 const WriteBlock = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-left: 10px;
     font-size: 14px;
     height: 30px;
     cursor: pointer;  
 `;
 
-const CommunityLayout = ({ community, onClick }) => {
-    const checkedIndex = community.findIndex(commun => commun.checked);
+const CommunityLayout = ({
+    menu,
+    status,
+    onClick,
+    onCreatePost,
+}) => {
+    const checkedIndex = menu.findIndex(criteria => criteria.checked);
 
     return (
         <CommunityLayoutFrameBlock>
             <CommunityLayoutBlock>
                 <HeaderBlock>
-                    {community.map((commun, index) => (
+                    {menu.map((criteria, index) => (
                         <SubTitleBlock
-                            checked={commun.checked}
+                            checked={criteria.checked}
                             onClick={() => onClick(index)}
                         >
-                            {commun.name}
+                            {criteria.name}
                         </SubTitleBlock>
                     ))}
                     <MovingUnderline checkedIndex={checkedIndex} />
                 </HeaderBlock>
-                <WriteFrameBlock>
+                <WriteFrameBlock onClick={onCreatePost}>
                     {checkedIndex !== 0 && (
                         <WriteEventBlock>
-                            <IconContext.Provider value={{ width:'20', height:'20' }}>
+                            <IconContext.Provider value={{ style: { width:'20px', height:'20px' }}}>
                                 <FaPencilAlt />
                             </IconContext.Provider>
                             <WriteBlock>
@@ -113,7 +126,9 @@ const CommunityLayout = ({ community, onClick }) => {
                     )}
                 </WriteFrameBlock>
                 <ContentBlock>
-                    <BulletinLayoutContainer index={checkedIndex} />
+                    {status && status === 'list' && <BulletinLayoutContainer />}
+                    {status && status === 'write' && <WriteContainer />}
+                    {status && status === 'post' && <PostContainer />}
                 </ContentBlock>
             </CommunityLayoutBlock>
         </CommunityLayoutFrameBlock>

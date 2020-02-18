@@ -1,65 +1,75 @@
 import { handleActions, createAction } from 'redux-actions';
 
-const SET_COMMUNITY = 'community/SET_COMMUNITY';
-export const setCommunity = createAction(SET_COMMUNITY, payload => payload);
+const SET_MENU = 'community/SET_MENU';
+const SET_STATUS = 'community/SET_STATUS';
+export const setMenu = createAction(SET_MENU, payload => payload);
+export const setStatus = createAction(SET_STATUS, payload => payload);
 
-export const checkChangeThunk = index => (dispatch, getState) => {
+export const setMenuThunk = index => (dispatch, getState) => {
     const {
-        community: { community },
+        community: { menu },
     } = getState();
 
-    const checkedIndex = community.findIndex(commun => commun.checked);
+    const checkedIndex = menu.findIndex(criteria => criteria.checked);
     if(index === checkedIndex) return;
 
-    const revisedCommunity = community.map(commun => commun.checked
-        ? { ...commun, checked: false }
-        : commun
+    const revisedMenu = menu.map(criteria => criteria.checked
+        ? { ...criteria, checked: false }
+        : criteria
     );
 
-    revisedCommunity[index] = {
-        ...revisedCommunity[index],
+    revisedMenu[index] = {
+        ...revisedMenu[index],
         checked: true,
     }
 
-    dispatch(setCommunity({
-        community: revisedCommunity,
+    dispatch(setMenu({
+        menu: revisedMenu,
     }))
-    console.dir(community);
 };
 
 const initialState = {
-    community: [
+    status: 'list',
+    menu: [
         {
             name: 'All Posts',
             checked: true,
-            page: 0,
-            content: ['하하하하', '호호호호'],
         },
         {
             name: 'Small Talk',
             checked: false,
-            page: 0,
-            content: [],
         },
         {
             name: 'Know How',
             checked: false,
-            page: 0,
-            content: [],
         },
         {
             name: 'Notice',
             checked: false,
-            page: 0,
-            content: [],
         },
     ],
+    list: {
+        page: 0,
+        summary: ['haha', 'hoho'],
+    },
+    post: {
+        title: null,
+        content: null,
+    },
+    write: {
+        title: 'sad',
+        content: 'happy',
+    }
 };
 
 
 export default handleActions({
-    [SET_COMMUNITY]: (state, { payload: { community } }) => ({
+    [SET_MENU]: (state, { payload: { menu } }) => ({
         ...state,
-        community,
+        menu,
     }),
+    [SET_STATUS]: (state, { payload: { status } }) => ({
+        ...state,
+        status,
+    })
 }, initialState);

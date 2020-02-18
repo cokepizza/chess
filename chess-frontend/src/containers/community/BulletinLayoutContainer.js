@@ -2,14 +2,14 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import BulletinLayout from '../../components/community/BulletinLayout';
 
-const BulletinLayoutContainer = ({ index }) => {
-    const { board } = useSelector(({ community }) => ({
-        board: community.community[index],
+const BulletinLayoutContainer = () => {
+    const { list } = useSelector(({ community }) => ({
+        list: community.list,
     }));
 
     return (
         <BulletinLayout
-            board={board}
+            list={list}
         />
     );
 };
