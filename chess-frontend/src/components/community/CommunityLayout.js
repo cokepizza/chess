@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FaPencilAlt } from 'react-icons/fa';
+import { IconContext } from 'react-icons';
 import BulletinLayoutContainer from '../../containers/community/BulletinLayoutContainer';
 
 const CommunityLayoutFrameBlock = styled.div`
@@ -54,10 +56,32 @@ const MovingUnderline = styled.div`
 const ContentBlock = styled.div`
     width: 1000px;
     height: 600px;
-    margin-top: 35px;
+    margin-top: 5px;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
+const WriteFrameBlock = styled.div`
+    width: 1000px;
+    height: 30px;
+    display: flex;
+    justify-content: flex-end;    
+`;
+
+const WriteEventBlock = styled.div`
+    display: flex;
+    color: rgba(0, 0, 0, 0.4);
+
+    &:hover {
+        color: rgba(0, 0, 0, 0.8);
+    }
+`;
+
+const WriteBlock = styled.div`
+    margin-left: 10px;
+    font-size: 14px;
+    height: 30px;
+    cursor: pointer;  
+`;
 
 const CommunityLayout = ({ community, onClick }) => {
     const checkedIndex = community.findIndex(commun => commun.checked);
@@ -76,6 +100,18 @@ const CommunityLayout = ({ community, onClick }) => {
                     ))}
                     <MovingUnderline checkedIndex={checkedIndex} />
                 </HeaderBlock>
+                <WriteFrameBlock>
+                    {checkedIndex !== 0 && (
+                        <WriteEventBlock>
+                            <IconContext.Provider value={{ width:'20', height:'20' }}>
+                                <FaPencilAlt />
+                            </IconContext.Provider>
+                            <WriteBlock>
+                                New Post
+                            </WriteBlock>
+                        </WriteEventBlock>
+                    )}
+                </WriteFrameBlock>
                 <ContentBlock>
                     <BulletinLayoutContainer index={checkedIndex} />
                 </ContentBlock>
