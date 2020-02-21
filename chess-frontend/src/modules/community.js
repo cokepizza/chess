@@ -59,8 +59,8 @@ const initialState = {
         content: null,
     },
     write: {
-        title: 'sad',
-        content: 'happy',
+        title: null,
+        content: null,
     }
 };
 

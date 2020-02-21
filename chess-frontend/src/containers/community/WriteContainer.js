@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Quill from 'quill';
 import { setForm } from '../../modules/community';
@@ -15,10 +15,12 @@ const WriteLayoutContainer = () => {
     const quillElement = useRef();
     const quillInstance = useRef();
 
+    const [ holding, setHolding ] = useState(true);
+
     useEffect(() => {
         quillInstance.current = new Quill(quillElement.current, {
             theme: 'bubble',
-            placeholder: '...write',
+            placeholder: 'content',
             modules: {
                 toolbar: [
                     [{ header: '1' }, { header: '2' }],
@@ -38,18 +40,25 @@ const WriteLayoutContainer = () => {
     }, []);
 
     const onChangeTitle = useCallback(e => {
+        if(holding && e.target.value !== '') {
+            setHolding(false);
+        } else if(!holding && e.target.value === ''){
+            setHolding(true);
+        }
+        
         dispatch(setForm({
             status: 'write',
             key: 'title',
             value: e.target.value,
         }));
-    }, [dispatch]);
+    }, [dispatch, holding]);
 
     return (
         <Write
             quillElement={quillElement}
             onChangeTitle={onChangeTitle}
             write={write}
+            holding={holding}
         />
     )
 };
