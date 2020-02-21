@@ -14,6 +14,9 @@ const CommunityLayoutContainer = () => {
 
     const onClick = useCallback(index => {
         dispatch(setMenuThunk(index));
+        dispatch(setStatus({
+            status: 'list'
+        }));
     }, [dispatch]);
 
     const onCreatePost = useCallback(() => {

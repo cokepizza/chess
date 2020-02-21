@@ -2,8 +2,10 @@ import { handleActions, createAction } from 'redux-actions';
 
 const SET_MENU = 'community/SET_MENU';
 const SET_STATUS = 'community/SET_STATUS';
+const SET_FORM = 'community/SET_FORM';
 export const setMenu = createAction(SET_MENU, payload => payload);
 export const setStatus = createAction(SET_STATUS, payload => payload);
+export const setForm = createAction(SET_FORM, payload => payload);
 
 export const setMenuThunk = index => (dispatch, getState) => {
     const {
@@ -71,5 +73,12 @@ export default handleActions({
     [SET_STATUS]: (state, { payload: { status } }) => ({
         ...state,
         status,
-    })
+    }),
+    [SET_FORM]: (state, { payload: { status, key, value } }) => ({
+        ...state,
+        [status]: {
+            ...state[status],
+            [key]: value,
+        }
+    }),
 }, initialState);
