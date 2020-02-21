@@ -31,13 +31,17 @@ const WriteLayoutContainer = () => {
             },
         });
 
-        quillInstance.current.on('text-change', (delta, oldDelta, source) => {
-            console.dir(source);
+        const quill = quillInstance.current;
+        quill.on('text-change', (delta, oldDelta, source) => {
             if(source === 'user') {
-                console.dir(quillInstance.current.root.innerHTML);
+                dispatch(setForm({
+                    status: 'write',
+                    key: 'content',
+                    value: quill.root.innerHTML,
+                }))
             }
         });
-    }, []);
+    }, [dispatch]);
 
     const onChangeTitle = useCallback(e => {
         if(holding && e.target.value !== '') {
