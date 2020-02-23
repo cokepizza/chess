@@ -57,19 +57,26 @@ const ButtonBlock = styled.button`
     cursor: pointer;
 
     & + & {
-        margin-left: 10px;
+        margin-left: 5px;
+    }
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.05);
     }
 
     &:active {
         background: rgba(0, 0, 0, 0.1);
     }
+
 `;
 
 const Write = ({
     quillElement,
     onChangeTitle,
     holding,
-    write
+    write,
+    onSubmit,
+    onCancel,
 }) => {
     return (
         <WriteBlock>
@@ -83,10 +90,10 @@ const Write = ({
                 <QuillWrapperBlock ref={quillElement} />
             </QuillFrameBlock>
             <SubmitFrameBlock>
-                <ButtonBlock>
+                <ButtonBlock onClick={onSubmit}>
                     Submit
                 </ButtonBlock>
-                <ButtonBlock>
+                <ButtonBlock onClick={onCancel}>
                     Cancel
                 </ButtonBlock>
             </SubmitFrameBlock>

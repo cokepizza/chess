@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Quill from 'quill';
-import { setForm } from '../../modules/community';
+import { setForm, createPostThunk } from '../../modules/community';
 
 import Write from '../../components/community/Write';
 
@@ -57,12 +57,25 @@ const WriteLayoutContainer = () => {
         }));
     }, [dispatch, holding]);
 
+    const onSubmit = useCallback(() => {
+        dispatch(createPostThunk({
+            title: write.title,
+            content: write.content,
+        }));
+    }, [write]);
+
+    const onCancel = useCallback(() => {
+
+    }, []);
+
     return (
         <Write
             quillElement={quillElement}
             onChangeTitle={onChangeTitle}
             write={write}
             holding={holding}
+            onSubmit={onSubmit}
+            onCancel={onCancel}
         />
     )
 };

@@ -1,11 +1,15 @@
 import { handleActions, createAction } from 'redux-actions';
+import * as communityCtrl from '../lib/api/community';
+import  createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 
 const SET_MENU = 'community/SET_MENU';
 const SET_STATUS = 'community/SET_STATUS';
 const SET_FORM = 'community/SET_FORM';
+const [ CREATE_POST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE ] = createRequestActionTypes('community/CREATE_POST');
 export const setMenu = createAction(SET_MENU, payload => payload);
 export const setStatus = createAction(SET_STATUS, payload => payload);
 export const setForm = createAction(SET_FORM, payload => payload);
+export const createPostThunk = createRequestThunk(CREATE_POST, communityCtrl.createPost);
 
 export const setMenuThunk = index => (dispatch, getState) => {
     const {
@@ -55,12 +59,12 @@ const initialState = {
         summary: ['haha', 'hoho'],
     },
     post: {
-        title: null,
-        content: null,
+        title: '',
+        content: '',
     },
     write: {
-        title: null,
-        content: null,
+        title: '',
+        content: '',
     }
 };
 
@@ -81,4 +85,6 @@ export default handleActions({
             [key]: value,
         }
     }),
+    [CREATE_POST_SUCCESS]: state => state,
+    [CREATE_POST_FAILURE]: state => state,
 }, initialState);
