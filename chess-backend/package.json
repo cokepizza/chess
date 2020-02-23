@@ -20,6 +20,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
+    "qs": "^6.9.1",
     "sanitize-html": "^1.21.1",
     "socket.io": "^2.3.0",
     "uuid": "^3.3.3"

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FaPencilAlt } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 
-import BulletinLayoutContainer from '../../containers/community/BulletinLayoutContainer';
+import ListContainer from '../../containers/community/ListContainer';
 import WriteContainer from '../../containers/community/WriteContainer';
 import PostContainer from '../../containers/community/PostContainer';
 
@@ -130,7 +130,7 @@ const CommunityLayout = ({
                     )}
                 </WriteFrameBlock>
                 <ContentBlock>
-                    {status && status === 'list' && <BulletinLayoutContainer />}
+                    {status && status === 'list' && <ListContainer />}
                     {status && status === 'write' && <WriteContainer />}
                     {status && status === 'post' && <PostContainer />}
                 </ContentBlock>

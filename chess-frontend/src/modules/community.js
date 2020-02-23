@@ -5,11 +5,15 @@ import  createRequestThunk, { createRequestActionTypes } from '../lib/createRequ
 const SET_MENU = 'community/SET_MENU';
 const SET_STATUS = 'community/SET_STATUS';
 const SET_FORM = 'community/SET_FORM';
+const CLEAR_FORM = 'community/CLEAR_FORM';
 const [ CREATE_POST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE ] = createRequestActionTypes('community/CREATE_POST');
+const [ LIST_POST, LIST_POST_SUCCESS, LIST_POST_FAILURE ] = createRequestActionTypes('community/LIST_POST');
 export const setMenu = createAction(SET_MENU, payload => payload);
 export const setStatus = createAction(SET_STATUS, payload => payload);
 export const setForm = createAction(SET_FORM, payload => payload);
+export const clearForm = createAction(CLEAR_FORM, payload => payload);
 export const createPostThunk = createRequestThunk(CREATE_POST, communityCtrl.createPost);
+export const listPostThunk = createRequestThunk(LIST_POST, communityCtrl.listPost);
 
 export const setMenuThunk = index => (dispatch, getState) => {
     const {
@@ -56,7 +60,7 @@ const initialState = {
     ],
     list: {
         page: 0,
-        summary: ['haha', 'hoho'],
+        posts: [],
     },
     post: {
         title: '',
@@ -85,6 +89,20 @@ export default handleActions({
             [key]: value,
         }
     }),
+    [CLEAR_FORM]: (state, { payload: { status } }) => ({
+        ...state,
+        [status]: {
+            ...initialState[status],
+        }
+    }),
     [CREATE_POST_SUCCESS]: state => state,
     [CREATE_POST_FAILURE]: state => state,
+    [LIST_POST_SUCCESS]: (state, { payload: { posts } }) => ({
+        ...state,
+        list: {
+            ...state.list,
+            posts,
+        }
+    }),
+    [LIST_POST_FAILURE]: state => state,
 }, initialState);

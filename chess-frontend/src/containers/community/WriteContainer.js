@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Quill from 'quill';
-import { setForm, createPostThunk } from '../../modules/community';
 
 import Write from '../../components/community/Write';
+import { setForm, createPostThunk, clearForm, setStatus } from '../../modules/community';
 
 const WriteLayoutContainer = () => {
-    const { write } = useSelector(({ community }) => ({
+    const { write, menu } = useSelector(({ community }) => ({
         write: community.write,
+        menu: community.menu,
     }));
 
     const dispatch = useDispatch();
@@ -43,6 +44,14 @@ const WriteLayoutContainer = () => {
         });
     }, [dispatch]);
 
+    useEffect(() => {
+        return () => {
+            dispatch(clearForm({
+                status: 'write',
+            }));
+        }
+    }, [dispatch]);
+
     const onChangeTitle = useCallback(e => {
         if(holding && e.target.value !== '') {
             setHolding(false);
@@ -58,15 +67,25 @@ const WriteLayoutContainer = () => {
     }, [dispatch, holding]);
 
     const onSubmit = useCallback(() => {
+        const criteria = menu.find(criteria => criteria.checked);
+        
         dispatch(createPostThunk({
+            kind: criteria.name,
             title: write.title,
             content: write.content,
         }));
-    }, [write]);
+
+        dispatch(setStatus({
+            status: 'list',
+        }));
+
+    }, [dispatch, write, menu]);
 
     const onCancel = useCallback(() => {
-
-    }, []);
+        dispatch(setStatus({
+            status: 'list',
+        }));
+    }, [dispatch]);
 
     return (
         <Write
