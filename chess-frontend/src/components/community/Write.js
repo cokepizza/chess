@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 
 const QuillFrameBlock = styled.div`
     width: 90%;
-    height: 80%;
+    height: 480px;
     background: white;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
@@ -16,7 +16,9 @@ const WriteBlock = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding-top: 5px;
     width: 100%;
     height: 100%;
 `;
@@ -42,11 +44,12 @@ const SubmitFrameBlock = styled.div`
     display: flex;
     justify-content: flex-end;
     width: 90%;
+    height: 30px;
 `;
 
 const ButtonBlock = styled.button`
     width: 100px;
-    height: 30px;
+    height: 100%;
     background: white;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
     padding: 0px;

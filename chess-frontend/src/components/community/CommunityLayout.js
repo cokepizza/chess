@@ -60,7 +60,7 @@ const ContentBlock = styled.div`
     display: flex;
     justify-content: center;
     width: 1000px;
-    height: 600px;
+    height: 560px;
     margin-top: 5px;
     /* box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12); */
     /* background: white; */
@@ -68,7 +68,8 @@ const ContentBlock = styled.div`
 `;
 
 const WriteFrameBlock = styled.div`
-    width: 1000px;
+    width: 900px;
+    margin-top: 30px;
     height: 30px;
     display: flex;
     justify-content: flex-end;    

@@ -28,11 +28,13 @@ const sanitizeOption = {
 
 export const listPost = async (req, res, next) => {
     const { kind, page } = req.query;
-    let posts = await Post.find({ kind });
+    let posts = await
+        Post.find({ kind });
 
-    //  JSON.stringify automatically
+    const serializedPosts = posts.map(post => post.toJSON());
+
     return res.status(202).send({
-        posts,
+        posts: serializedPosts,
     });
 }
 

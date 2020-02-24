@@ -75,9 +75,11 @@ const WriteLayoutContainer = () => {
             content: write.content,
         }));
 
-        dispatch(setStatus({
-            status: 'list',
-        }));
+        setTimeout(() => {
+            dispatch(setStatus({
+                status: 'list',
+            }));
+        }, 100);
 
     }, [dispatch, write, menu]);
 
