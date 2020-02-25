@@ -92,14 +92,12 @@ const PaginationFrameBlock = styled.div`
 `;
 
 const PostCompression =  ({ post }) => {
+
     return (
         <PostCompressionBlock>
             <TitleBlock>
                 {post.title}
             </TitleBlock>
-            <ContentBlock>
-                {post.content}
-            </ContentBlock>
             <UserBlock>
                 {post.user.username}
             </UserBlock>

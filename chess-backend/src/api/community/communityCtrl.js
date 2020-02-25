@@ -34,7 +34,7 @@ export const listPost = async (req, res, next) => {
     };
 
     let posts = await Post
-        .find({ query })
+        .find(query)
         .limit(15)
         .skip((page - 1) * 15)
         .lean()
@@ -44,7 +44,7 @@ export const listPost = async (req, res, next) => {
         delete post.content;
     })
 
-    const postsCount = await Post.countDocuments({ query }).exec();
+    const postsCount = await Post.countDocuments(query).exec();
     const size = Math.ceil(postsCount / 10);
 
     return res.status(202).send({

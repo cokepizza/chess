@@ -118,9 +118,9 @@ const CommunityLayout = ({
                     ))}
                     <MovingUnderline checkedIndex={checkedIndex} />
                 </HeaderBlock>
-                <WriteFrameBlock onClick={onCreatePost}>
+                <WriteFrameBlock>
                     {checkedIndex !== 0 && (
-                        <WriteEventBlock>
+                        <WriteEventBlock onClick={onCreatePost}>
                             <IconContext.Provider value={{ style: { width:'20px', height:'20px' }}}>
                                 <FaPencilAlt />
                             </IconContext.Provider>
