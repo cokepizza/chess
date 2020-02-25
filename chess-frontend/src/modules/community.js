@@ -59,7 +59,7 @@ const initialState = {
         },
     ],
     list: {
-        page: 0,
+        page: 1,
         posts: [],
     },
     post: {
@@ -97,11 +97,12 @@ export default handleActions({
     }),
     [CREATE_POST_SUCCESS]: state => state,
     [CREATE_POST_FAILURE]: state => state,
-    [LIST_POST_SUCCESS]: (state, { payload: { posts } }) => ({
+    [LIST_POST_SUCCESS]: (state, { payload: { posts, size } }) => ({
         ...state,
         list: {
             ...state.list,
             posts,
+            size,
         }
     }),
     [LIST_POST_FAILURE]: state => state,

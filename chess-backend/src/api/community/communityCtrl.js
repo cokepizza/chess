@@ -27,14 +27,29 @@ const sanitizeOption = {
 };
 
 export const listPost = async (req, res, next) => {
-    const { kind, page } = req.query;
-    let posts = await
-        Post.find({ kind });
+    const { kind, page = 1 } = req.query;
 
-    const serializedPosts = posts.map(post => post.toJSON());
+    const query = {
+        ...(kind === 'All Posts' ? {} : { kind }),
+    };
+
+    let posts = await Post
+        .find({ query })
+        .limit(15)
+        .skip((page - 1) * 15)
+        .lean()
+        .exec();
+    
+    posts.forEach(post => {
+        delete post.content;
+    })
+
+    const postsCount = await Post.countDocuments({ query }).exec();
+    const size = Math.ceil(postsCount / 10);
 
     return res.status(202).send({
-        posts: serializedPosts,
+        posts,
+        size,
     });
 }
 
