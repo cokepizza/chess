@@ -2,6 +2,7 @@ import { handleActions, createAction } from 'redux-actions';
 import * as communityCtrl from '../lib/api/community';
 import  createRequestThunk, { createRequestActionTypes } from '../lib/createRequestThunk';
 
+const CLEAR_ALL = 'community/CLEAR_ALL';
 const SET_MENU = 'community/SET_MENU';
 const SET_STATUS = 'community/SET_STATUS';
 const SET_FORM = 'community/SET_FORM';
@@ -10,6 +11,7 @@ const SET_PAGE = 'community/SET_PAGE';
 const CLEAR_PAGE = 'community/CLEAR_PAGE';
 const [ CREATE_POST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE ] = createRequestActionTypes('community/CREATE_POST');
 const [ LIST_POST, LIST_POST_SUCCESS, LIST_POST_FAILURE ] = createRequestActionTypes('community/LIST_POST');
+export const clearAll = createAction(CLEAR_ALL);
 export const setMenu = createAction(SET_MENU, payload => payload);
 export const setStatus = createAction(SET_STATUS, payload => payload);
 export const setForm = createAction(SET_FORM, payload => payload);
@@ -79,6 +81,7 @@ const initialState = {
 
 
 export default handleActions({
+    [CLEAR_ALL]: state => initialState,
     [SET_MENU]: (state, { payload: { menu } }) => ({
         ...state,
         menu,

@@ -18,15 +18,23 @@ const PaginationContainer = () => {
                 page: pageNum,
             }))
         }
-    }, [page]);
+    }, [dispatch, page]);
 
     const onForwardClick = useCallback(() => {
-
-    }, []);
+        if(page < size) {
+            dispatch(setPage({
+                page: page+1,
+            }))
+        }
+    }, [dispatch, page, size]);
 
     const onBackwardClick = useCallback(() => {
-
-    }, [])
+        if(page > 1) {
+            dispatch(setPage({
+                page: page-1,
+            }))
+        }
+    }, [dispatch, page])
 
     return (
         <Pagination

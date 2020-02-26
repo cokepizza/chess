@@ -2,6 +2,8 @@ import Post from '../../models/post';
 import Joi from 'joi';
 import sanitizeHtml from 'sanitize-html';
 
+const postLimit = 15;
+
 const sanitizeOption = {
     allowedTags: [
         'h1',
@@ -28,15 +30,15 @@ const sanitizeOption = {
 
 export const listPost = async (req, res, next) => {
     const { kind, page = 1 } = req.query;
-
+    
     const query = {
         ...(kind === 'All Posts' ? {} : { kind }),
     };
 
     let posts = await Post
         .find(query)
-        .limit(15)
-        .skip((page - 1) * 15)
+        .limit(postLimit)
+        .skip((page - 1) * postLimit)
         .lean()
         .exec();
     
@@ -45,7 +47,7 @@ export const listPost = async (req, res, next) => {
     })
 
     const postsCount = await Post.countDocuments(query).exec();
-    const size = Math.ceil(postsCount / 10);
+    const size = Math.ceil(postsCount / postLimit);
 
     return res.status(202).send({
         posts,

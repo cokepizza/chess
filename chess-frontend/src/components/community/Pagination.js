@@ -1,7 +1,7 @@
 import React from 'react';
 import { MdArrowForward, MdArrowBack } from 'react-icons/md';
 import { IconContext } from 'react-icons';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const PaginationBlock = styled.div`
     display: flex;
@@ -9,7 +9,6 @@ const PaginationBlock = styled.div`
     width: 100%;
     height: 100%;
 `;
-
 
 const ButtonBlock = styled.button`
     width: 30px;
@@ -22,6 +21,10 @@ const ButtonBlock = styled.button`
     margin: 0px;
     outline: none;
     cursor: pointer;
+
+    ${props => props.page && css`
+        background: rgba(102, 204, 255, 0.1);
+    `}
 
     & + & {
         margin-left: 5px;
@@ -43,7 +46,10 @@ const Pagination = ({ page, size, onClick, onForwardClick, onBackwardClick }) =>
     const buttons = [];
     for(let i=firstBlock; i<=lastBlock && i <= size; ++i) {
         buttons.push(
-            <ButtonBlock onClick={() => onClick(i)}>
+            <ButtonBlock
+                page={i===page}
+                onClick={() => onClick(i)}
+            >
                 {i}
             </ButtonBlock>
         );
@@ -51,13 +57,13 @@ const Pagination = ({ page, size, onClick, onForwardClick, onBackwardClick }) =>
 
     return (
         <PaginationBlock>
-            <ButtonBlock>
+            <ButtonBlock onClick={onBackwardClick}>
                 <IconContext.Provider value={{ style: { width: '15px', height: '15px' } }}>
                     <MdArrowBack />
                 </IconContext.Provider>
             </ButtonBlock>
             {buttons}
-            <ButtonBlock>
+            <ButtonBlock onClick={onForwardClick}>
                 <IconContext.Provider value={{ style: { width: '15px', height: '15px' } }}>
                     <MdArrowForward />
                 </IconContext.Provider>

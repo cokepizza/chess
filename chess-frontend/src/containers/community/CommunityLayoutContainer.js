@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import CommunityLayout from '../../components/community/CommunityLayout';
-import { setMenuThunk, setStatus, clearPage } from '../../modules/community';
+import { setMenuThunk, setStatus, clearPage, clearAll } from '../../modules/community';
 
 const CommunityLayoutContainer = () => {
     const { menu, status } = useSelector(({ community }) => ({
@@ -12,9 +12,15 @@ const CommunityLayoutContainer = () => {
 
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        return () => {
+            dispatch(clearAll());
+        }
+    }, [dispatch]);
+
     const onClick = useCallback(index => {
         dispatch(setMenuThunk(index));
-        
+
         //  clear page before rendering
         dispatch(clearPage());
         dispatch(setStatus({
