@@ -35,35 +35,49 @@ export const listPost = async (req, res, next) => {
         ...(kind === 'All Posts' ? {} : { kind }),
     };
 
-    let posts = await Post
-        .find(query)
-        .sort({ createdAt: -1 })
-        .limit(postLimit)
-        .skip((page - 1) * postLimit)
-        .lean()
-        .exec();
+    try {
+        let posts = await Post
+            .find(query)
+            .sort({ createdAt: -1 })
+            .limit(postLimit)
+            .skip((page - 1) * postLimit)
+            .lean()
+            .exec();
     
-    posts.forEach(post => {
-        delete post.content;
-    })
+        posts.forEach(post => {
+            delete post.content;
+        })
 
-    const postsCount = await Post.countDocuments(query).exec();
-    const size = Math.ceil(postsCount / postLimit);
+        const postsCount = await Post.countDocuments(query).exec();
+        const size = Math.ceil(postsCount / postLimit);
 
-    posts = posts.map((post, index) => ({
-        ...post,
-        num: postsCount - ((page-1) * postLimit) - index,
-    }))
+        posts = posts.map((post, index) => ({
+            ...post,
+            num: postsCount - ((page-1) * postLimit) - index,
+        }))
+      
+        return res.status(202).send({
+            posts,
+            size,
+        });
 
-    return res.status(202).send({
-        posts,
-        size,
-    });
+    } catch(e) {
+        return res.status(500).send(e);
+    }
 }
 
 export const readPost = async (req, res, next) => {
+
+    try {
+        const post = await Post.findById(req.params.id);
     
-    return res.status(200).end();
+        return res.status(200).send({
+            post
+        });
+    } catch(e) {
+        return res.status(500).send(e);
+    }
+    
 };
 
 export const createPost = async (req, res, next) => {

@@ -140,4 +140,4 @@ const CommunityLayout = ({
     )
 };
 
-export default CommunityLayout;
+export default React.memo(CommunityLayout);

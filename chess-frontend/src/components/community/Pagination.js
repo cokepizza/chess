@@ -83,4 +83,4 @@ const Pagination = ({ page, size, onClick, onForwardClick, onBackwardClick }) =>
     )
 };
 
-export default Pagination;
+export default React.memo(Pagination);

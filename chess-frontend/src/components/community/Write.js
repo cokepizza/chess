@@ -103,4 +103,4 @@ const Write = ({
     );
 };
 
-export default Write;
+export default React.memo(Write);

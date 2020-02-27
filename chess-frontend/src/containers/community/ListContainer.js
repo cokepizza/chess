@@ -28,10 +28,15 @@ const ListContainer = () => {
         }
     }, [dispatch]);
 
-    const onClick = useCallback(() => {
+    const onClick = useCallback(id => {
         dispatch(setStatus({
             status: 'post',
         }));
+        dispatch(setForm({
+            status: 'post',
+            key: 'id',
+            value: id,
+        }))
     }, [dispatch]);
 
     return (

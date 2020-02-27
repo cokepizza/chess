@@ -27,7 +27,6 @@ const PostNoticeBlock = styled.div`
     box-sizing: border-box;
     padding: 0px 20px;
     margin-bottom: 5px;
-    /* border: 1px solid rgba(0, 0, 0, 0.2); */
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
@@ -37,11 +36,9 @@ const TextBlock = styled.div`
 `;
 
 const PostWrapper = styled.div`
-    /* border: 1px solid #eee; */
     width: 90%;
     height: 479px;
     box-sizing: border-box;
-    /* border: 1px solid rgba(0, 0, 0, 0.2); */
     background: white;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
@@ -141,12 +138,14 @@ const PaginationFrameBlock = styled.div`
     height: 30px;
 `;
 
-const PostCompression =  ({ post }) => {
+const PostCompression =  React.memo(({ post, onClick }) => {
     const createdAt = new Date(Date.parse(post.createdAt));
     const date = createdAt.getFullYear() + " / " + createdAt.getMonth() + " / " + createdAt.getDate();
     
     return (
-        <PostCompressionBlock>
+        <PostCompressionBlock
+            onClick={() => onClick(post._id)}
+        >
             <TitleBlock>
                 <NumberBlock>
                     No.{post.num}
@@ -168,10 +167,10 @@ const PostCompression =  ({ post }) => {
             </UserBlock>
         </PostCompressionBlock>
     )
-}
+});
 
 const List = ({ list, onClick }) => {
-
+    
     return (
         <ListBlock>
             <PostNoticeBlock>
@@ -187,7 +186,7 @@ const List = ({ list, onClick }) => {
                     <PostCompression
                         key={post._id}
                         post={post}
-                        onClick={() => onClick(post._id)}
+                        onClick={onClick}
                     />
                 ))}
             </PostWrapper>
@@ -198,4 +197,4 @@ const List = ({ list, onClick }) => {
     );
 };
 
-export default List;
+export default React.memo(List);

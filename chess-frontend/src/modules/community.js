@@ -11,6 +11,7 @@ const CLEAR_FORM_ALL = 'community/CLEAR_FORM_ALL';
 const CLEAR_PAGE = 'community/CLEAR_PAGE';
 const [ CREATE_POST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE ] = createRequestActionTypes('community/CREATE_POST');
 const [ LIST_POST, LIST_POST_SUCCESS, LIST_POST_FAILURE ] = createRequestActionTypes('community/LIST_POST');
+const [ READ_POST, READ_POST_SUCCESS, READ_POST_FAILURE ] = createRequestActionTypes('community/READ_POST');
 export const clearAll = createAction(CLEAR_ALL);
 export const setMenu = createAction(SET_MENU, payload => payload);
 export const setStatus = createAction(SET_STATUS, payload => payload);
@@ -19,6 +20,7 @@ export const clearForm = createAction(CLEAR_FORM, payload => payload);
 export const clearFormAll = createAction(CLEAR_FORM_ALL, payload => payload);
 export const createPostThunk = createRequestThunk(CREATE_POST, communityCtrl.createPost);
 export const listPostThunk = createRequestThunk(LIST_POST, communityCtrl.listPost);
+export const readPostThunk = createRequestThunk(READ_POST, communityCtrl.readPost);
 
 export const setMenuThunk = index => (dispatch, getState) => {
     const {
@@ -67,8 +69,7 @@ const initialState = {
     },
     post: {
         id: null,
-        title: '',
-        content: '',
+        post: null,
     },
     write: {
         title: '',
@@ -118,6 +119,14 @@ export default handleActions({
         }
     }),
     [LIST_POST_FAILURE]: state => state,
+    [READ_POST_SUCCESS]: (state, { payload: { post } }) => ({
+        ...state,
+        post: {
+            ...state.post,
+            post,
+        }
+    }),
+    [READ_POST_FAILURE]: state => state,
     [CLEAR_PAGE]: state => ({
         ...state,
         list: {
