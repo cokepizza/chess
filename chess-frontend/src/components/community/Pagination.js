@@ -21,21 +21,31 @@ const ButtonBlock = styled.button`
     margin: 0px;
     outline: none;
     cursor: pointer;
-
-    ${props => props.page && css`
-        background: rgba(102, 204, 255, 0.1);
-    `}
-
-    & + & {
-        margin-left: 5px;
-    }
-
+    
     &:hover {
         background: rgba(0, 0, 0, 0.05);
     }
 
     &:active {
         background: rgba(0, 0, 0, 0.1);
+    }
+
+    ${props => props.page && css`
+        background: rgba(102, 204, 255, 0.1);
+
+        &:hover {
+            background: rgba(102, 204, 255, 0.2);
+        }
+
+        &:active {
+            background: rgba(102, 204, 255, 0.3);
+        }
+    }
+
+    `}
+
+    & + & {
+        margin-left: 5px;
     }
 `;
 

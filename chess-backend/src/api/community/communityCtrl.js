@@ -37,6 +37,7 @@ export const listPost = async (req, res, next) => {
 
     let posts = await Post
         .find(query)
+        .sort({ createdAt: -1 })
         .limit(postLimit)
         .skip((page - 1) * postLimit)
         .lean()
@@ -48,6 +49,11 @@ export const listPost = async (req, res, next) => {
 
     const postsCount = await Post.countDocuments(query).exec();
     const size = Math.ceil(postsCount / postLimit);
+
+    posts = posts.map((post, index) => ({
+        ...post,
+        num: postsCount - ((page-1) * postLimit) - index,
+    }))
 
     return res.status(202).send({
         posts,
@@ -81,7 +87,7 @@ export const createPost = async (req, res, next) => {
         user: {
             _id: req.user._id,
             username: req.user.username,
-        }
+        },
     });
 
     try {

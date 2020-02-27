@@ -119,7 +119,7 @@ const CommunityLayout = ({
                     <MovingUnderline checkedIndex={checkedIndex} />
                 </HeaderBlock>
                 <WriteFrameBlock>
-                    {checkedIndex !== 0 && (
+                    {status === 'list' && checkedIndex !== 0 && checkedIndex !== 3 && (
                         <WriteEventBlock onClick={onCreatePost}>
                             <IconContext.Provider value={{ style: { width:'20px', height:'20px' }}}>
                                 <FaPencilAlt />

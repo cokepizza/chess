@@ -42,6 +42,7 @@ const PostWrapper = styled.div`
     height: 479px;
     box-sizing: border-box;
     /* border: 1px solid rgba(0, 0, 0, 0.2); */
+    background: white;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
 
@@ -51,30 +52,61 @@ const PostCompressionBlock = styled.div`
     height: 31px;
     background: white;
     cursor: pointer;
+    font-size: 12px;
 
     &+& {
         border-top: 1px solid rgba(0, 0, 0, 0.2);
     }
+
+    &:last-child {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    &:nth-child(15) {
+        border-bottom: 0px;
+    }
     
     &:hover {
-        background: rgba(0, 0, 0, 0.01);
+        background: rgba(0, 0, 0, 0.05);
     }
 `;
 
 const TitleBlock = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     height: 100%;
-    width: 30%;
+    width: 300px;
 `;
 
-const ContentBlock = styled.div`
+const NumberFrameBlock = styled.div`
+    width: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 30%;
+`;
+
+const NumberBlock = styled.div`
+    font-size: 10px;
+    width: fit-content;
+    padding: 2px 5px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+`;
+
+const EllipsisBlock = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+    margin-left: 10px;
+`;
+
+const CommentCounter = styled.div`
+    font-size: 10px;
+    margin-left: 3px;
+    height: 30px;
+    padding-top: 5px;
+    color: rgba(0, 51, 204, 0.5);
 `;
 
 const UserBlock = styled.div`
@@ -82,7 +114,14 @@ const UserBlock = styled.div`
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 40%;
+    width: 200px;
+    font-size: 10px;
+`;
+
+const DateBlock = styled.div`
+    height: 100%;
+    width: 200px;
+    font-size: 10px;
 `;
 
 const PaginationFrameBlock = styled.div`
@@ -92,15 +131,29 @@ const PaginationFrameBlock = styled.div`
 `;
 
 const PostCompression =  ({ post }) => {
-
+    const createdAt = new Date(Date.parse(post.createdAt));
+    const date = createdAt.getFullYear() + " / " + createdAt.getMonth() + " / " + createdAt.getDate();
     return (
         <PostCompressionBlock>
             <TitleBlock>
-                {post.title}
+                <NumberFrameBlock>
+                    <NumberBlock>
+                        No.{post.num}
+                    </NumberBlock>
+                </NumberFrameBlock>
+                <EllipsisBlock>
+                    {post.title}
+                </EllipsisBlock>
+                <CommentCounter>
+                    15
+                </CommentCounter>
             </TitleBlock>
             <UserBlock>
                 {post.user.username}
             </UserBlock>
+            <DateBlock>
+                {date}
+            </DateBlock>
         </PostCompressionBlock>
     )
 }
