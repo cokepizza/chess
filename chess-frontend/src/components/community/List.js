@@ -76,19 +76,18 @@ const TitleBlock = styled.div`
     justify-content: flex-start;
     align-items: center;
     height: 100%;
-    width: 300px;
-`;
-
-const NumberFrameBlock = styled.div`
-    width: 80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 50%;
+    padding-left: 30px;
 `;
 
 const NumberBlock = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
     font-size: 10px;
-    width: fit-content;
+    width: 50px;
+    height: 14px;
     padding: 2px 5px;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
 `;
@@ -97,8 +96,8 @@ const EllipsisBlock = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 200px;
-    margin-left: 10px;
+    max-width: 300px;
+    margin-left: 20px;
 `;
 
 const CommentCounter = styled.div`
@@ -111,17 +110,29 @@ const CommentCounter = styled.div`
 
 const UserBlock = styled.div`
     display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    height: 100%;
+    width: 50%;
+    padding-right: 30px;
+`;
+
+const NameBlock = styled.div`
+    height: 50%;
+    font-size: 10px;
+    padding-right: 20px;
+    display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 200px;
-    font-size: 10px;
 `;
 
 const DateBlock = styled.div`
-    height: 100%;
-    width: 200px;
+    height: 50%;
     font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const PaginationFrameBlock = styled.div`
@@ -133,14 +144,13 @@ const PaginationFrameBlock = styled.div`
 const PostCompression =  ({ post }) => {
     const createdAt = new Date(Date.parse(post.createdAt));
     const date = createdAt.getFullYear() + " / " + createdAt.getMonth() + " / " + createdAt.getDate();
+    
     return (
         <PostCompressionBlock>
             <TitleBlock>
-                <NumberFrameBlock>
-                    <NumberBlock>
-                        No.{post.num}
-                    </NumberBlock>
-                </NumberFrameBlock>
+                <NumberBlock>
+                    No.{post.num}
+                </NumberBlock>
                 <EllipsisBlock>
                     {post.title}
                 </EllipsisBlock>
@@ -149,16 +159,18 @@ const PostCompression =  ({ post }) => {
                 </CommentCounter>
             </TitleBlock>
             <UserBlock>
-                {post.user.username}
+                <NameBlock>
+                    {post.user.username}
+                </NameBlock>
+                <DateBlock>
+                    {date}
+                </DateBlock>
             </UserBlock>
-            <DateBlock>
-                {date}
-            </DateBlock>
         </PostCompressionBlock>
     )
 }
 
-const List = ({ list }) => {
+const List = ({ list, onClick }) => {
 
     return (
         <ListBlock>
@@ -175,6 +187,7 @@ const List = ({ list }) => {
                     <PostCompression
                         key={post._id}
                         post={post}
+                        onClick={() => onClick(post._id)}
                     />
                 ))}
             </PostWrapper>

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Quill from 'quill';
 
 import Write from '../../components/community/Write';
-import { setForm, createPostThunk, clearForm, setStatus } from '../../modules/community';
+import { setForm, createPostThunk, clearFormAll, setStatus } from '../../modules/community';
 
 const WriteLayoutContainer = () => {
     const { write, menu } = useSelector(({ community }) => ({
@@ -46,7 +46,7 @@ const WriteLayoutContainer = () => {
 
     useEffect(() => {
         return () => {
-            dispatch(clearForm({
+            dispatch(clearFormAll({
                 status: 'write',
             }));
         }

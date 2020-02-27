@@ -7,7 +7,7 @@ const SET_MENU = 'community/SET_MENU';
 const SET_STATUS = 'community/SET_STATUS';
 const SET_FORM = 'community/SET_FORM';
 const CLEAR_FORM = 'community/CLEAR_FORM';
-const SET_PAGE = 'community/SET_PAGE';
+const CLEAR_FORM_ALL = 'community/CLEAR_FORM_ALL';
 const CLEAR_PAGE = 'community/CLEAR_PAGE';
 const [ CREATE_POST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE ] = createRequestActionTypes('community/CREATE_POST');
 const [ LIST_POST, LIST_POST_SUCCESS, LIST_POST_FAILURE ] = createRequestActionTypes('community/LIST_POST');
@@ -16,8 +16,7 @@ export const setMenu = createAction(SET_MENU, payload => payload);
 export const setStatus = createAction(SET_STATUS, payload => payload);
 export const setForm = createAction(SET_FORM, payload => payload);
 export const clearForm = createAction(CLEAR_FORM, payload => payload);
-export const setPage = createAction(SET_PAGE, payload => payload);
-export const clearPage = createAction(CLEAR_PAGE);
+export const clearFormAll = createAction(CLEAR_FORM_ALL, payload => payload);
 export const createPostThunk = createRequestThunk(CREATE_POST, communityCtrl.createPost);
 export const listPostThunk = createRequestThunk(LIST_POST, communityCtrl.listPost);
 
@@ -25,9 +24,6 @@ export const setMenuThunk = index => (dispatch, getState) => {
     const {
         community: { menu },
     } = getState();
-
-    const checkedIndex = menu.findIndex(criteria => criteria.checked);
-    if(index === checkedIndex) return;
 
     const revisedMenu = menu.map(criteria => criteria.checked
         ? { ...criteria, checked: false }
@@ -70,6 +66,7 @@ const initialState = {
         posts: [],
     },
     post: {
+        id: null,
         title: '',
         content: '',
     },
@@ -97,7 +94,14 @@ export default handleActions({
             [key]: value,
         }
     }),
-    [CLEAR_FORM]: (state, { payload: { status } }) => ({
+    [CLEAR_FORM]: (state, { payload: { status, key } }) => ({
+        ...state,
+        [status]: {
+            ...state[status],
+            [key]: initialState[status][key],
+        }
+    }),
+    [CLEAR_FORM_ALL]: (state, { payload: { status } }) => ({
         ...state,
         [status]: {
             ...initialState[status],
@@ -114,13 +118,6 @@ export default handleActions({
         }
     }),
     [LIST_POST_FAILURE]: state => state,
-    [SET_PAGE]: (state, {payload: { page }}) => ({
-        ...state,
-        list: {
-            ...state.list,
-            page,
-        }
-    }),
     [CLEAR_PAGE]: state => ({
         ...state,
         list: {

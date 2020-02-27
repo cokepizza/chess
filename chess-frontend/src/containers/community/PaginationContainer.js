@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Pagination from '../../components/community/Pagination';
-import { setPage } from '../../modules/community';
+import { setForm } from '../../modules/community';
 
 const PaginationContainer = () => {
     const { page, size } = useSelector(({ community }) => ({
@@ -14,24 +14,30 @@ const PaginationContainer = () => {
 
     const onClick = useCallback(pageNum => {
         if(page !== pageNum) {
-            dispatch(setPage({
-                page: pageNum,
+            dispatch(setForm({
+                status: 'list',
+                key: 'page',
+                value: pageNum,
             }))
         }
     }, [dispatch, page]);
 
     const onForwardClick = useCallback(() => {
         if(page < size) {
-            dispatch(setPage({
-                page: page+1,
+            dispatch(setForm({
+                status: 'list',
+                key: 'page',
+                value: page+1,
             }))
         }
     }, [dispatch, page, size]);
 
     const onBackwardClick = useCallback(() => {
         if(page > 1) {
-            dispatch(setPage({
-                page: page-1,
+            dispatch(setForm({
+                status: 'list',
+                key: 'page',
+                value: page-1,
             }))
         }
     }, [dispatch, page])

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import CommunityLayout from '../../components/community/CommunityLayout';
-import { setMenuThunk, setStatus, clearPage, clearAll } from '../../modules/community';
+import { setMenuThunk, setStatus, setForm, clearForm, clearAll } from '../../modules/community';
 
 const CommunityLayoutContainer = () => {
     const { menu, status } = useSelector(({ community }) => ({
@@ -19,14 +19,21 @@ const CommunityLayoutContainer = () => {
     }, [dispatch]);
 
     const onClick = useCallback(index => {
+        const checkedIndex = menu.findIndex(criteria => criteria.checked);
+        if(index === checkedIndex) return;
+
         dispatch(setMenuThunk(index));
 
         //  clear page before rendering
-        dispatch(clearPage());
-        dispatch(setStatus({
-            status: 'list'
+        dispatch(clearForm({
+            status: 'list',
+            key: 'page',
         }));
-    }, [dispatch]);
+        
+        dispatch(setStatus({
+            status: 'list',
+        }));
+    }, [dispatch, menu]);
 
     const onCreatePost = useCallback(() => {
         dispatch(setStatus({

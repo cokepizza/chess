@@ -54,11 +54,12 @@ const Pagination = ({ page, size, onClick, onForwardClick, onBackwardClick }) =>
     const lastBlock = firstBlock + 4;
     
     const buttons = [];
-    for(let i=firstBlock; i<=lastBlock && i <= size; ++i) {
+    for(let i=firstBlock; i<=lastBlock; ++i) {
         buttons.push(
             <ButtonBlock
                 page={i===page}
                 onClick={() => onClick(i)}
+                disabled={i > size}
             >
                 {i}
             </ButtonBlock>

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import List from '../../components/community/List';
-import { clearForm, listPostThunk } from '../../modules/community';
+import { clearFormAll, listPostThunk, setStatus, setForm } from '../../modules/community';
 
 const ListContainer = () => {
     const { menu, list } = useSelector(({ community }) => ({
@@ -22,15 +22,22 @@ const ListContainer = () => {
 
     useEffect(() => {
         return () => {
-            dispatch(clearForm({
+            dispatch(clearFormAll({
                 status: 'list',
             }));
         }
     }, [dispatch]);
 
+    const onClick = useCallback(() => {
+        dispatch(setStatus({
+            status: 'post',
+        }));
+    }, [dispatch]);
+
     return (
         <List
             list={list}
+            onClick={onClick}
         />
     );
 };
