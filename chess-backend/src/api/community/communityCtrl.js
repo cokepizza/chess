@@ -67,7 +67,6 @@ export const listPost = async (req, res, next) => {
 }
 
 export const readPost = async (req, res, next) => {
-
     try {
         const post = await Post.findById(req.params.id);
     
@@ -77,7 +76,6 @@ export const readPost = async (req, res, next) => {
     } catch(e) {
         return res.status(500).send(e);
     }
-    
 };
 
 export const createPost = async (req, res, next) => {

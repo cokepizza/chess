@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Post from '../../components/community/Post';
-import { readPostThunk } from '../../modules/community';
+import { readPostThunk, clearFormAll } from '../../modules/community';
 
 const PostContainer = () => {
     const { id, post } = useSelector(({ community }) => ({
@@ -17,6 +17,14 @@ const PostContainer = () => {
             id,
         }))
     }, [id]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearFormAll({
+                status: 'post',
+            }));
+        };
+    }, []);
 
     return (
         <Post 

@@ -41,12 +41,19 @@ const CommunityLayoutContainer = () => {
         }));
     }, [dispatch]);
 
+    const onGoBack = useCallback(() => {
+        dispatch(setStatus({
+            status: 'list'
+        }));
+    }, [dispatch]);
+
     return (
         <CommunityLayout
             menu={menu}
             status={status}
             onClick={onClick}
             onCreatePost={onCreatePost}
+            onGoBack={onGoBack}
         />
     );
 };

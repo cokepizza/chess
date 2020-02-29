@@ -1,6 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FaPencilAlt } from 'react-icons/fa';
+import { TiArrowBack } from 'react-icons/ti';
 import { IconContext } from 'react-icons';
 
 import ListContainer from '../../containers/community/ListContainer';
@@ -67,12 +68,16 @@ const ContentBlock = styled.div`
     background: transparent;
 `;
 
-const WriteFrameBlock = styled.div`
+const TabBlock = styled.div`
     width: 900px;
     margin-top: 30px;
     height: 30px;
     display: flex;
-    justify-content: flex-end;    
+    justify-content: flex-start;
+
+    ${props => props.status === 'list' && css`
+        justify-content: flex-end;
+    `}   
 `;
 
 const WriteEventBlock = styled.div`
@@ -80,6 +85,7 @@ const WriteEventBlock = styled.div`
     align-items: center;
     justify-content: center;
     color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
 
     &:hover {
         color: rgba(0, 0, 0, 0.8);
@@ -92,8 +98,28 @@ const WriteBlock = styled.div`
     justify-content: center;
     margin-left: 10px;
     font-size: 14px;
+    height: 30px; 
+`;
+
+const BackEventBlock = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+
+    &:hover {
+        color: rgba(0, 0, 0, 0.8);
+    }
+`;
+
+const BackBlock = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    font-size: 14px;
     height: 30px;
-    cursor: pointer;  
 `;
 
 const CommunityLayout = ({
@@ -101,6 +127,7 @@ const CommunityLayout = ({
     status,
     onClick,
     onCreatePost,
+    onGoBack,
 }) => {
     const checkedIndex = menu.findIndex(criteria => criteria.checked);
 
@@ -118,10 +145,10 @@ const CommunityLayout = ({
                     ))}
                     <MovingUnderline checkedIndex={checkedIndex} />
                 </HeaderBlock>
-                <WriteFrameBlock>
+                <TabBlock status={status}>
                     {status === 'list' && checkedIndex !== 0 && checkedIndex !== 3 && (
                         <WriteEventBlock onClick={onCreatePost}>
-                            <IconContext.Provider value={{ style: { width:'20px', height:'20px' }}}>
+                            <IconContext.Provider value={{ style: { width: '20px', height: '20px' }}}>
                                 <FaPencilAlt />
                             </IconContext.Provider>
                             <WriteBlock>
@@ -129,7 +156,17 @@ const CommunityLayout = ({
                             </WriteBlock>
                         </WriteEventBlock>
                     )}
-                </WriteFrameBlock>
+                    {(status === 'post' || status === 'write') && (
+                        <BackEventBlock onClick={onGoBack}>
+                            <IconContext.Provider value={{ style: { width: '25px', height: '25px' } }}>
+                                <TiArrowBack />
+                            </IconContext.Provider>
+                            <BackBlock>
+                                Go Back
+                            </BackBlock>
+                        </BackEventBlock>
+                    )}
+                </TabBlock>
                 <ContentBlock>
                     {status && status === 'list' && <ListContainer />}
                     {status && status === 'write' && <WriteContainer />}
