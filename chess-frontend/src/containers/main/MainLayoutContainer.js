@@ -5,7 +5,8 @@ import useAsync from '../../lib/hook/useAsync';
 import { setSessionThunk } from '../../modules/sessionAuth';
 
 import MainLayout from '../../components/main/MainLayout';
-import { connectWebsocket, disconnectWebsocket, clearValue } from '../../modules/ranking';
+import { connectWebsocket, disconnectWebsocket, clearValue as clearRankingValue } from '../../modules/ranking';
+import { clearValue as clearBillBoardValue } from '../../modules/billBoard'; 
 
 const MainLayoutContainer = () => {
     const dispatch = useDispatch();
@@ -24,12 +25,14 @@ const MainLayoutContainer = () => {
     useEffect(() => {
         return () => {
             dispatch(disconnectWebsocket());
+            dispatch(clearRankingValue());
+            dispatch(clearBillBoardValue());
         };
     }, [dispatch]);
 
-    useEffect(() => {
-        dispatch(clearValue());
-    }, [dispatch])
+    // useEffect(() => {
+    //     dispatch(clearValue());
+    // }, [dispatch])
 
     const [state] = useAsync(connection, [ dispatch ]);
 

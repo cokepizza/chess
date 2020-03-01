@@ -34,7 +34,7 @@ export const getRatio = user => ({
 const nextBoard = (game, move) => {
     const board = game.board;
     const { prev, next } = move;
-    
+
     //  set server board object
     const prevPiece = { ...board[prev.y][prev.x] };
     const nextPiece = { ...board[next.y][next.x] };
@@ -85,9 +85,9 @@ const pieceMoveReduce = game => {
     clearTimeout(game.setTimeout);
     game.setTimeout = setTimeout(() => {
         if(game.index < game.turn) {
+            const pieceMove = JSON.parse(game.pieceMove);
             nextBoard(game, pieceMove[game.index]);
-            game.participant.forEach(socket => {
-                const pieceMove = JSON.parse(game.pieceMove);
+            game.participant.forEach(socket => {    
                 socket.emit('message', {
                     type: 'change',
                     roomKey: game.roomKey,
