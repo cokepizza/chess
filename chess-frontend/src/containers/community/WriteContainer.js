@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Quill from 'quill';
 
 import Write from '../../components/community/Write';
-import { setForm, createPostThunk, clearFormAll, setStatus } from '../../modules/community';
+import { setForm, createPostThunk, updatePostThunk, clearFormAll, setStatus } from '../../modules/community';
 
 const WriteLayoutContainer = () => {
     const { write, menu } = useSelector(({ community }) => ({
@@ -75,16 +75,27 @@ const WriteLayoutContainer = () => {
 
     const onSubmit = useCallback(async() => {
         const criteria = menu.find(criteria => criteria.checked);
-        
-        await dispatch(createPostThunk({
-            kind: criteria.name,
-            title: write.title,
-            content: write.content,
-        }));
+
+        if(!write.modify) {
+            //  create
+            await dispatch(createPostThunk({
+                kind: criteria.name,
+                title: write.title,
+                content: write.content,
+            }));
+        } else {
+            //  update
+            await dispatch(updatePostThunk({
+                id: write.modify,
+                kind: criteria.name,
+                title: write.title,
+                content: write.content,
+            }));
+        }
+
         dispatch(setStatus({
             status: 'list',
         }));
-
     }, [dispatch, write, menu]);
 
     const onCancel = useCallback(() => {

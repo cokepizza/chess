@@ -17,7 +17,7 @@ const PostContainer = () => {
         dispatch(readPostThunk({
             id,
         }))
-    }, [id]);
+    }, [dispatch, id]);
 
     useEffect(() => {
         return () => {
@@ -25,7 +25,7 @@ const PostContainer = () => {
                 status: 'post',
             }));
         };
-    }, []);
+    }, [dispatch]);
 
     const onUpdate = useCallback(async (post) => {
         dispatch(setForm({
@@ -41,7 +41,7 @@ const PostContainer = () => {
         dispatch(setForm({
             status: 'write',
             key: 'modify',
-            value: true,
+            value: post._id,
         }));
         dispatch(setStatus({
             status: 'write',

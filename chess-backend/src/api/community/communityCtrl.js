@@ -91,9 +91,27 @@ export const deletePost = async (req, res, next) => {
 };
 
 export const updatePost = async (req, res, next) => {
-    try {
+    const schema = Joi.object().keys({
+        kind: Joi.string().required(),
+        title: Joi.string().required(),
+        content: Joi.string().required(),
+    });
 
+    const result = Joi.validate(req.body, schema);
+    if(result.error) {
+        console.dir(result.error);
+        return res.status(403).send(result.error);
+    }
+
+    const id = req.params.id;
+    const nextPost = { ...req.body };
+
+    try {
+        await Post.findByIdAndUpdate(id, nextPost, {
+            new: true,
+        }).exec();
         
+        return res.status(200).end();
     } catch(e) {
         console.dir(e);
         return res.status(500).send(e);
