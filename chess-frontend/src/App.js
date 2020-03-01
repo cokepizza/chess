@@ -9,7 +9,6 @@ import RegisterPage from './pages/RegisterPage';
 import GamePage from './pages/GamePage';
 import GamePlayPage from './pages/GamePlayPage';
 import CommunityPage from './pages/CommunityPage';
-import BillBoardPage from './pages/BillBoardPage';
 
 const ErrorPageDiv = styled.div`
   display: flex;
@@ -34,7 +33,6 @@ const App = () => {
         <Route component={GamePage} path='/game' exact />
         <Route component={GamePlayPage} path='/game/:id' exact />
         <Route component={CommunityPage} path='/community' exact />
-        <Route component={BillBoardPage} path='/billBoard/:id' exact />
         <Route 
           render={({ location }) => (
             <ErrorPageDiv>

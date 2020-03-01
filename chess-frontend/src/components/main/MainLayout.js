@@ -2,8 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import RankingContainer from '../../containers/main/RankingContainer';
-import IframeContainer from '../../containers/main/IframeContainer';
-import BillBoardContainer from '../../containers/billBoard/BillBoardContainer';
+import BillBoardContainer from '../../containers/main/BillBoardContainer';
 
 const MainLayoutBlock = styled.div`
     height: 800px;
@@ -38,15 +37,11 @@ const MainLayout = () => {
             <LeftSideBlock>
                 <BillBoardContainer roomKey={0} />
                 <BillBoardContainer roomKey={1} />
-                {/* <IframeContainer roomKey={0} />
-                <IframeContainer roomKey={1} /> */}
             </LeftSideBlock>
             <RankingContainer />
             <RightSideBlock>
                 <BillBoardContainer roomKey={2} />
                 <BillBoardContainer roomKey={3} />
-                {/* <IframeContainer roomKey={2} />
-                <IframeContainer roomKey={3} /> */}
             </RightSideBlock>
         </MainLayoutBlock>
     )

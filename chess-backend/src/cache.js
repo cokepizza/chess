@@ -29,23 +29,72 @@ export const getRatio = user => ({
                 : user.win / (user.win + user.lose)
             )
     ).toFixed(2)
-})
+});
+
+const nextBoard = game => {
+    const board = game.board;
+    //  set server board object
+    const prevPiece = { ...board[prev.y][prev.x] };
+    const nextPiece = { ...board[next.y][next.x] };
+    board[prev.y][prev.x] = {
+        covered: false
+    };
+    board[next.y][next.x] = {
+        ...prevPiece,
+        dirty: true,
+    };
+
+    //  promotion
+    const { owner, piece } = board[next.y][next.x];
+    if((owner === 'white' && piece === 'pawn' && next.y === 0) || (owner === 'black' && piece === 'pawn' && next.y === 7)) {
+        board[next.y][next.x] = {
+            ...board[next.y][next.x],
+            piece: 'queen',
+        }
+    };
+
+    //  castling
+    if(board[next.y][next.x].piece === 'king') {
+        if(next.x - prev.x === 2) {
+            const pieceStore = { ...board[prev.y][prev.x+3] };
+            board[prev.y][prev.x+3] = {
+                covered: false
+            };
+            board[prev.y][prev.x+1] = {
+                ...pieceStore,
+                dirty: true,
+            };
+        }
+
+        if(next.x - prev.x === -2) {
+            const pieceStore = { ...board[prev.y][prev.x-4] };
+            board[prev.y][prev.x-4] = {
+                covered: false
+            };
+            board[prev.y][prev.x-1] = {
+                ...pieceStore,
+                dirty: true,
+            };
+        }
+    }
+};
 
 const pieceMoveReduce = game => {
     clearTimeout(game.setTimeout);
     game.setTimeout = setTimeout(() => {
         if(game.index < game.turn) {
-                game.participant.forEach(socket => {
-                    const pieceMove = JSON.parse(game.pieceMove);
-                    socket.emit('message', {
-                        type: 'change',
-                        roomKey: game.roomKey,
-                        move: pieceMove[game.index],
-                    });
+            nextBoard(game);
+            game.participant.forEach(socket => {
+                const pieceMove = JSON.parse(game.pieceMove);
+                socket.emit('message', {
+                    type: 'change',
+                    roomKey: game.roomKey,
+                    move: pieceMove[game.index],
                 });
+            });
 
-                ++game.index;
-                pieceMoveReduce(game);
+            ++game.index;
+            pieceMoveReduce(game);
         } else {
             game.index = 0;
             game.board = _.cloneDeep(board);
