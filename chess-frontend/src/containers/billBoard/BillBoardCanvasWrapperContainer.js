@@ -6,7 +6,7 @@ import useAsync from '../../lib/hook/useAsync';
 
 const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
     const { board } = useSelector(({ billBoard }) => ({
-        board: billBoard.board,
+        board: billBoard.boards[roomKey],
     }));
 
     const dispatch = useDispatch();

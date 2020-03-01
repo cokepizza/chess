@@ -18,10 +18,12 @@ export const initializeValue = createAction(INITIALIZE_VALUE, payload => payload
 export const clearValue = createAction(CLEAR_VALUE);
 export const changeValue = createAction(CHANGE_VALUE);
 
-export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
+export const changeValueThunk = ({ roomKey, move }) => ( dispatch, getState ) => {
     const { prev, next } = move;
-    const { billBoard: { board },
+    const { billBoard: { boards },
         } = getState();
+
+    const board = boards[roomKey];
 
     const cell = board[prev.y][prev.x];
     const clearBoard = genClearBoard([...board], [
@@ -73,9 +75,11 @@ export const changeValueThunk = ({ move }) => ( dispatch, getState ) => {
             };
         }
     };
+    
+    const revisedBoards = [ ...boards.slice(0, roomKey), clearBoard, ...boards.slice(roomKey+1) ];
 
     dispatch(changeValue({
-        board: clearBoard,
+        boards: revisedBoards,
     }));
 }
 
@@ -99,8 +103,8 @@ export function* billBoardSaga () {
 }
 
 const initialState = {
-    board: null,
-    inform: null,
+    boards: [],
+    informs: [],
 };
 
 export default handleActions({
@@ -108,13 +112,14 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { type, ...rest }}) => ({
+    [INITIALIZE_VALUE]: (state, { payload: { type, roomKey, inform, board }}) => { console.dir(state.boards.slice(0, roomKey)); return {
         ...state,
-        ...rest,
-    }),
-    [CHANGE_VALUE]: (state, { payload: { board } }) => ({
+        boards: [ ...state.boards.slice(0, roomKey), board, ...state.boards.slice(roomKey+1) ],
+        informs: [ ...state.informs.slice(0, roomKey), inform, ...state.informs.slice(roomKey+1) ],
+    }},
+    [CHANGE_VALUE]: (state, { payload: { boards } }) => ({
         ...state,
-        board,
+        boards,
     }),
     [CLEAR_VALUE]: state => initialState,
 }, initialState);

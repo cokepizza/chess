@@ -187,6 +187,7 @@ export default (server, app, sessionMiddleware) => {
 
             socket.emit('message', {
                 type: 'initialize',
+                roomKey: key,
                 inform,
                 board: billBoard[key].board,
             });

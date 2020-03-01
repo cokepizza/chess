@@ -37,14 +37,14 @@ const MainLayout = () => {
         <MainLayoutBlock>
             <LeftSideBlock>
                 <BillBoardContainer roomKey={0} />
-                {/* <BillBoardContainer roomKey={1} /> */}
+                <BillBoardContainer roomKey={1} />
                 {/* <IframeContainer roomKey={0} />
                 <IframeContainer roomKey={1} /> */}
             </LeftSideBlock>
             <RankingContainer />
             <RightSideBlock>
-                {/* <BillBoardContainer roomKey={2} />
-                <BillBoardContainer roomKey={3} /> */}
+                <BillBoardContainer roomKey={2} />
+                <BillBoardContainer roomKey={3} />
                 {/* <IframeContainer roomKey={2} />
                 <IframeContainer roomKey={3} /> */}
             </RightSideBlock>

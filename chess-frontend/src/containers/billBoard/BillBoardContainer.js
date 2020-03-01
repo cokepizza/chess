@@ -4,7 +4,7 @@ import BillBoard from '../../components/billBoard/BillBoard';
 
 const BillBoardContainer = ({ roomKey }) => {
     const { inform } = useSelector(({ billBoard }) => ({
-        inform: billBoard.inform,
+        inform: billBoard.informs[roomKey],
     }));
 
     return (
