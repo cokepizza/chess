@@ -15,8 +15,9 @@ const WriteLayoutContainer = () => {
 
     const quillElement = useRef();
     const quillInstance = useRef();
+    const mounted = useRef(false);
 
-    const [ holding, setHolding ] = useState(true);
+    const [ holding, setHolding ] = useState(!(write && write.title));
 
     useEffect(() => {
         quillInstance.current = new Quill(quillElement.current, {
@@ -43,6 +44,12 @@ const WriteLayoutContainer = () => {
             }
         });
     }, [dispatch]);
+
+    useEffect(() => {
+        if(mounted.current) return;
+        mounted.current = true;
+        quillInstance.current.root.innerHTML = write.content;
+    }, [write]);
 
     useEffect(() => {
         return () => {

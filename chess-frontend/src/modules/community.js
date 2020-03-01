@@ -8,7 +8,6 @@ const SET_STATUS = 'community/SET_STATUS';
 const SET_FORM = 'community/SET_FORM';
 const CLEAR_FORM = 'community/CLEAR_FORM';
 const CLEAR_FORM_ALL = 'community/CLEAR_FORM_ALL';
-const CLEAR_PAGE = 'community/CLEAR_PAGE';
 const [ CREATE_POST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE ] = createRequestActionTypes('community/CREATE_POST');
 const [ LIST_POST, LIST_POST_SUCCESS, LIST_POST_FAILURE ] = createRequestActionTypes('community/LIST_POST');
 const [ READ_POST, READ_POST_SUCCESS, READ_POST_FAILURE ] = createRequestActionTypes('community/READ_POST');
@@ -74,6 +73,7 @@ const initialState = {
         post: null,
     },
     write: {
+        modify: false,
         title: '',
         content: '',
     }
@@ -129,13 +129,6 @@ export default handleActions({
         }
     }),
     [READ_POST_FAILURE]: state => state,
-    [CLEAR_PAGE]: state => ({
-        ...state,
-        list: {
-            ...state.list,
-            page: initialState.list.page,
-        }
-    }),
     [DELETE_POST_SUCCESS]: state => state,
     [DELETE_POST_FAILURE]: state => state,
 }, initialState);

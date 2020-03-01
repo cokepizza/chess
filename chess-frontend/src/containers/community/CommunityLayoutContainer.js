@@ -2,12 +2,13 @@ import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import CommunityLayout from '../../components/community/CommunityLayout';
-import { setMenuThunk, setStatus, setForm, clearForm, clearAll } from '../../modules/community';
+import { setMenuThunk, setStatus, clearForm, clearAll } from '../../modules/community';
 
 const CommunityLayoutContainer = () => {
-    const { menu, status } = useSelector(({ community }) => ({
+    const { menu, status, auth } = useSelector(({ community, sessionAuth }) => ({
         menu: community.menu,
         status: community.status,
+        auth: sessionAuth.auth,
     }));
 
     const dispatch = useDispatch();
@@ -50,6 +51,7 @@ const CommunityLayoutContainer = () => {
     return (
         <CommunityLayout
             menu={menu}
+            auth={auth}
             status={status}
             onClick={onClick}
             onCreatePost={onCreatePost}

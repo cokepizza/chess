@@ -20,7 +20,7 @@ const PostTitleFrameBlock = styled.div`
     height: 30px;
     background: white;
     box-sizing: border-box;
-    padding: 0px 20px;
+    padding: 0px 15px;
     margin-bottom: 5px;
     font-size: 13px;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
@@ -63,6 +63,7 @@ const PostContentBlock = styled.div`
     text-align: left;
     white-space: pre-wrap;
     word-wrap: break-word;
+    font-family: Helvetica, Arial, sans-serif;
 
     p {
         margin: 0px;
@@ -101,7 +102,7 @@ const ButtonBlock = styled.button`
     }
 `;
 
-const Post = ({ post, onUpdate, onDelete }) => {
+const Post = ({ post, auth, onUpdate, onDelete }) => {
     let date = null;
     if(post) {
         const createdAt = new Date(Date.parse(post.createdAt));
@@ -125,10 +126,16 @@ const Post = ({ post, onUpdate, onDelete }) => {
             </PostTitleFrameBlock>
             <PostContentBlock dangerouslySetInnerHTML={{ __html: (post ? post.content : null) }} />
             <UtilBlock>
-                <ButtonBlock onClick={() => onUpdate()}>
+                <ButtonBlock
+                    disabled={!auth || !post || auth._id !== post.user._id}
+                    onClick={() => onUpdate(post)}
+                >
                     Update
                 </ButtonBlock>
-                <ButtonBlock onClick={() => onDelete(post._id)}>
+                <ButtonBlock
+                    disabled={!auth || !post || auth._id !== post.user._id}
+                    onClick={() => onDelete(post._id)}
+                >
                     Delete
                 </ButtonBlock>
             </UtilBlock>

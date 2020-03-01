@@ -2,12 +2,13 @@ import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Post from '../../components/community/Post';
-import { readPostThunk, clearFormAll, setStatus, deletePostThunk } from '../../modules/community';
+import { readPostThunk, clearFormAll, setStatus, deletePostThunk, setForm } from '../../modules/community';
 
 const PostContainer = () => {
-    const { id, post } = useSelector(({ community }) => ({
+    const { id, post, auth } = useSelector(({ community, sessionAuth }) => ({
         id: community.post.id,
         post: community.post.post,
+        auth: sessionAuth.auth,
     }));
 
     const dispatch = useDispatch();
@@ -26,9 +27,26 @@ const PostContainer = () => {
         };
     }, []);
 
-    const onUpdate = useCallback(() => {
-
-    }, []);
+    const onUpdate = useCallback(async (post) => {
+        dispatch(setForm({
+            status: 'write',
+            key: 'title',
+            value: post.title,
+        }));
+        dispatch(setForm({
+            status: 'write',
+            key: 'content',
+            value: post.content,
+        }));
+        dispatch(setForm({
+            status: 'write',
+            key: 'modify',
+            value: true,
+        }));
+        dispatch(setStatus({
+            status: 'write',
+        }));
+    }, [dispatch]);
 
     const onDelete = useCallback(async (id) => {
         await dispatch(deletePostThunk({ id }));
@@ -40,6 +58,7 @@ const PostContainer = () => {
     return (
         <Post 
             post={post}
+            auth={auth}
             onUpdate={onUpdate}
             onDelete={onDelete}
         />

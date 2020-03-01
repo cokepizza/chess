@@ -124,6 +124,7 @@ const BackBlock = styled.div`
 
 const CommunityLayout = ({
     menu,
+    auth,
     status,
     onClick,
     onCreatePost,
@@ -146,7 +147,7 @@ const CommunityLayout = ({
                     <MovingUnderline checkedIndex={checkedIndex} />
                 </HeaderBlock>
                 <TabBlock status={status}>
-                    {status === 'list' && checkedIndex !== 0 && checkedIndex !== 3 && (
+                    {status === 'list' && auth && checkedIndex !== 0 && checkedIndex !== 3 && (
                         <WriteEventBlock onClick={onCreatePost}>
                             <IconContext.Provider value={{ style: { width: '20px', height: '20px' }}}>
                                 <FaPencilAlt />

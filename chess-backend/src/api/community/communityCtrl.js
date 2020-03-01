@@ -68,7 +68,7 @@ export const listPost = async (req, res, next) => {
 
 export const readPost = async (req, res, next) => {
     try {
-        const post = await Post.findById(req.params.id);
+        const post = await Post.findById(req.params.id).exec();
     
         return res.status(200).send({
             post
@@ -84,6 +84,16 @@ export const deletePost = async (req, res, next) => {
         await Post.findByIdAndRemove(req.params.id).exec();
 
         return res.status(200).end();
+    } catch(e) {
+        console.dir(e);
+        return res.status(500).send(e);
+    }
+};
+
+export const updatePost = async (req, res, next) => {
+    try {
+
+        
     } catch(e) {
         console.dir(e);
         return res.status(500).send(e);
