@@ -41,24 +41,15 @@ const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
 
     const { loading, data, error } = state;
 
-    if(loading) return null;
-    if(error) return null;
-    if(data) {
-        if(!board) {
-            //  activity indicator
-            return null;
-        }
-        return (
-            <Canvas
-                board={board}
-                billBoard={true}
-                blocked={true}
-                onContextMenu={onContextMenu}
-                cellSize={cellSize}
-            />
-        )
-    }
-    return null;
+    return (
+        <Canvas
+            board={board}
+            billBoard={true}
+            blocked={true}
+            onContextMenu={onContextMenu}
+            cellSize={cellSize}
+        />
+    )
 };
 
 export default BillBoardCanvasWrapperContainer;

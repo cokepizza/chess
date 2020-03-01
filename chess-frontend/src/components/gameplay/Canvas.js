@@ -180,7 +180,7 @@ const CanvasContent = ({ board, blocked, cellSize, onClick }) => {
     
     return  (
         <CanvasContentBlock blocked={blocked}>
-            {board.map((row, y) => (
+            {board && board.map((row, y) => (
                 <CanvasRow
                     key={`row_${y}`}
                     row={row}
