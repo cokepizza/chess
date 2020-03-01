@@ -24,6 +24,7 @@ export const changeValueThunk = ({ roomKey, move }) => ( dispatch, getState ) =>
         } = getState();
 
     const board = boards[roomKey];
+    if(!board) return;
 
     const cell = board[prev.y][prev.x];
     const clearBoard = genClearBoard([...board], [
