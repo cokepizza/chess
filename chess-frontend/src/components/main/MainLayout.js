@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 
 import RankingContainer from '../../containers/main/RankingContainer';
 import IframeContainer from '../../containers/main/IframeContainer';
+import BillBoardContainer from '../../containers/billBoard/BillBoardContainer';
 
 const MainLayoutBlock = styled.div`
     height: 800px;
@@ -35,13 +36,17 @@ const MainLayout = () => {
     return (
         <MainLayoutBlock>
             <LeftSideBlock>
-                <IframeContainer roomKey={0} />
-                <IframeContainer roomKey={1} />
+                <BillBoardContainer roomKey={0} />
+                {/* <BillBoardContainer roomKey={1} /> */}
+                {/* <IframeContainer roomKey={0} />
+                <IframeContainer roomKey={1} /> */}
             </LeftSideBlock>
             <RankingContainer />
             <RightSideBlock>
-                <IframeContainer roomKey={2} />
-                <IframeContainer roomKey={3} />
+                {/* <BillBoardContainer roomKey={2} />
+                <BillBoardContainer roomKey={3} /> */}
+                {/* <IframeContainer roomKey={2} />
+                <IframeContainer roomKey={3} /> */}
             </RightSideBlock>
         </MainLayoutBlock>
     )

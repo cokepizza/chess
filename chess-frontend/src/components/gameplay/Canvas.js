@@ -217,17 +217,17 @@ const ReplayBlock = styled.div`
     `}
 `;
 
-//  useless
-const GlobalStyle = createGlobalStyle`
-    body {
-        background: rgba(255,255,255,0.5);
-    }
-`;
+// //  useless
+// const GlobalStyle = createGlobalStyle`
+//     body {
+//         background: rgba(255,255,255,0.5);
+//     }
+// `;
 
 const Canvas = ({ onContextMenu, replayMode, billBoard, ...rest }) => {
     return (
         <>
-            {billBoard && <GlobalStyle />}
+            {/* {billBoard && <GlobalStyle />} */}
             <CanvasBlock
                 replayMode={replayMode}
                 onContextMenu={onContextMenu}

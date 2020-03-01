@@ -3,12 +3,23 @@ import styled from 'styled-components';
 import BillBoardCanvasWrapperContainer from '../../containers/billBoard/BillBoardCanvasWrapperContainer';
 
 const BillBoardFrameBlock = styled.div`
-    display: flex;
+    /* display: flex;
     width: 216px;
-    height: 280px;
-    flex-direction: column;
+    height: 280px; */
+    /* flex-direction: column; */
     justify-content: flex-start;
     align-items: center;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    background: rgba(255,255,255,0.5);
+    width: 236px;
+    height: 300px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    z-index: -10;
 `;
 
 const BillBoardBlock = styled.div`
