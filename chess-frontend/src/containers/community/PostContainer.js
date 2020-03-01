@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Post from '../../components/community/Post';
-import { readPostThunk, clearFormAll } from '../../modules/community';
+import { readPostThunk, clearFormAll, setStatus, deletePostThunk } from '../../modules/community';
 
 const PostContainer = () => {
     const { id, post } = useSelector(({ community }) => ({
@@ -26,9 +26,22 @@ const PostContainer = () => {
         };
     }, []);
 
+    const onUpdate = useCallback(() => {
+
+    }, []);
+
+    const onDelete = useCallback(async (id) => {
+        await dispatch(deletePostThunk({ id }));
+        dispatch(setStatus({
+            status: 'list',
+        }));
+    }, [dispatch]);
+
     return (
         <Post 
             post={post}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
         />
     )
 };

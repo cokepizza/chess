@@ -66,20 +66,17 @@ const WriteLayoutContainer = () => {
         }));
     }, [dispatch, holding]);
 
-    const onSubmit = useCallback(() => {
+    const onSubmit = useCallback(async() => {
         const criteria = menu.find(criteria => criteria.checked);
         
-        dispatch(createPostThunk({
+        await dispatch(createPostThunk({
             kind: criteria.name,
             title: write.title,
             content: write.content,
         }));
-
-        setTimeout(() => {
-            dispatch(setStatus({
-                status: 'list',
-            }));
-        }, 100);
+        dispatch(setStatus({
+            status: 'list',
+        }));
 
     }, [dispatch, write, menu]);
 

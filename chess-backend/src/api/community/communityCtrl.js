@@ -74,6 +74,18 @@ export const readPost = async (req, res, next) => {
             post
         });
     } catch(e) {
+        console.dir(e);
+        return res.status(500).send(e);
+    }
+};
+
+export const deletePost = async (req, res, next) => {
+    try {
+        await Post.findByIdAndRemove(req.params.id).exec();
+
+        return res.status(200).end();
+    } catch(e) {
+        console.dir(e);
         return res.status(500).send(e);
     }
 };
