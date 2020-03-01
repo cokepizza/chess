@@ -17,29 +17,29 @@ const BillBoardCanvasWrapperContainer = ({ roomKey, cellSize }) => {
     //     }
     // }, [dispatch])
 
-    const connection = async () => {
-        dispatch(disconnectWebsocket());
-        await Promise.resolve().then(() => {
-            dispatch(connectWebsocket({
-                roomKey,
-            }));
-        });
-        return true;
-    };
+    // const connection = async () => {
+    //     dispatch(disconnectWebsocket());
+    //     await Promise.resolve().then(() => {
+    //         dispatch(connectWebsocket({
+    //             roomKey,
+    //         }));
+    //     });
+    //     return true;
+    // };
 
-    useEffect(() => {
-        return () => {
-            dispatch(disconnectWebsocket());
-        }
-    }, [dispatch]);
+    // useEffect(() => {
+    //     return () => {
+    //         dispatch(disconnectWebsocket());
+    //     }
+    // }, [dispatch]);
 
     const onContextMenu = useCallback(e => {
         e.preventDefault();
     }, []);
 
-    const [state] = useAsync(connection, [dispatch]);
+    // const [state] = useAsync(connection, [dispatch]);
 
-    const { loading, data, error } = state;
+    // const { loading, data, error } = state;
 
     return (
         <Canvas

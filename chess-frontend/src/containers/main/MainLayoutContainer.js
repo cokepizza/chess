@@ -5,8 +5,16 @@ import useAsync from '../../lib/hook/useAsync';
 import { setSessionThunk } from '../../modules/sessionAuth';
 
 import MainLayout from '../../components/main/MainLayout';
-import { connectWebsocket, disconnectWebsocket, clearValue as clearRankingValue } from '../../modules/ranking';
-import { clearValue as clearBillBoardValue } from '../../modules/billBoard'; 
+import {
+    connectWebsocket as connectRankingWebsocket,
+    disconnectWebsocket as disconnectRankingWebsocket,
+    clearValue as clearRankingValue
+} from '../../modules/ranking';
+import {
+    connectWebsocket as connectBillBoardWebsocket,
+    disconnectWebsocket as disconnectBillBoardWebsocket,
+    clearValue as clearBillBoardValue
+} from '../../modules/billBoard'; 
 
 const MainLayoutContainer = () => {
     const dispatch = useDispatch();
@@ -14,9 +22,11 @@ const MainLayoutContainer = () => {
     const connection = async () => {
         await dispatch(setSessionThunk());
         
-        dispatch(disconnectWebsocket());
+        dispatch(disconnectRankingWebsocket());
+        dispatch(disconnectBillBoardWebsocket());
         await Promise.resolve().then(() => {
-            dispatch(connectWebsocket());
+            dispatch(connectRankingWebsocket());
+            dispatch(connectBillBoardWebsocket());
         })
         
         return true;
@@ -24,7 +34,8 @@ const MainLayoutContainer = () => {
 
     useEffect(() => {
         return () => {
-            dispatch(disconnectWebsocket());
+            dispatch(disconnectRankingWebsocket());
+            dispatch(disconnectBillBoardWebsocket());
             dispatch(clearRankingValue());
             dispatch(clearBillBoardValue());
         };

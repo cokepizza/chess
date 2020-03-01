@@ -174,34 +174,38 @@ export default (server, app, sessionMiddleware) => {
         console.dir('-------------socket(billBoard)--------------');
         console.dir(socket.request.sessionID);
 
-        const key = socket.handshake.query['roomKey'];
-        if(!key) return;
+        // const key = socket.handshake.query['roomKey'];
+        // if(!key) return;
         
         const billBoard = app.get('billBoard');
-
-        if(billBoard[key]) {
-            const inform = billBoard[key].player.map(player => ({
-                username: player.username,
-                elo: player.elo,
-            }));
-
-            socket.emit('message', {
-                type: 'initialize',
-                roomKey: key,
-                inform,
-                board: billBoard[key].board,
-            });
+        
+        for(let key = 0; key <4; ++key) {
+            if(billBoard[key]) {
+                const inform = billBoard[key].player.map(player => ({
+                    username: player.username,
+                    elo: player.elo,
+                }));
     
-            billBoard[key].participant.push(socket);
+                socket.emit('message', {
+                    type: 'initialize',
+                    roomKey: key,
+                    inform,
+                    board: billBoard[key].board,
+                });
+        
+                billBoard[key].participant.push(socket);
+            }
         }
-
+        
         socket.on('disconnect', () => {
             console.dir('-------------socketDis(billBoard)--------------');
             console.dir(socket.request.sessionID);
 
-            if(billBoard[key]) {
-                const index = billBoard[key].participant.findIndex(soc => soc.id === socket.id);
-                billBoard[key].participant.splice(index, 1);
+            for(let key = 0; key <4; ++key) {
+                if(billBoard[key]) {
+                    const index = billBoard[key].participant.findIndex(soc => soc.id === socket.id);
+                    billBoard[key].participant.splice(index, 1);
+                }
             }
         });
     });
