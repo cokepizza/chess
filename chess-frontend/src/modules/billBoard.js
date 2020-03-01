@@ -113,11 +113,11 @@ export default handleActions({
         ...state,
         socket,
     }),
-    [INITIALIZE_VALUE]: (state, { payload: { type, roomKey, inform, board }}) => { console.dir('-----------------------------'); console.dir(roomKey); console.dir(board); return {
+    [INITIALIZE_VALUE]: (state, { payload: { type, roomKey, inform, board }}) => ({
         ...state,
         boards: [ ...state.boards.slice(0, roomKey), board, ...state.boards.slice(roomKey+1) ],
         informs: [ ...state.informs.slice(0, roomKey), inform, ...state.informs.slice(roomKey+1) ],
-    }},
+    }),
     [CHANGE_VALUE]: (state, { payload: { boards } }) => ({
         ...state,
         boards,
