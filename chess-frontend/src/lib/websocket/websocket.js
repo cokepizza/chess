@@ -52,6 +52,7 @@ export function* connectNamespace(params) {
     
         while(true) {
             const message = yield take(channel);
+            console.dir(message);
             switch(message.type) {
                 case 'socket':
                     if(initializeSocket) {
