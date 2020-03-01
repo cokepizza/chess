@@ -103,8 +103,8 @@ export function* billBoardSaga () {
 }
 
 const initialState = {
-    boards: [],
-    informs: [],
+    boards: [null, null, null, null],
+    informs: [null, null, null, null],
 };
 
 export default handleActions({
