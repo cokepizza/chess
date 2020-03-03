@@ -137,6 +137,15 @@ export const createGame = (req, res, next) => {
                 destroyAt: new Date(),
             });
 
+            const winnerBeforeSnapshot = {
+                ...winner.toJSON(),
+                ratio: getRatio(winner.toJSON()).ratio,
+            };
+            const loserBeforeSnapshot = {
+                ...loser.toJSON(),
+                ratio: getRatio(loser.toJSON()).ratio,
+            };
+
             if(this._draw) {
                 winner.game.draw.push(game._id);
                 winner.draw += 1;
@@ -145,9 +154,20 @@ export const createGame = (req, res, next) => {
             } else {
                 winner.game.win.push(game._id);
                 winner.win += 1;
+                winner.setElo(1, loser.elo);
                 loser.game.lose.push(game._id);
                 loser.lose += 1;
+                loser.setElo(0, winner.elo);
             }
+
+            const winnerAfterSnapshot =  {
+                ...winner.toJSON(),
+                ratio: getRatio(winner.toJSON()).ratio,
+            };
+            const loserAfterSnapshot = {
+                ...loser.toJSON(),
+                ratio: getRatio(loser.toJSON()).ratio,
+            };
             
             await Promise.all([ game.save(), winner.save(), loser.save() ]);
 
@@ -155,15 +175,21 @@ export const createGame = (req, res, next) => {
             if(!this.draw) {
                 console.dir(winner.toJSON());
                 const ranking = req.app.get('ranking');
+                // ranking._register({
+                //     winner: {
+                //         ...winner.toJSON(),
+                //         ratio: getRatio(winner.toJSON()).ratio,
+                //     },
+                //     loser: {
+                //         ...loser.toJSON(),
+                //         ratio: getRatio(loser.toJSON()).ratio,
+                //     }
+                // });
                 ranking._register({
-                    winner: {
-                        ...winner.toJSON(),
-                        ratio: getRatio(winner.toJSON()).ratio,
-                    },
-                    loser: {
-                        ...loser.toJSON(),
-                        ratio: getRatio(loser.toJSON()).ratio,
-                    }
+                    winnerBefore: winnerBeforeSnapshot,
+                    loserBefore: loserBeforeSnapshot,
+                    winnerAfter: winnerAfterSnapshot,
+                    loserAfter: loserAfterSnapshot,
                 });
                 ranking._broadcast();
             }

@@ -21,9 +21,14 @@ const registerCache = app => {
         const config = await cache();
         this.list = config.ranking.list;
     };
-    ranking._register = function({ winner, loser }) {
-        this.addWinUser(winner);
-        this.addLoseUser(loser);
+    ranking._register = function({
+        winnerBefore,
+        loserBefore,
+        winnerAfter,
+        loserAfter
+    }) {
+        this.addWinUser(winnerBefore, winnerAfter);
+        this.addLoseUser(loserBefore, loserAfter);
         
         // if(!this._acting) {
         //     console.dir('error emerge! reset ranking');
@@ -35,16 +40,17 @@ const registerCache = app => {
         //     this._acting = false;
         // }
     };
-    ranking.addWinUser = function(obj) {
+    ranking.addWinUser = function(beforeObj, obj) {
         const length = this.list.length;
-        const index = binarySearch(0, length, this.list, {
-            ...obj,
-            win: obj.win-1,
-            ratio: getRatio({
-                win: obj.win-1,
-                lose: obj.lose,
-            }).ratio,
-        });
+        // const index = binarySearch(0, length, this.list, {
+        //     ...obj,
+        //     win: obj.win-1,
+        //     ratio: getRatio({
+        //         win: obj.win-1,
+        //         lose: obj.lose,
+        //     }).ratio,
+        // });
+        const index = binarySearch(0, length, this.list, beforeObj);
         
         if(index < 0) {
             console.dir('Find user in cache failed')
@@ -62,16 +68,17 @@ const registerCache = app => {
         this.list.splice(i+1, 0, obj);
         this.list.splice(index + 1, 1);
     };
-    ranking.addLoseUser = function(obj) {
+    ranking.addLoseUser = function(beforeObj, obj) {
         const length = this.list.length;
-        const index = binarySearch(0, length, this.list, {
-            ...obj,
-            lose: obj.lose-1,
-            ratio: getRatio({
-                win: obj.win,
-                lose: obj.lose-1,
-            }).ratio,
-        });
+        // const index = binarySearch(0, length, this.list, {
+        //     ...obj,
+        //     lose: obj.lose-1,
+        //     ratio: getRatio({
+        //         win: obj.win,
+        //         lose: obj.lose-1,
+        //     }).ratio,
+        // });
+        const index = binarySearch(0, length, this.list, beforeObj);
         
         if(index < 0) {
             console.dir('Find user in cache failed')
