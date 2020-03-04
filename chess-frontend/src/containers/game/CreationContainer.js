@@ -27,7 +27,7 @@ const CreationContainer = ({ history }) => {
                 extraTime,
                 piece
             }));
-            console.dir(piece);
+
             history.push(`/game/${key}`);
         })();
     }, [dispatch, history, map, mode, defaultTime, extraTime, piece]);
