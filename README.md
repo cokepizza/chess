@@ -1,2 +1,2 @@
 # CHESSSUP.COM - free online chess game
-![Knight](./images/knight/png)
+![Knight](../master/images/knight/png)
