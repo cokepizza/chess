@@ -1,4 +1,3 @@
-CHESSSUP.COM - free chess game online
-=====================================
+# CHESSSUP.COM - free online chess game
 <hr />
-
+![Knight](./images/knight/png)
