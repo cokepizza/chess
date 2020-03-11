@@ -1,2 +1,3 @@
 # CHESSSUP.COM - free online chess game
-![Knight](../master/images/knight.png)
+
+<img src="../master/images/knight.png" width='20px' height='20px' />
