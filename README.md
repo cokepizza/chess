@@ -101,6 +101,6 @@ Real-time Online Chess Game. you can play here <https://chesssup.com>
   * Single play is not supported
   * Personalization still has many features to complement
 * About upcoming Ver2
-  * Multi-process and auto scaling will be supported by redis, socket.io-redis
+  * Multi-process and Scale out will be supported by redis, socket.io-redis
   * Single play will be supported by stockfishchess bot engine (<https://stockfishchess.org>)
   * Personal record archieve and replay features will be added
