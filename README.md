@@ -1,12 +1,12 @@
-<h1 style = 'border-bottom: 0px'>
+<div style = 'border-bottom: 0px; font-size: 40px; '>
   CHESSSUP
-</h1>
+</div>
 
 Real-time Online Chess Game. you can play here <https://chesssup.com>
 
 ----
 
-## Table of contents
+### Table of contents
 
 [● Technical Stack](#Technial-Stack)  
 [● Service Overview](#Service-Overview)  
@@ -15,7 +15,7 @@ Real-time Online Chess Game. you can play here <https://chesssup.com>
 
 ----
 
-## Technical Stack
+### Technical Stack
 
 * Backend
   * Node.js
@@ -37,7 +37,7 @@ Real-time Online Chess Game. you can play here <https://chesssup.com>
 
 ----
 
-## Service Overview
+### Service Overview
 
 * How this service works
   * How to update View
@@ -74,14 +74,13 @@ Real-time Online Chess Game. you can play here <https://chesssup.com>
 
 ----
 
-## Service Contents
+### Service Contents
 
 ...
 
------
+----
 
-
-## Upcoming Work
+### Upcoming Work
 
 * Limitation
   * Multi-process is not supported
