@@ -1,21 +1,15 @@
-<div style = 'border-bottom: 0px; font-size: 40px; '>
-  CHESSSUP
-</div>
+# CHESSSUP
 
 Real-time Online Chess Game. you can play here <https://chesssup.com>
 
-----
-
-### Table of contents
+## Table of contents
 
 [● Technical Stack](#Technial-Stack)  
 [● Service Overview](#Service-Overview)  
 [● Service Contents](#Contents)  
 [● Upcoming Work](#Upcoming-Work)  
 
-----
-
-### Technical Stack
+## Technical Stack
 
 * Backend
   * Node.js
@@ -35,9 +29,7 @@ Real-time Online Chess Game. you can play here <https://chesssup.com>
     * Thunk
     * Saga
 
-----
-
-### Service Overview
+## Service Overview
 
 * How this service works
   * How to update View
@@ -72,15 +64,11 @@ Real-time Online Chess Game. you can play here <https://chesssup.com>
   * Community Page
     * It is designed as a REST API and is a community in the form of a basic bulletin board
 
-----
-
-### Service Contents
+## Service Contents
 
 ...
 
-----
-
-### Upcoming Work
+## Upcoming Work
 
 * Limitation
   * Multi-process is not supported
@@ -90,5 +78,3 @@ Real-time Online Chess Game. you can play here <https://chesssup.com>
   * Multi-process and auto scaling will be supported by redis, socket.io-redis
   * Single play will be supported by stockfishchess bot engine (<https://stockfishchess.org>)
   * Personal record archieve and replay features will be added
-
-----
