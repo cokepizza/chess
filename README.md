@@ -8,7 +8,7 @@ Real-time Online Chess Game. you can play here <https://chesssup.com>
 
 [● Technical Stack](#Technial-Stack)  
 [● Service Overview](#Service-Overview)  
-[● Service Contents](#Contents)  
+[● Service Contents](#Service-Contents)  
 [● Upcoming Work](#Upcoming-Work)  
 
 ## Technical Stack
